@@ -3,7 +3,7 @@ services:
     name: galicia-flexxus
     runtime: python
     buildCommand: bash build.sh
-    startCommand: cd backend && gunicorn app:app --bind 0.0.0.0:$PORT --timeout 300 --workers 1
+    startCommand: playwright install chromium --with-deps && cd backend && gunicorn app:app --bind 0.0.0.0:$PORT --timeout 300 --workers 1
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
