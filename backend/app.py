@@ -70,7 +70,7 @@ if not os.path.exists(USERS_FILE):
 
 # ─── Login rate limiting ───────────────────────────────────────────────────────
 _failed: dict         = defaultdict(list)
-_MAX_ATTEMPTS: int    = 5
+_MAX_ATTEMPTS: int    = 3
 _WINDOW_SECS:  int    = 900   # 15 min
 
 
@@ -83,6 +83,12 @@ def _is_rate_limited(ip: str) -> bool:
 
 def _record_failure(ip: str):
     _failed[ip].append(time.time())
+
+
+def _remaining_attempts(ip: str) -> int:
+    now   = time.time()
+    used  = len([t for t in _failed[ip] if now - t < _WINDOW_SECS])
+    return max(0, _MAX_ATTEMPTS - used)
 
 # ─── Playwright executor ───────────────────────────────────────────────────────
 _pw_executor = ThreadPoolExecutor(max_workers=1)
@@ -154,7 +160,12 @@ def app_login():
 
     if not stored or not _check_password(password, stored):
         _record_failure(ip)
-        return jsonify({'ok': False, 'error': 'Usuario o contraseña incorrectos'}), 401
+        remaining = _remaining_attempts(ip)
+        if remaining == 0:
+            msg = 'Cuenta bloqueada temporalmente. Esperá 15 minutos e intentá de nuevo.'
+            return jsonify({'ok': False, 'error': msg}), 429
+        intento = 'intento' if remaining == 1 else 'intentos'
+        return jsonify({'ok': False, 'error': f'Usuario o contraseña incorrectos. Te queda{"n" if remaining > 1 else ""} {remaining} {intento}.'}), 401
 
     # Migrate legacy SHA-256 hash to bcrypt on first successful login
     if not stored.startswith(('$2b$', '$2a$')):
@@ -309,6 +320,32 @@ def upload_csv(tipo):
         return jsonify({'ok': False, 'error': str(e)}), 500
 
 # ─── Sucursales ───────────────────────────────────────────────────────────────
+@app.route('/api/bancos', methods=['GET'])
+def api_bancos_get():
+    return jsonify({'ok': True, **sucursales_manager.cargar_bancos()})
+
+
+@app.route('/api/bancos/upload', methods=['POST'])
+def api_bancos_upload():
+    file = request.files.get('file')
+    if not file:
+        return jsonify({'ok': False, 'error': 'No se recibió archivo'}), 400
+    ext = os.path.splitext(file.filename or '')[1].lower()
+    tmp = os.path.join(tempfile.gettempdir(), f'bancos_upload{ext}')
+    file.save(tmp)
+    try:
+        if ext == '.csv':
+            bancos, msg = sucursales_manager.parsear_csv_bancos(tmp)
+        else:
+            bancos, msg = sucursales_manager.parsear_pdf_bcra(tmp)
+        if bancos:
+            data = sucursales_manager.guardar_bancos(bancos, file.filename or '')
+            return jsonify({'ok': True, 'mensaje': msg, **data})
+        return jsonify({'ok': False, 'error': msg}), 422
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+
 @app.route('/api/sucursales/<banco>', methods=['GET'])
 def api_sucursales_get(banco):
     if banco not in ('galicia', 'macro'):

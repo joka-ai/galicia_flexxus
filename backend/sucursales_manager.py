@@ -240,3 +240,165 @@ def init():
             _init_banco(banco)
         except Exception as e:
             print(f"[SUCURSALES] init {banco} error: {e}")
+    _init_bancos()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Bancos BCRA
+# ─────────────────────────────────────────────────────────────────────────────
+_BANCOS_JSON = os.path.join(SUCURSALES_DIR, 'bancos.json')
+
+_BANCOS_DEFAULT: List[dict] = [
+    {"codigo":"007","nombre":"Banco de Galicia y Buenos Aires S.A.U.","grupo":"A"},
+    {"codigo":"011","nombre":"Banco de la Nación Argentina","grupo":"A"},
+    {"codigo":"014","nombre":"Banco de la Provincia de Buenos Aires","grupo":"A"},
+    {"codigo":"015","nombre":"Industrial and Commercial Bank of China (Argentina) S.A.U.","grupo":"A"},
+    {"codigo":"016","nombre":"Citibank N.A.","grupo":"A"},
+    {"codigo":"017","nombre":"Banco BBVA Argentina S.A.","grupo":"A"},
+    {"codigo":"020","nombre":"Banco de la Provincia de Córdoba S.A.","grupo":"A"},
+    {"codigo":"027","nombre":"Banco Supervielle S.A.","grupo":"A"},
+    {"codigo":"029","nombre":"Banco de la Ciudad de Buenos Aires","grupo":"A"},
+    {"codigo":"034","nombre":"Banco Patagonia S.A.","grupo":"A"},
+    {"codigo":"044","nombre":"Banco Hipotecario S.A.","grupo":"A"},
+    {"codigo":"045","nombre":"Banco de San Juan S.A.","grupo":"A"},
+    {"codigo":"072","nombre":"Banco Santander Argentina S.A.","grupo":"A"},
+    {"codigo":"150","nombre":"HSBC Bank Argentina S.A.","grupo":"A"},
+    {"codigo":"191","nombre":"Banco Credicoop Cooperativo Limitado","grupo":"A"},
+    {"codigo":"259","nombre":"Banco Itau Argentina S.A.","grupo":"A"},
+    {"codigo":"285","nombre":"Banco Macro S.A.","grupo":"A"},
+    {"codigo":"330","nombre":"Nuevo Banco de Santa Fe S.A.","grupo":"A"},
+    {"codigo":"083","nombre":"Banco del Chubut S.A.","grupo":"B"},
+    {"codigo":"086","nombre":"Banco de Santa Cruz S.A.","grupo":"B"},
+    {"codigo":"093","nombre":"Banco de la Pampa S.E.M.","grupo":"B"},
+    {"codigo":"094","nombre":"Banco de Corrientes S.A.","grupo":"B"},
+    {"codigo":"097","nombre":"Banco Provincia del Neuquén S.A.","grupo":"B"},
+    {"codigo":"198","nombre":"Banco de Valores S.A.","grupo":"B"},
+    {"codigo":"299","nombre":"Banco Comafi S.A.","grupo":"B"},
+    {"codigo":"300","nombre":"Banco de Inversión y Comercio Exterior S.A.","grupo":"B"},
+    {"codigo":"311","nombre":"Nuevo Banco del Chaco S.A.","grupo":"B"},
+    {"codigo":"315","nombre":"Banco de Formosa S.A.","grupo":"B"},
+    {"codigo":"319","nombre":"Banco CMF S.A.","grupo":"B"},
+    {"codigo":"321","nombre":"Banco de Santiago del Estero S.A.","grupo":"B"},
+    {"codigo":"322","nombre":"Banco Industrial S.A.","grupo":"B"},
+    {"codigo":"386","nombre":"Nuevo Banco de Entre Ríos S.A.","grupo":"B"},
+    {"codigo":"065","nombre":"Banco Municipal de Rosario","grupo":"C"},
+    {"codigo":"131","nombre":"Bank of China Limited, Sucursal Buenos Aires","grupo":"C"},
+    {"codigo":"143","nombre":"Brubank S.A.U.","grupo":"C"},
+    {"codigo":"147","nombre":"Bibank S.A.","grupo":"C"},
+    {"codigo":"158","nombre":"Open Bank Argentina S.A.","grupo":"C"},
+    {"codigo":"165","nombre":"JPMorgan Chase Bank N.A. (Sucursal Buenos Aires)","grupo":"C"},
+    {"codigo":"247","nombre":"Banco Roela S.A.","grupo":"C"},
+    {"codigo":"254","nombre":"Banco Mariva S.A.","grupo":"C"},
+    {"codigo":"266","nombre":"BNP Paribas","grupo":"C"},
+    {"codigo":"268","nombre":"Banco Provincia de Tierra del Fuego","grupo":"C"},
+    {"codigo":"269","nombre":"Banco de la República Oriental del Uruguay","grupo":"C"},
+    {"codigo":"277","nombre":"Banco Sáenz S.A.","grupo":"C"},
+    {"codigo":"281","nombre":"Banco Meridian S.A.","grupo":"C"},
+    {"codigo":"301","nombre":"Banco Piano S.A.","grupo":"C"},
+    {"codigo":"305","nombre":"Banco Julio S.A.","grupo":"C"},
+    {"codigo":"309","nombre":"Banco Rioja S.A.U.","grupo":"C"},
+    {"codigo":"310","nombre":"Banco del Sol S.A.","grupo":"C"},
+    {"codigo":"312","nombre":"Banco VOII S.A.","grupo":"C"},
+    {"codigo":"331","nombre":"Banco Cetelem Argentina S.A.","grupo":"C"},
+    {"codigo":"332","nombre":"Banco de Servicios Financieros S.A.","grupo":"C"},
+    {"codigo":"338","nombre":"Banco de Servicios y Transacciones S.A.","grupo":"C"},
+    {"codigo":"339","nombre":"RCI Banque S.A.","grupo":"C"},
+    {"codigo":"340","nombre":"BACS Banco de Crédito y Securitización S.A.","grupo":"C"},
+    {"codigo":"341","nombre":"Banco Masventas S.A.","grupo":"C"},
+    {"codigo":"384","nombre":"Wilobank S.A.U.","grupo":"C"},
+    {"codigo":"389","nombre":"Banco Columbia S.A.","grupo":"C"},
+    {"codigo":"426","nombre":"Banco Bica S.A.","grupo":"C"},
+    {"codigo":"431","nombre":"Banco Coinag S.A.","grupo":"C"},
+    {"codigo":"432","nombre":"Banco de Comercio S.A.","grupo":"C"},
+    {"codigo":"435","nombre":"Banco Súcredito Regional S.A.U.","grupo":"C"},
+    {"codigo":"448","nombre":"Banco Dino S.A.","grupo":"C"},
+]
+
+
+def cargar_bancos() -> dict:
+    os.makedirs(SUCURSALES_DIR, exist_ok=True)
+    if os.path.exists(_BANCOS_JSON):
+        try:
+            with open(_BANCOS_JSON, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {'updated': None, 'source_file': 'BCRA Comunicación A 7896',
+            'total': len(_BANCOS_DEFAULT), 'bancos': _BANCOS_DEFAULT}
+
+
+def guardar_bancos(bancos: List[dict], source_file: str = '') -> dict:
+    os.makedirs(SUCURSALES_DIR, exist_ok=True)
+    data = {
+        'updated':     datetime.now().strftime('%d/%m/%Y %H:%M'),
+        'source_file': source_file,
+        'total':       len(bancos),
+        'bancos':      bancos,
+    }
+    with open(_BANCOS_JSON, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    return data
+
+
+def parsear_csv_bancos(path: str) -> Tuple[List[dict], str]:
+    """CSV con columnas: codigo, nombre, grupo"""
+    try:
+        import pandas as pd
+        df = pd.read_csv(path, dtype=str, sep=None, engine='python')
+        df.columns = [c.strip().lower() for c in df.columns]
+        df = df.dropna(how='all')
+        rows: List[dict] = []
+        seen: set = set()
+        for _, row in df.iterrows():
+            cod = str(row.get('codigo', '') or '').strip()
+            if not cod or cod in seen:
+                continue
+            seen.add(cod)
+            rows.append({
+                'codigo': cod.zfill(3),
+                'nombre': str(row.get('nombre', '') or '').strip(),
+                'grupo':  str(row.get('grupo',  'A') or 'A').strip().upper(),
+            })
+        return rows, f"{len(rows)} bancos del CSV"
+    except Exception as e:
+        return [], f"Error al parsear CSV bancos: {e}"
+
+
+def parsear_pdf_bcra(path: str) -> Tuple[List[dict], str]:
+    """Parsea el PDF de listado BCRA (Comunicación 'A' — texto, no imagen)."""
+    try:
+        import pdfplumber
+    except ImportError:
+        return [], "pdfplumber no instalado."
+    try:
+        bancos: List[dict] = []
+        seen: set = set()
+        grupo = 'A'
+        with pdfplumber.open(path) as pdf:
+            for page in pdf.pages:
+                text = page.extract_text() or ''
+                for line in text.split('\n'):
+                    line = line.strip()
+                    if re.search(r'Grupo\s+A', line, re.I):
+                        grupo = 'A'
+                    elif re.search(r'Grupo\s+B', line, re.I):
+                        grupo = 'B'
+                    elif re.search(r'Grupo\s+C', line, re.I):
+                        grupo = 'C'
+                    m = re.match(r'^(\d{1,5})\s+(.+)$', line)
+                    if m:
+                        cod = m.group(1).zfill(3)
+                        if cod not in seen:
+                            seen.add(cod)
+                            bancos.append({'codigo': cod, 'nombre': m.group(2).strip(), 'grupo': grupo})
+        if bancos:
+            return bancos, f"{len(bancos)} bancos del PDF BCRA"
+        return [], "No se encontraron bancos en el PDF."
+    except Exception as e:
+        return [], f"Error al parsear PDF BCRA: {e}"
+
+
+def _init_bancos():
+    if not os.path.exists(_BANCOS_JSON):
+        guardar_bancos(_BANCOS_DEFAULT, 'BCRA Comunicación A 7896 (carga inicial)')
+        print(f"[BANCOS] {len(_BANCOS_DEFAULT)} bancos guardados desde datos iniciales")
