@@ -211,7 +211,7 @@ def galicia_login():
             try: prev.logout()
             except Exception: pass
         _session['client'] = None
-        client = GaliciaClient()
+        client = GaliciaClient(headless=True)
         ok, msg = client.login(usuario, password)
         if ok:
             _session['client'] = client
