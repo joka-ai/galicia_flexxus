@@ -1,0 +1,2540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Galicia | Consultas</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f0;--surface:#ffffff;--surface2:#f9f9f6;
+  --border:#e0dfd8;--border2:#ccccc4;
+  --text:#1a1a18;--text2:#555551;--text3:#888884;
+  --blue:#185FA5;--blue-l:#E6F1FB;--blue-b:#B5D4F4;
+  --green:#3B6D11;--green-l:#EAF3DE;--green-b:#C0DD97;
+  --amber:#854F0B;--amber-l:#FAEEDA;--amber-b:#FAC775;
+  --red:#A32D2D;--red-l:#FCEBEB;--red-b:#F7C1C1;
+  --purple:#5B3FA5;--purple-l:#EEE9FB;--purple-b:#C9BAEF;
+  --teal:#0F6B6B;--teal-l:#E0F4F4;--teal-b:#8DD5D5;
+  --radius:8px;--radius-lg:12px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+.shell{display:grid;grid-template-columns:230px 1fr;height:100vh;overflow:hidden}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:0;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.main{overflow-y:auto}
+.sidebar-logo{padding:18px 18px 14px;border-bottom:1px solid var(--border)}
+.sidebar-logo h1{font-size:15px;font-weight:600;color:var(--text)}
+.sidebar-logo p{font-size:11px;color:var(--text3);margin-top:2px}
+.nav{padding:6px 0;flex:1;overflow-y:auto;min-height:0}
+.nav-section{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:12px 18px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 18px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all 0.1s}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:var(--blue-l);color:var(--blue);border-left-color:var(--blue)}
+.nav-item svg{width:15px;height:15px;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--green-l);color:var(--green);font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:20px;text-align:center}
+.sidebar-status{padding:12px 18px;border-top:1px solid var(--border);font-size:12px}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
+.status-dot.ok{background:var(--green)}
+.status-dot.off{background:var(--border2)}
+.main{padding:26px 30px;overflow-y:auto}
+.page{display:none}.page.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.fg.w1{grid-template-columns:1fr}
+.fg.w3{grid-template-columns:1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.span2{grid-column:1/-1}
+label{font-size:12px;font-weight:500;color:var(--text2)}
+input,select{width:100%;padding:7px 10px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:13px;outline:none}
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,95,165,.1)}
+input::placeholder{color:var(--text3)}
+.tipo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-bottom:4px}
+.tipo-card{border:2px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:all .12s;display:flex;align-items:flex-start;gap:10px}
+.tipo-card:hover{border-color:var(--blue-b);background:var(--blue-l)}
+.tipo-card.selected{border-color:var(--blue);background:var(--blue-l)}
+.tipo-card input[type=checkbox]{width:15px;height:15px;accent-color:var(--blue);flex-shrink:0;margin-top:2px}
+.tipo-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.tipo-card-sub{font-size:11px;color:var(--text3)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .12s}
+.btn:hover{background:var(--bg)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--blue);color:#fff;border-color:#0C447C}
+.btn.primary:hover:not(:disabled){background:#0C447C}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge.ok{background:var(--green-l);color:var(--green)}
+.badge.info{background:var(--blue-l);color:var(--blue)}
+.badge.purple{background:var(--purple-l);color:var(--purple)}
+.badge.teal{background:var(--teal-l);color:var(--teal)}
+.alert{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
+.alert.info{background:var(--blue-l);color:#0C447C;border:1px solid var(--blue-b)}
+.alert.success{background:var(--green-l);color:var(--green);border:1px solid var(--green-b)}
+.alert.warn{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
+.alert.error{background:var(--red-l);color:var(--red);border:1px solid var(--red-b)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center}
+.stat-n{font-size:22px;font-weight:600;color:var(--text)}
+.stat-l{font-size:11px;color:var(--text3);margin-top:2px}
+.tbl-wrap{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:8px 12px;text-align:left;background:var(--surface2);color:var(--text3);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+td{cursor:pointer;user-select:none}
+td.no-copy{cursor:default}
+td.flash-copy{animation:flashCell .52s ease}
+tr.flash-copy td{animation:flashCell .52s ease}
+@keyframes flashCell{0%,100%{background:inherit}30%{background:var(--green-l)}}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--blue)}
+th.sort-asc::after{content:' ▲';font-size:8px;color:var(--blue)}
+th.sort-desc::after{content:' ▼';font-size:8px;color:var(--blue)}
+.tbl-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.tbl-toolbar input{flex:1;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;outline:none;background:var(--surface);color:var(--text)}
+.tbl-toolbar input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,95,165,.1)}
+.tbl-toolbar input::placeholder{color:var(--text3)}
+.tbl-count{font-size:11px;color:var(--text3);white-space:nowrap;padding:0 4px}
+.filtro-panel{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.filtro-panel .fg{margin-bottom:10px}
+#copy-toast{position:fixed;bottom:24px;right:24px;background:#1a1a18;color:#fff;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:500;z-index:9999;opacity:0;transition:opacity .22s;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+.page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.page-hdr h2{font-size:18px;font-weight:600}
+.resumen-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:4px}
+.resumen-item{border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .12s}
+.resumen-item:hover{border-color:var(--blue-b);background:var(--blue-l)}
+.resumen-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.resumen-icon.rec{background:var(--purple-l)}
+.resumen-icon.tr{background:var(--teal-l)}
+.resumen-num{font-size:20px;font-weight:700;color:var(--text)}
+.resumen-lbl{font-size:11px;color:var(--text3)}
+.pagination{display:flex;align-items:center;gap:6px;margin-top:10px;justify-content:flex-end}
+.pagination button{padding:4px 10px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:12px;cursor:pointer}
+.pagination button:hover:not(:disabled){background:var(--bg)}
+.pagination button:disabled{opacity:.4;cursor:not-allowed}
+.pagination .pg-info{font-size:12px;color:var(--text3);padding:0 6px}
+.pagination select{padding:3px 6px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--surface)}
+.expand-chevron{font-size:10px;color:var(--text3);transition:transform .15s;display:inline-block;user-select:none;padding:2px 4px}
+.upload-area{border:2px dashed var(--border2);border-radius:var(--radius);padding:16px;transition:border-color .12s}
+.upload-area:hover{border-color:var(--blue)}
+.upload-area input[type=file]{display:none}
+.upload-label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--text2)}
+.upload-label:hover{color:var(--blue)}
+.upload-hint{font-size:11px;color:var(--text3);margin-top:6px;font-family:monospace;background:var(--surface2);padding:6px 10px;border-radius:var(--radius);border:1px solid var(--border);overflow-x:auto;white-space:nowrap}
+input.chk-bnd{width:15px;height:15px;cursor:pointer;accent-color:var(--blue)}
+.bnd-total{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--blue-l);border:1px solid var(--blue-b);border-radius:var(--radius);margin-bottom:12px;font-size:13px}
+.bnd-total strong{color:var(--blue);font-size:16px;font-weight:700}
+.expand-chevron.open{transform:rotate(90deg);color:var(--blue)}
+tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48px!important;border-bottom:1px solid var(--border)!important;cursor:default}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px 24px}
+.detail-field{display:flex;flex-direction:column;gap:2px}
+.detail-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.detail-value{font-size:13px;color:var(--text);line-height:1.4}
+
+.suc-tag{display:inline-block;font-size:10px;color:var(--teal);background:var(--teal-l);padding:1px 5px;border-radius:4px;margin-left:5px;font-weight:500;white-space:nowrap}
+.suc-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px}
+.suc-tab{padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .12s}
+.suc-tab:hover{color:var(--text)}
+.suc-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.suc-panel{display:none}.suc-panel.active{display:block}
+/* ── Login overlay ───────────────────────────────────────────────────── */
+#login-overlay{position:fixed;inset:0;background:rgba(15,15,15,0.60);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(3px)}
+.login-card{background:var(--surface);border-radius:var(--radius-lg);padding:44px 40px 36px;width:380px;box-shadow:0 12px 48px rgba(0,0,0,0.22);display:flex;flex-direction:column;gap:18px}
+.login-logo-wrap{display:flex;justify-content:center;margin-bottom:4px}
+.login-logo-wrap img{max-width:200px;max-height:90px;object-fit:contain}
+.login-title{font-size:20px;font-weight:700;color:var(--text);text-align:center}
+.login-sub{font-size:13px;color:var(--text3);text-align:center;margin-top:-10px}
+.login-err{background:var(--red-l);border:1px solid var(--red-b);color:var(--red);padding:9px 13px;border-radius:var(--radius);font-size:13px;display:none}
+.login-field{display:flex;flex-direction:column;gap:5px}
+.login-field label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
+.login-field input{padding:10px 13px;border:1px solid var(--border2);border-radius:var(--radius);font-size:14px;color:var(--text);background:var(--bg);outline:none;transition:border-color .15s}
+.login-field input:focus{border-color:var(--blue);background:#fff}
+.login-btn{background:var(--blue);color:#fff;border:none;border-radius:var(--radius);padding:11px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s;margin-top:2px;letter-spacing:.01em}
+.login-btn:hover{opacity:.88}
+.login-btn:disabled{opacity:.5;cursor:default}
+/* ── User en sidebar ─────────────────────────────────────────────────── */
+.sidebar-user{padding:12px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sidebar-user-name{font-size:12px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:6px}
+.sidebar-user-name svg{width:14px;height:14px;stroke:var(--text3)}
+.btn-logout{font-size:11px;color:var(--red);background:none;border:1px solid var(--red-b);border-radius:var(--radius);padding:3px 9px;cursor:pointer;transition:background .15s}
+.btn-logout:hover{background:var(--red-l)}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN OVERLAY ────────────────────────────────────────────────────── -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo-wrap">
+      <img src="/img/logo.jpeg" alt="Logo empresa" onerror="this.style.display='none'">
+    </div>
+    <div class="login-title">Acceso al sistema</div>
+    <div class="login-sub">Galicia | Consultas Home Banking</div>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-field">
+      <label>Usuario</label>
+      <input id="login-user" type="text" placeholder="Ingresá tu usuario" autocomplete="username"
+             onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input id="login-pass" type="password" placeholder="Ingresá tu contraseña" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Ingresar</button>
+  </div>
+</div>
+
+<div class="shell">
+<!-- ── SIDEBAR ──────────────────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Banco Galicia</h1>
+    <p>Consultas Home Banking</p>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">General</div>
+    <div class="nav-item active" onclick="ir('config')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Configuración
+    </div>
+
+    <div class="nav-section">Consultas</div>
+    <div class="nav-item" onclick="ir('galicia')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Consultar banco
+    </div>
+
+    <div class="nav-section">Resultados</div>
+    <div class="nav-item" onclick="ir('recaudadora')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Recaudadora
+      <span class="nav-badge" id="badge-cobros" style="display:none">0</span>
+    </div>
+    <div class="nav-item" onclick="ir('transferencias')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      Movimientos
+      <span class="nav-badge" id="badge-transf" style="display:none">0</span>
+    </div>
+    <div class="nav-item" onclick="ir('cheques')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="7" y1="15" x2="13" y2="15"/><line x1="17" y1="15" x2="19" y2="15"/></svg>
+      Cheques ECHEQs
+      <span class="nav-badge" id="badge-cheques" style="display:none">0</span>
+    </div>
+    <div class="nav-item" onclick="ir('cheques-aceptar')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><polyline points="9 11 12 14 22 9"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Cheques a Aceptar
+      <span class="nav-badge" id="badge-cheques-aceptar" style="display:none">0</span>
+    </div>
+
+    <div class="nav-section">Referencia</div>
+    <div class="nav-item" onclick="ir('sucursales')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Sucursales
+    </div>
+
+    <div class="nav-section">Carga manual</div>
+    <div class="nav-item" onclick="ir('carga')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Subir CSV
+    </div>
+
+    <div class="nav-section">Selección</div>
+    <div class="nav-item" onclick="ir('bandeja')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Bandeja
+      <span class="nav-badge" id="badge-bandeja" style="display:none">0</span>
+    </div>
+  </nav>
+  <div class="sidebar-status">
+    <div><span class="status-dot off" id="dot-galicia"></span><span id="lbl-galicia" style="color:var(--text3)">Sin conexión</span></div>
+  </div>
+  <div class="sidebar-user">
+    <div class="sidebar-user-name">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span id="nav-user">—</span>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Salir</button>
+  </div>
+</aside>
+
+<!-- ── MAIN ─────────────────────────────────────────────────────────────── -->
+<main class="main">
+
+<!-- CONFIG ───────────────────────────────────────────────────────────────── -->
+<div class="page active" id="page-config">
+  <div class="page-hdr"><h2>Configuración</h2></div>
+  <div id="cfg-msg"></div>
+  <div class="card">
+    <div class="card-title">🏦 Banco Galicia — Credenciales</div>
+    <div class="fg">
+      <div class="field"><label>Usuario</label><input id="gal-user" placeholder="Usuario de Home Banking"/></div>
+      <div class="field"><label>Contraseña</label><input id="gal-pass" type="password" placeholder="••••••••"/></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn primary" onclick="guardarConfig()">💾 Guardar configuración</button>
+  </div>
+</div>
+
+<!-- CONSULTAR ─────────────────────────────────────────────────────────────── -->
+<div class="page" id="page-galicia">
+  <div class="page-hdr"><h2>Consultar Banco Galicia</h2></div>
+  <div id="gal-msg"></div>
+
+  <div class="card">
+    <div class="card-title">Sesión</div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <button class="btn primary" onclick="loginGalicia()" id="btn-gal-login">🔐 Iniciar sesión</button>
+      <button class="btn" onclick="logoutGalicia()" id="btn-gal-logout" style="display:none">Cerrar sesión</button>
+      <span id="gal-session-lbl" style="font-size:13px;color:var(--text3)">No conectado</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <label style="font-size:12px;font-weight:500;color:var(--text2);white-space:nowrap">Empresa activa</label>
+      <select id="gal-empresa" style="width:auto;padding:7px 10px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:13px" disabled>
+        <option value="Flash Trade Sa">Flash Trade SA</option>
+        <option value="Amafren Sa">Amafren SA</option>
+      </select>
+      <button class="btn" onclick="cambiarEmpresaGalicia()" id="btn-cambiar-empresa" disabled>↔ Cambiar empresa</button>
+      <span id="gal-empresa-lbl" style="font-size:12px;color:var(--text3)"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Filtros</div>
+    <div class="fg" style="margin-bottom:16px">
+      <div class="field"><label>Fecha desde</label><input id="q-desde" type="date"/></div>
+      <div class="field"><label>Fecha hasta</label><input id="q-hasta" type="date"/></div>
+    </div>
+
+    <div class="card-title">¿Qué querés consultar?</div>
+    <div class="tipo-grid">
+      <label class="tipo-card selected" id="tc-recaudadora" onclick="toggleTipo('recaudadora')">
+        <input type="checkbox" id="chk-tipo-recaudadora" checked onchange="syncTipoCard('recaudadora')"/>
+        <div class="tipo-card-body">
+          <div class="tipo-card-title">Recaudadora</div>
+          <div class="tipo-card-sub">Cobranza Integrada</div>
+        </div>
+      </label>
+      <label class="tipo-card selected" id="tc-transferencias" onclick="toggleTipo('transferencias')">
+        <input type="checkbox" id="chk-tipo-transferencias" checked onchange="syncTipoCard('transferencias')"/>
+        <div class="tipo-card-body">
+          <div class="tipo-card-title">Movimientos</div>
+          <div class="tipo-card-sub">Todos los movimientos de cuenta</div>
+        </div>
+      </label>
+      <label class="tipo-card" id="tc-cheques" onclick="toggleTipo('cheques')">
+        <input type="checkbox" id="chk-tipo-cheques" onchange="syncTipoCard('cheques')"/>
+        <div class="tipo-card-body">
+          <div class="tipo-card-title">Cheques ECHEQs</div>
+          <div class="tipo-card-sub">Cheques electrónicos recibidos</div>
+        </div>
+      </label>
+      <label class="tipo-card selected" id="tc-cheques-aceptar" onclick="toggleTipo('cheques-aceptar')">
+        <input type="checkbox" id="chk-tipo-cheques-aceptar" checked onchange="syncTipoCard('cheques-aceptar')"/>
+        <div class="tipo-card-body">
+          <div class="tipo-card-title">Cheques a Aceptar</div>
+          <div class="tipo-card-sub">Cheques pendientes de aceptación</div>
+        </div>
+      </label>
+    </div>
+
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn primary" onclick="consultarTodo()" id="btn-consultar" disabled>🔍 Consultar</button>
+    </div>
+  </div>
+
+  <div id="resumen-wrap" style="display:none">
+    <div class="card-title" style="margin-bottom:10px;font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Resultados</div>
+    <div class="resumen-grid">
+      <div class="resumen-item" onclick="ir('recaudadora')" id="res-cobros" style="display:none">
+        <div class="resumen-icon rec">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <div class="resumen-num" id="res-cobros-n">0</div>
+          <div class="resumen-lbl">Cobros Recaudadora</div>
+        </div>
+      </div>
+      <div class="resumen-item" onclick="ir('transferencias')" id="res-transf" style="display:none">
+        <div class="resumen-icon tr">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+        </div>
+        <div>
+          <div class="resumen-num" id="res-transf-n">0</div>
+          <div class="resumen-lbl">Movimientos de cuenta</div>
+        </div>
+      </div>
+      <div class="resumen-item" onclick="ir('cheques')" id="res-cheques" style="display:none">
+        <div class="resumen-icon" style="background:var(--amber-l)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="7" y1="15" x2="13" y2="15"/><line x1="17" y1="15" x2="19" y2="15"/></svg>
+        </div>
+        <div>
+          <div class="resumen-num" id="res-cheques-n">0</div>
+          <div class="resumen-lbl">Cheques ECHEQs</div>
+        </div>
+      </div>
+      <div class="resumen-item" onclick="ir('cheques-aceptar')" id="res-cheques-aceptar" style="display:none">
+        <div class="resumen-icon" style="background:var(--green-l)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><polyline points="9 11 12 14 22 9"/></svg>
+        </div>
+        <div>
+          <div class="resumen-num" id="res-cheques-aceptar-n">0</div>
+          <div class="resumen-lbl">Cheques a Aceptar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RECAUDADORA ───────────────────────────────────────────────────────────── -->
+<div class="page" id="page-recaudadora">
+  <div class="page-hdr">
+    <h2>Recaudadora — Cobranza Integrada</h2>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="st-cob-tot">0</div><div class="stat-l">Total cobros</div></div>
+    <div class="stat"><div class="stat-n" id="st-cob-monto">$0</div><div class="stat-l">Monto total</div></div>
+    <div class="stat"><div class="stat-n" id="st-cob-formas">—</div><div class="stat-l">Formas de pago</div></div>
+  </div>
+
+  <div id="recaudadora-msg"></div>
+
+  <div class="tbl-toolbar">
+    <input id="search-cobros" type="text" placeholder="Buscar en cobros…" oninput="buscarTabla('cobros',this.value)"/>
+    <button class="btn sm" onclick="limpiarBusqueda('cobros')">✕</button>
+    <span class="tbl-count" id="count-cobros"></span>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:32px"></th>
+          <th class="sortable" id="th-cob-0" onclick="sortTabla('cobros',0)">Fecha pago</th>
+          <th class="sortable" id="th-cob-1" onclick="sortTabla('cobros',1)">Nombre cliente</th>
+          <th class="sortable" id="th-cob-2" onclick="sortTabla('cobros',2)">Nro cliente</th>
+          <th class="sortable" id="th-cob-3" onclick="sortTabla('cobros',3)">Forma pago</th>
+          <th class="sortable" id="th-cob-4" onclick="sortTabla('cobros',4)" style="text-align:right">Importe</th>
+          <th class="sortable" id="th-cob-5" onclick="sortTabla('cobros',5)">Nro cheque</th>
+          <th class="sortable" id="th-cob-6" onclick="sortTabla('cobros',6)">Informado</th>
+          <th class="sortable" id="th-cob-7" onclick="sortTabla('cobros',7)">Anulado</th>
+          <th style="width:28px"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody-cobros">
+        <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text3)">Consultá el banco para ver los cobros</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination" id="pg-cobros">
+    <label style="font-size:12px;color:var(--text3)">Filas:</label>
+    <select id="pg-cobros-size" onchange="pgCobros.setSize(+this.value)">
+      <option value="25">25</option>
+      <option value="50" selected>50</option>
+      <option value="100">100</option>
+      <option value="0">Todas</option>
+    </select>
+    <button onclick="pgCobros.prev()" id="pg-cobros-prev">‹ Ant</button>
+    <span class="pg-info" id="pg-cobros-info"></span>
+    <button onclick="pgCobros.next()" id="pg-cobros-next">Sig ›</button>
+  </div>
+  <p style="font-size:11px;color:var(--text3);margin-top:8px">Clic en celda → copia celda &nbsp;·&nbsp; Doble clic en fila → copia fila completa</p>
+</div>
+
+<!-- MOVIMIENTOS ─────────────────────────────────────────────────────────── -->
+<div class="page" id="page-transferencias">
+  <div class="page-hdr">
+    <h2>Movimientos de cuenta</h2>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="st-tr-tot">0</div><div class="stat-l">Total movimientos</div></div>
+    <div class="stat"><div class="stat-n" id="st-tr-creditos">$0</div><div class="stat-l">Total créditos</div></div>
+    <div class="stat"><div class="stat-n" id="st-tr-debitos">$0</div><div class="stat-l">Total débitos</div></div>
+  </div>
+
+  <div id="transferencias-msg"></div>
+
+  <div class="tbl-toolbar">
+    <input id="search-transf" type="text" placeholder="Buscar en movimientos…" oninput="buscarTabla('transf',this.value)"/>
+    <button class="btn sm" id="btn-filtros-transf" onclick="toggleFiltros('transf')">⊞ Filtros</button>
+    <button class="btn sm" onclick="limpiarBusqueda('transf')">✕</button>
+    <span class="tbl-count" id="count-transf"></span>
+  </div>
+
+  <div id="fp-transf" class="filtro-panel" style="display:none">
+    <div class="fg w3">
+      <div class="field"><label>Fecha desde</label><input id="fp-tr-desde" type="date"/></div>
+      <div class="field"><label>Fecha hasta</label><input id="fp-tr-hasta" type="date"/></div>
+      <div class="field"><label>Descripción</label><input id="fp-tr-desc" type="text" placeholder="Texto en descripción"/></div>
+      <div class="field">
+        <label>Tipo de movimiento</label>
+        <select id="fp-tr-tipo">
+          <option value="">Todos</option>
+          <option value="credito">Créditos</option>
+          <option value="debito">Débitos</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Estado</label>
+        <select id="fp-tr-estado">
+          <option value="">Todos</option>
+          <option value="imput">Imputados</option>
+          <option value="pendiente">Pendientes</option>
+        </select>
+      </div>
+      <div class="field"><label>Monto mínimo</label><input id="fp-tr-monto-min" type="number" min="0" step="0.01" placeholder="0,00"/></div>
+      <div class="field"><label>Monto máximo</label><input id="fp-tr-monto-max" type="number" min="0" step="0.01" placeholder="0,00"/></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:10px;padding:8px 0;border-top:1px solid var(--border)">
+      <span style="font-size:12px;font-weight:600;color:var(--text2)">Ocultar de la lista:</span>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;font-weight:400">
+        <input type="checkbox" id="fp-tr-ing" style="width:14px;height:14px;accent-color:var(--blue)"> ING <span style="font-size:11px;color:var(--text3)">(Ing. Brutos…)</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;font-weight:400">
+        <input type="checkbox" id="fp-tr-imp" style="width:14px;height:14px;accent-color:var(--blue)"> IMP <span style="font-size:11px;color:var(--text3)">(Imp. Ing. Brutos…)</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;font-weight:400">
+        <input type="checkbox" id="fp-tr-iva" style="width:14px;height:14px;accent-color:var(--blue)"> IVA <span style="font-size:11px;color:var(--text3)">(Iva…)</span>
+      </label>
+    </div>
+    <div class="btn-row" style="margin-bottom:0">
+      <button class="btn sm primary" onclick="aplicarFiltrosTabla('transf')">Aplicar</button>
+      <button class="btn sm" onclick="borrarFiltrosTabla('transf')">Borrar filtros</button>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:32px"></th>
+          <th class="sortable" id="th-tr-0" onclick="sortTabla('transf',0)">Fecha</th>
+          <th class="sortable" id="th-tr-1" onclick="sortTabla('transf',1)">Descripción</th>
+          <th class="sortable" id="th-tr-2" onclick="sortTabla('transf',2)">Nombre</th>
+          <th class="sortable" id="th-tr-3" onclick="sortTabla('transf',3)">CUIT</th>
+          <th class="sortable" id="th-tr-4" onclick="sortTabla('transf',4)">Banco</th>
+          <th class="sortable" id="th-tr-5" onclick="sortTabla('transf',5)">Sucursal</th>
+          <th class="sortable" id="th-tr-6" onclick="sortTabla('transf',6)">Nro Cheque</th>
+          <th class="sortable" id="th-tr-7" onclick="sortTabla('transf',7)" style="text-align:right">Débitos</th>
+          <th class="sortable" id="th-tr-8" onclick="sortTabla('transf',8)" style="text-align:right">Créditos</th>
+          <th class="sortable" id="th-tr-9" onclick="sortTabla('transf',9)" style="text-align:right">Saldo</th>
+          <th style="width:28px"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody-transf">
+        <tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text3)">Consultá el banco para ver los movimientos</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination" id="pg-transf">
+    <label style="font-size:12px;color:var(--text3)">Filas:</label>
+    <select id="pg-transf-size" onchange="pgTransf.setSize(+this.value)">
+      <option value="25">25</option>
+      <option value="50" selected>50</option>
+      <option value="100">100</option>
+      <option value="0">Todas</option>
+    </select>
+    <button onclick="pgTransf.prev()" id="pg-transf-prev">‹ Ant</button>
+    <span class="pg-info" id="pg-transf-info"></span>
+    <button onclick="pgTransf.next()" id="pg-transf-next">Sig ›</button>
+  </div>
+  <p style="font-size:11px;color:var(--text3);margin-top:8px">Clic en celda → copia celda &nbsp;·&nbsp; Doble clic en fila → copia fila completa</p>
+</div>
+
+<!-- BANDEJA ─────────────────────────────────────────────────────────────── -->
+<div class="page" id="page-bandeja">
+  <div class="page-hdr">
+    <h2>Bandeja de selección</h2>
+    <div style="display:flex;gap:8px">
+      <button class="btn primary sm" onclick="exportarBandeja()">⬇ Exportar Excel</button>
+      <button class="btn sm" onclick="limpiarBandeja()">🗑 Limpiar todo</button>
+    </div>
+  </div>
+  <div id="bnd-resumen" class="bnd-total" style="display:none">
+    <span><strong id="bnd-count">0</strong> ítems seleccionados</span>
+    <span>Total: <strong id="bnd-total-monto">$0</strong></span>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:28px"></th>
+          <th>Origen</th>
+          <th>CUIT</th>
+          <th>Nombre cliente</th>
+          <th>Banco emisor</th>
+          <th>Sucursal</th>
+          <th>Nro cheque</th>
+          <th style="text-align:right">Monto</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-bandeja">
+        <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora, Cheques o Movimientos</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CARGA MANUAL ────────────────────────────────────────────────────────── -->
+<div class="page" id="page-carga">
+  <div class="page-hdr"><h2>Subir CSV manualmente</h2></div>
+
+  <!-- Recaudadora -->
+  <div class="card">
+    <div class="card-title">Recaudadora — CobranzasInformadas</div>
+    <div class="upload-area" id="ua-recaudadora">
+      <label class="upload-label" for="file-recaudadora">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span id="lbl-file-recaudadora">Seleccionar archivo CSV…</span>
+      </label>
+      <input type="file" id="file-recaudadora" accept=".csv,.txt" onchange="onFileChange('recaudadora')">
+    </div>
+    <div class="upload-hint">Tipo de cliente;Número de cliente;Nombre de cliente;…;Fecha de pago;Forma de pago;Importe del pago;…</div>
+    <div class="btn-row" style="margin-top:10px;margin-bottom:0">
+      <button class="btn primary sm" onclick="subirCSV('recaudadora')">⬆ Cargar</button>
+      <button class="btn sm" onclick="limpiarUpload('recaudadora')">✕ Limpiar</button>
+    </div>
+    <div id="msg-upload-recaudadora" style="margin-top:8px"></div>
+  </div>
+
+  <!-- Cheques a Aceptar -->
+  <div class="card">
+    <div class="card-title">Cheques a Aceptar</div>
+    <div class="upload-area" id="ua-cheques_aceptar">
+      <label class="upload-label" for="file-cheques_aceptar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span id="lbl-file-cheques_aceptar">Seleccionar archivo CSV…</span>
+      </label>
+      <input type="file" id="file-cheques_aceptar" accept=".csv" onchange="onFileChange('cheques_aceptar')">
+    </div>
+    <div class="upload-hint">Datos del cheque;…  /  Nº de cheque;Cláusula;Recibido de;CUIT/CUIL/CDI;Fecha de pago;Fecha de emisión;Importe;Estado;…</div>
+    <div class="btn-row" style="margin-top:10px;margin-bottom:0">
+      <button class="btn primary sm" onclick="subirCSV('cheques_aceptar')">⬆ Cargar</button>
+      <button class="btn sm" onclick="limpiarUpload('cheques_aceptar')">✕ Limpiar</button>
+    </div>
+    <div id="msg-upload-cheques_aceptar" style="margin-top:8px"></div>
+  </div>
+
+  <!-- Movimientos -->
+  <div class="card">
+    <div class="card-title">Movimientos de Cuenta</div>
+    <div class="upload-area" id="ua-movimientos">
+      <label class="upload-label" for="file-movimientos">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span id="lbl-file-movimientos">Seleccionar archivo CSV…</span>
+      </label>
+      <input type="file" id="file-movimientos" accept=".csv" onchange="onFileChange('movimientos')">
+    </div>
+    <div class="upload-hint">Fecha;Descripción;Débitos;Créditos;Saldo  (extracto cuenta corriente Galicia)</div>
+    <div class="btn-row" style="margin-top:10px;margin-bottom:0">
+      <button class="btn primary sm" onclick="subirCSV('movimientos')">⬆ Cargar</button>
+      <button class="btn sm" onclick="limpiarUpload('movimientos')">✕ Limpiar</button>
+    </div>
+    <div id="msg-upload-movimientos" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<!-- CHEQUES ECHEQs ──────────────────────────────────────────────────────── -->
+<div class="page" id="page-cheques">
+  <div class="page-hdr">
+    <h2>Cheques Electrónicos Recibidos</h2>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="st-chq-tot">0</div><div class="stat-l">Total cheques</div></div>
+    <div class="stat"><div class="stat-n" id="st-chq-monto">$0</div><div class="stat-l">Monto total</div></div>
+    <div class="stat"><div class="stat-n" id="st-chq-estados">—</div><div class="stat-l">Estados</div></div>
+  </div>
+
+  <div id="cheques-msg"></div>
+
+  <div class="tbl-toolbar">
+    <input id="search-cheques" type="text" placeholder="Buscar en cheques…" oninput="buscarTabla('cheques',this.value)"/>
+    <button class="btn sm" id="btn-filtros-cheques" onclick="toggleFiltros('cheques')">⊞ Filtros</button>
+    <button class="btn sm" onclick="limpiarBusqueda('cheques')">✕</button>
+    <span class="tbl-count" id="count-cheques"></span>
+  </div>
+
+  <div id="fp-cheques" class="filtro-panel" style="display:none">
+    <div class="fg">
+      <div class="field"><label>Fecha pago desde</label><input id="fp-chq-desde" type="date"/></div>
+      <div class="field"><label>Fecha pago hasta</label><input id="fp-chq-hasta" type="date"/></div>
+      <div class="field"><label>Fecha emisión desde</label><input id="fp-chq-em-desde" type="date"/></div>
+      <div class="field"><label>Fecha emisión hasta</label><input id="fp-chq-em-hasta" type="date"/></div>
+      <div class="field"><label>Librador</label><input id="fp-chq-librador" type="text" placeholder="Nombre librador"/></div>
+      <div class="field"><label>CUIT</label><input id="fp-chq-cuit" type="text" placeholder="30-XXXXXXXX-X"/></div>
+      <div class="field span2">
+        <label>Estado</label>
+        <select id="fp-chq-estado">
+          <option value="">Todos</option>
+          <option value="Recibidos">Recibidos</option>
+          <option value="Disponible">Disponible</option>
+          <option value="Endoso Recibido">Endoso Recibido</option>
+          <option value="Cesion Recibida">Cesion Recibida</option>
+          <option value="Repudiado">Repudiado</option>
+          <option value="Deposito en proceso">Depósito en proceso</option>
+          <option value="Presentado al cobro">Presentado al cobro</option>
+          <option value="Aval Pendiente">Aval Pendiente</option>
+          <option value="Devolucion Pendiente">Devolución Pendiente</option>
+          <option value="Pagado">Pagado</option>
+          <option value="En custodia">En custodia</option>
+          <option value="Vendido">Vendido</option>
+          <option value="Rechazado">Rechazado</option>
+          <option value="Vencido">Vencido</option>
+          <option value="Anulado">Anulado</option>
+        </select>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-bottom:0">
+      <button class="btn sm primary" onclick="aplicarFiltrosTabla('cheques')">Aplicar</button>
+      <button class="btn sm" onclick="borrarFiltrosTabla('cheques')">Borrar filtros</button>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="sortable" id="th-chq-0" onclick="sortTabla('cheques',0)">Nº Cheque</th>
+          <th class="sortable" id="th-chq-1" onclick="sortTabla('cheques',1)">Librador</th>
+          <th class="sortable" id="th-chq-2" onclick="sortTabla('cheques',2)">CUIT</th>
+          <th class="sortable" id="th-chq-3" onclick="sortTabla('cheques',3)">Fecha pago</th>
+          <th class="sortable" id="th-chq-4" onclick="sortTabla('cheques',4)">Fecha emisión</th>
+          <th class="sortable" id="th-chq-5" onclick="sortTabla('cheques',5)" style="text-align:right">Importe</th>
+          <th class="sortable" id="th-chq-6" onclick="sortTabla('cheques',6)">Estado</th>
+          <th class="sortable" id="th-chq-7" onclick="sortTabla('cheques',7)">Banco emisor</th>
+          <th style="width:28px"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody-cheques">
+        <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text3)">Consultá el banco para ver los cheques</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination" id="pg-cheques">
+    <label style="font-size:12px;color:var(--text3)">Filas:</label>
+    <select id="pg-cheques-size" onchange="pgCheques.setSize(+this.value)">
+      <option value="25">25</option>
+      <option value="50" selected>50</option>
+      <option value="100">100</option>
+      <option value="0">Todas</option>
+    </select>
+    <button onclick="pgCheques.prev()" id="pg-cheques-prev">‹ Ant</button>
+    <span class="pg-info" id="pg-cheques-info"></span>
+    <button onclick="pgCheques.next()" id="pg-cheques-next">Sig ›</button>
+  </div>
+  <p style="font-size:11px;color:var(--text3);margin-top:8px">Clic en celda → copia celda &nbsp;·&nbsp; Doble clic en fila → copia fila completa</p>
+</div>
+
+<!-- CHEQUES A ACEPTAR ────────────────────────────────────────────────────── -->
+<div class="page" id="page-cheques-aceptar">
+  <div class="page-hdr">
+    <h2>Cheques a Aceptar</h2>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="st-chqa-tot">0</div><div class="stat-l">Total cheques</div></div>
+    <div class="stat"><div class="stat-n" id="st-chqa-monto">$0</div><div class="stat-l">Monto total</div></div>
+    <div class="stat"><div class="stat-n" id="st-chqa-estados">—</div><div class="stat-l">Estados</div></div>
+  </div>
+
+  <div id="cheques-aceptar-msg"></div>
+
+  <div class="tbl-toolbar">
+    <input id="search-cheques-aceptar" type="text" placeholder="Buscar en cheques a aceptar…" oninput="buscarTabla('chequesAceptar',this.value)"/>
+    <button class="btn sm" id="btn-filtros-cheques-aceptar" onclick="toggleFiltros('chequesAceptar')">⊞ Filtros</button>
+    <button class="btn sm" onclick="limpiarBusqueda('chequesAceptar')">✕</button>
+    <span class="tbl-count" id="count-chequesAceptar"></span>
+  </div>
+
+  <div id="fp-chequesAceptar" class="filtro-panel" style="display:none">
+    <div class="fg">
+      <div class="field"><label>Fecha pago desde</label><input id="fp-chqa-desde" type="date"/></div>
+      <div class="field"><label>Fecha pago hasta</label><input id="fp-chqa-hasta" type="date"/></div>
+      <div class="field"><label>Fecha emisión desde</label><input id="fp-chqa-em-desde" type="date"/></div>
+      <div class="field"><label>Fecha emisión hasta</label><input id="fp-chqa-em-hasta" type="date"/></div>
+      <div class="field"><label>Librador</label><input id="fp-chqa-librador" type="text" placeholder="Nombre librador"/></div>
+      <div class="field"><label>CUIT</label><input id="fp-chqa-cuit" type="text" placeholder="30-XXXXXXXX-X"/></div>
+      <div class="field span2">
+        <label>Estado</label>
+        <select id="fp-chqa-estado">
+          <option value="">Todos</option>
+          <option value="Recibidos">Recibidos</option>
+          <option value="Endoso Recibido">Endoso Recibido</option>
+          <option value="Cesion Recibida">Cesion Recibida</option>
+          <option value="Aval Pendiente">Aval Pendiente</option>
+          <option value="Disponible">Disponible</option>
+        </select>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-bottom:0">
+      <button class="btn sm primary" onclick="aplicarFiltrosTabla('chequesAceptar')">Aplicar</button>
+      <button class="btn sm" onclick="borrarFiltrosTabla('chequesAceptar')">Borrar filtros</button>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:32px"></th>
+          <th class="sortable" id="th-chqa-0" onclick="sortTabla('chequesAceptar',0)">Nº Cheque</th>
+          <th class="sortable" id="th-chqa-1" onclick="sortTabla('chequesAceptar',1)">Librador</th>
+          <th class="sortable" id="th-chqa-2" onclick="sortTabla('chequesAceptar',2)">CUIT</th>
+          <th class="sortable" id="th-chqa-3" onclick="sortTabla('chequesAceptar',3)">Fecha pago</th>
+          <th class="sortable" id="th-chqa-4" onclick="sortTabla('chequesAceptar',4)">Fecha emisión</th>
+          <th class="sortable" id="th-chqa-5" onclick="sortTabla('chequesAceptar',5)" style="text-align:right">Importe</th>
+          <th class="sortable" id="th-chqa-6" onclick="sortTabla('chequesAceptar',6)">Estado</th>
+          <th class="sortable" id="th-chqa-7" onclick="sortTabla('chequesAceptar',7)">Banco emisor</th>
+          <th style="width:28px"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody-cheques-aceptar">
+        <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text3)">Consultá el banco para ver los cheques a aceptar</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination" id="pg-cheques-aceptar">
+    <label style="font-size:12px;color:var(--text3)">Filas:</label>
+    <select id="pg-cheques-aceptar-size" onchange="pgChequesAceptar.setSize(+this.value)">
+      <option value="25">25</option>
+      <option value="50" selected>50</option>
+      <option value="100">100</option>
+      <option value="0">Todas</option>
+    </select>
+    <button onclick="pgChequesAceptar.prev()" id="pg-cheques-aceptar-prev">‹ Ant</button>
+    <span class="pg-info" id="pg-cheques-aceptar-info"></span>
+    <button onclick="pgChequesAceptar.next()" id="pg-cheques-aceptar-next">Sig ›</button>
+  </div>
+  <p style="font-size:11px;color:var(--text3);margin-top:8px">Clic en celda → copia celda &nbsp;·&nbsp; Doble clic en fila → copia fila completa</p>
+</div>
+
+<!-- SUCURSALES ───────────────────────────────────────────────────────────── -->
+<div class="page" id="page-sucursales">
+  <div class="page-hdr"><h2>Sucursales</h2></div>
+
+  <div class="suc-tabs">
+    <div class="suc-tab active" onclick="sucTab('macro')">Banco Macro</div>
+    <div class="suc-tab" onclick="sucTab('galicia')">Banco Galicia</div>
+    <div class="suc-tab" onclick="sucTab('bancos')">Bancos BCRA</div>
+  </div>
+
+  <!-- MACRO -->
+  <div class="suc-panel active" id="suc-panel-macro">
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">Actualizar datos</div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div class="upload-area" style="flex:1;min-width:200px" id="ua-suc-macro">
+          <label class="upload-label" for="file-suc-macro">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span id="lbl-suc-macro">Seleccionar PDF o CSV…</span>
+          </label>
+          <input type="file" id="file-suc-macro" accept=".pdf,.csv" onchange="onSucFileChange('macro')">
+        </div>
+        <button class="btn primary sm" onclick="subirSucursales('macro')" id="btn-suc-macro" disabled>⬆ Cargar</button>
+        <span id="suc-macro-fecha" style="font-size:11px;color:var(--text3)"></span>
+      </div>
+      <div id="msg-suc-macro" style="margin-top:8px"></div>
+    </div>
+
+    <div class="tbl-toolbar">
+      <input id="search-suc-macro" type="text" placeholder="Buscar sucursal Macro…" oninput="buscarSucursal('macro',this.value)"/>
+      <span class="tbl-count" id="count-suc-macro"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Nº</th><th>Localidad / Nombre</th><th>Ciudad</th><th>Provincia</th><th>CP</th><th>Domicilio</th>
+        </tr></thead>
+        <tbody id="tbody-suc-macro">
+          <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pg-suc-macro">
+      <label style="font-size:12px;color:var(--text3)">Filas:</label>
+      <select id="pg-suc-macro-size" onchange="pgSuc.macro.setSize(+this.value)">
+        <option value="25">25</option>
+        <option value="50" selected>50</option>
+        <option value="100">100</option>
+        <option value="0">Todas</option>
+      </select>
+      <button onclick="pgSuc.macro.prev()" id="pg-suc-macro-prev">‹ Ant</button>
+      <span class="pg-info" id="pg-suc-macro-info"></span>
+      <button onclick="pgSuc.macro.next()" id="pg-suc-macro-next">Sig ›</button>
+    </div>
+  </div>
+
+  <!-- GALICIA -->
+  <div class="suc-panel" id="suc-panel-galicia">
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">Actualizar datos</div>
+      <div style="font-size:12px;color:var(--amber);background:var(--amber-l);border:1px solid var(--amber-b);padding:8px 12px;border-radius:var(--radius);margin-bottom:10px">
+        El PDF de Galicia es de imagen. Si no se puede extraer automáticamente, subí un CSV con columnas: <code>numero,localidad,ciudad,provincia,cp,domicilio</code>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div class="upload-area" style="flex:1;min-width:200px" id="ua-suc-galicia">
+          <label class="upload-label" for="file-suc-galicia">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span id="lbl-suc-galicia">Seleccionar PDF o CSV…</span>
+          </label>
+          <input type="file" id="file-suc-galicia" accept=".pdf,.csv" onchange="onSucFileChange('galicia')">
+        </div>
+        <button class="btn primary sm" onclick="subirSucursales('galicia')" id="btn-suc-galicia" disabled>⬆ Cargar</button>
+        <span id="suc-galicia-fecha" style="font-size:11px;color:var(--text3)"></span>
+      </div>
+      <div id="msg-suc-galicia" style="margin-top:8px"></div>
+    </div>
+
+    <div class="tbl-toolbar">
+      <input id="search-suc-galicia" type="text" placeholder="Buscar sucursal Galicia…" oninput="buscarSucursal('galicia',this.value)"/>
+      <span class="tbl-count" id="count-suc-galicia"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Nº</th><th>Localidad / Nombre</th><th>Ciudad</th><th>Provincia</th><th>CP</th><th>Domicilio</th>
+        </tr></thead>
+        <tbody id="tbody-suc-galicia">
+          <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">Sin datos. Subí un PDF o CSV.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pg-suc-galicia">
+      <label style="font-size:12px;color:var(--text3)">Filas:</label>
+      <select id="pg-suc-galicia-size" onchange="pgSuc.galicia.setSize(+this.value)">
+        <option value="25">25</option>
+        <option value="50" selected>50</option>
+        <option value="100">100</option>
+        <option value="0">Todas</option>
+      </select>
+      <button onclick="pgSuc.galicia.prev()" id="pg-suc-galicia-prev">‹ Ant</button>
+      <span class="pg-info" id="pg-suc-galicia-info"></span>
+      <button onclick="pgSuc.galicia.next()" id="pg-suc-galicia-next">Sig ›</button>
+    </div>
+  </div>
+
+  <!-- BANCOS BCRA -->
+  <div class="suc-panel" id="suc-panel-bancos">
+    <div class="tbl-toolbar">
+      <input id="search-bancos" type="text" placeholder="Buscar banco por código o nombre…" oninput="buscarBancos(this.value)"/>
+      <span class="tbl-count" id="count-bancos"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th style="width:80px">Código</th>
+          <th>Nombre</th>
+          <th style="width:80px">Grupo</th>
+        </tr></thead>
+        <tbody id="tbody-bancos"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="copy-toast">Copiado ✓</div>
+</main>
+</div>
+
+<script>
+const API = 'http://localhost:5000/api';
+
+let cobros           = [];
+let transferencias   = [];
+let cheques          = [];
+let chequesAceptar   = [];
+let tiposConsultados = new Set();
+let bandeja = [];
+
+const NAV_MAP = { config:0, galicia:1, recaudadora:2, transferencias:3, cheques:4, 'cheques-aceptar':5, sucursales:6, carga:7, bandeja:8 };
+
+function ir(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const page = document.getElementById('page-' + p);
+  if (page) page.classList.add('active');
+  const idx = NAV_MAP[p];
+  const items = document.querySelectorAll('.nav-item');
+  if (idx !== undefined && items[idx]) items[idx].classList.add('active');
+}
+
+function showMsg(id, text, tipo='info') {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = text ? `<div class="alert ${tipo}">${text}</div>` : '';
+}
+
+function fmtMonto(n) {
+  return '$' + Number(n||0).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function fmtMontoShort(n) {
+  const v = Number(n||0);
+  if (v >= 1e6) return '$' + (v/1e6).toFixed(1) + 'M';
+  if (v >= 1e3) return '$' + (v/1e3).toFixed(0) + 'K';
+  return '$' + v.toLocaleString('es-AR');
+}
+
+async function apiFetch(path, opts={}) {
+  const res = await fetch(API + path, { headers: {'Content-Type':'application/json'}, ...opts });
+  return res.json();
+}
+
+// ── Config ────────────────────────────────────────────────────────────────
+function guardarConfig() {
+  localStorage.setItem('galicia_cfg', JSON.stringify({
+    galUser:    document.getElementById('gal-user').value,
+    galEmpresa: document.getElementById('gal-empresa').value,
+  }));
+  showMsg('cfg-msg', '✓ Configuración guardada.', 'success');
+}
+
+function cargarConfig() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
+    if (cfg.galUser)    document.getElementById('gal-user').value    = cfg.galUser;
+    if (cfg.galEmpresa) document.getElementById('gal-empresa').value = cfg.galEmpresa;
+  } catch(e) {}
+}
+
+function _setEmpresaUI(empresa) {
+  if (!empresa) return;
+  document.getElementById('gal-empresa').value        = empresa;
+  document.getElementById('gal-empresa-lbl').textContent = `(activa: ${empresa})`;
+  try {
+    const cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
+    cfg.galEmpresa = empresa;
+    localStorage.setItem('galicia_cfg', JSON.stringify(cfg));
+  } catch(e) {}
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────
+async function loginGalicia() {
+  const usuario  = document.getElementById('gal-user').value.trim();
+  const password = document.getElementById('gal-pass').value.trim();
+  if (!usuario || !password) { showMsg('gal-msg', 'Completá usuario y contraseña en Configuración primero.', 'warn'); return; }
+  showMsg('gal-msg', '⏳ Iniciando sesión... (puede tardar 20-40 s)', 'info');
+  document.getElementById('btn-gal-login').disabled = true;
+  try {
+    const data = await apiFetch('/galicia/login', { method:'POST', body:JSON.stringify({usuario, password}) });
+    if (data.ok) {
+      showMsg('gal-msg', '✓ ' + data.mensaje, 'success');
+      document.getElementById('btn-gal-logout').style.display = 'inline-flex';
+      document.getElementById('btn-gal-login').style.display  = 'none';
+      document.getElementById('btn-consultar').disabled = false;
+      document.getElementById('gal-session-lbl').textContent  = 'Conectado como ' + usuario;
+      document.getElementById('gal-session-lbl').style.color  = 'var(--green)';
+      document.getElementById('dot-galicia').className  = 'status-dot ok';
+      document.getElementById('lbl-galicia').textContent = 'Galicia: conectado';
+      document.getElementById('gal-empresa').disabled = false;
+      document.getElementById('btn-cambiar-empresa').disabled = false;
+      // Priorizar la empresa detectada del portal; fallback a localStorage
+      const _cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
+      _setEmpresaUI(data.empresa || _cfg.galEmpresa || document.getElementById('gal-empresa').value);
+    } else {
+      showMsg('gal-msg', '✗ ' + data.error, 'error');
+      const passEl = document.getElementById('gal-pass');
+      if (passEl) { passEl.value = ''; passEl.focus(); }
+    }
+  } catch(e) { showMsg('gal-msg', '✗ Error de red: ' + e.message, 'error'); }
+  document.getElementById('btn-gal-login').disabled = false;
+}
+
+async function logoutGalicia() {
+  await apiFetch('/galicia/logout', {method:'POST'});
+  document.getElementById('btn-gal-logout').style.display = 'none';
+  document.getElementById('btn-gal-login').style.display  = 'inline-flex';
+  document.getElementById('btn-consultar').disabled = true;
+  document.getElementById('gal-session-lbl').textContent = 'No conectado';
+  document.getElementById('gal-session-lbl').style.color = 'var(--text3)';
+  document.getElementById('dot-galicia').className  = 'status-dot off';
+  document.getElementById('lbl-galicia').textContent = 'Sin conexión';
+  document.getElementById('gal-empresa').disabled = true;
+  document.getElementById('btn-cambiar-empresa').disabled = true;
+  document.getElementById('gal-empresa-lbl').textContent = '';
+  showMsg('gal-msg', 'Sesión cerrada.', 'info');
+}
+
+async function cambiarEmpresaGalicia() {
+  const empresa = document.getElementById('gal-empresa').value;
+  showMsg('gal-msg', `⏳ Cambiando a ${empresa}...`, 'info');
+  document.getElementById('btn-cambiar-empresa').disabled = true;
+  try {
+    const data = await apiFetch('/galicia/cambiar_empresa', { method:'POST', body:JSON.stringify({empresa}) });
+    if (data.ok) {
+      showMsg('gal-msg', '✓ ' + data.mensaje, 'success');
+      _setEmpresaUI(empresa);
+    } else {
+      showMsg('gal-msg', '✗ ' + data.error, 'error');
+    }
+  } catch(e) {
+    showMsg('gal-msg', '✗ Error de red: ' + e.message, 'error');
+  }
+  document.getElementById('btn-cambiar-empresa').disabled = false;
+}
+
+// ── Selector de tipo ──────────────────────────────────────────────────────
+function toggleTipo(tipo) {
+  const chk = document.getElementById('chk-tipo-' + tipo);
+  chk.checked = !chk.checked;
+  syncTipoCard(tipo);
+}
+function syncTipoCard(tipo) {
+  const chk  = document.getElementById('chk-tipo-' + tipo);
+  const card = document.getElementById('tc-' + tipo);
+  if (chk.checked) card.classList.add('selected');
+  else card.classList.remove('selected');
+}
+
+// ── Consulta principal ────────────────────────────────────────────────────
+async function consultarTodo() {
+  const desde = document.getElementById('q-desde').value;
+  const hasta = document.getElementById('q-hasta').value;
+  const doRec  = document.getElementById('chk-tipo-recaudadora').checked;
+  const doTr   = document.getElementById('chk-tipo-transferencias').checked;
+  const doChq  = document.getElementById('chk-tipo-cheques').checked;
+  const doChqA = document.getElementById('chk-tipo-cheques-aceptar').checked;
+
+  if (!doRec && !doTr && !doChq && !doChqA) { showMsg('gal-msg', 'Seleccioná al menos un tipo de consulta.', 'warn'); return; }
+  if (!desde || !hasta) { showMsg('gal-msg', 'Completá las fechas Desde y Hasta.', 'warn'); return; }
+  const hoy = new Date().toISOString().slice(0,10);
+  if (hasta > hoy)   { showMsg('gal-msg', 'La fecha hasta no puede ser posterior a hoy.', 'warn'); return; }
+  if (desde > hasta) { showMsg('gal-msg', 'La fecha desde no puede ser posterior a la fecha hasta.', 'warn'); return; }
+
+  document.getElementById('btn-consultar').disabled = true;
+  document.getElementById('resumen-wrap').style.display = 'none';
+  showMsg('gal-msg', '⏳ Consultando...', 'info');
+
+  // Limpiar datos y mensajes de los tipos que se van a consultar
+  tiposConsultados = new Set();
+  if (doRec) {
+    tiposConsultados.add('cobros');
+    cobros = []; pgCobros.reset(); renderCobros();
+    showMsg('recaudadora-msg', '');
+  }
+  if (doTr) {
+    tiposConsultados.add('transf');
+    transferencias = []; pgTransf.reset(); renderTransferencias();
+    showMsg('transferencias-msg', '');
+  }
+  if (doChq) {
+    tiposConsultados.add('cheques');
+    cheques = []; pgCheques.reset(); renderCheques();
+    showMsg('cheques-msg', '');
+  }
+  if (doChqA) {
+    tiposConsultados.add('chequesAceptar');
+    chequesAceptar = []; pgChequesAceptar.reset(); renderChequesAceptar();
+    showMsg('cheques-aceptar-msg', '');
+  }
+
+  const promesas = [];
+  if (doRec)  promesas.push(consultarRecaudadora(desde, hasta));
+  if (doTr)   promesas.push(consultarTransferencias(desde, hasta));
+  if (doChq)  promesas.push(consultarCheques(desde, hasta));
+  if (doChqA) promesas.push(consultarChequesAceptar(desde, hasta));
+  await Promise.all(promesas);
+
+  actualizarResumen();
+  showMsg('gal-msg', '✓ Consulta finalizada.', 'success');
+  document.getElementById('btn-consultar').disabled = false;
+}
+
+async function consultarRecaudadora(desde, hasta) {
+  try {
+    const data = await apiFetch('/galicia/recaudadora', { method:'POST', body:JSON.stringify({fecha_desde:desde, fecha_hasta:hasta}) });
+    if (data.ok) {
+      cobros = data.cobros;
+      pgCobros.reset();
+      renderCobros();
+      if (!cobros.length) showMsg('recaudadora-msg', data.mensaje || 'No se encontraron cobros para el período seleccionado.', 'warn');
+      else showMsg('recaudadora-msg', '');
+    } else {
+      showMsg('recaudadora-msg', '✗ ' + (data.error || 'Error al consultar recaudadora.'), 'error');
+    }
+  } catch(e) {
+    showMsg('recaudadora-msg', '✗ Error de red: ' + e.message, 'error');
+  }
+}
+
+async function consultarTransferencias(desde, hasta) {
+  try {
+    const data = await apiFetch('/galicia/transferencias', { method:'POST', body:JSON.stringify({fecha_desde:desde, fecha_hasta:hasta}) });
+    if (data.ok) {
+      transferencias = data.transferencias;
+      pgTransf.reset();
+      renderTransferencias();
+      if (!transferencias.length) showMsg('transferencias-msg', data.mensaje || 'No se encontraron movimientos para el período seleccionado.', 'warn');
+      else showMsg('transferencias-msg', '');
+    } else {
+      showMsg('transferencias-msg', '✗ ' + (data.error || 'Error al consultar movimientos.'), 'error');
+    }
+  } catch(e) {
+    showMsg('transferencias-msg', '✗ Error de red: ' + e.message, 'error');
+  }
+}
+
+async function consultarCheques(desde, hasta) {
+  try {
+    const data = await apiFetch('/galicia/cheques', { method:'POST', body:JSON.stringify({fecha_desde:desde, fecha_hasta:hasta}) });
+    if (data.ok) {
+      cheques = data.cheques;
+      pgCheques.reset();
+      renderCheques();
+      if (!cheques.length) showMsg('cheques-msg', data.mensaje || 'No se encontraron cheques para el período seleccionado.', 'warn');
+      else showMsg('cheques-msg', '');
+    } else {
+      showMsg('cheques-msg', '✗ ' + (data.error || 'Error al consultar cheques.'), 'error');
+    }
+  } catch(e) {
+    showMsg('cheques-msg', '✗ Error de red: ' + e.message, 'error');
+  }
+}
+
+async function consultarChequesAceptar(desde, hasta) {
+  try {
+    const data = await apiFetch('/galicia/cheques_a_aceptar', { method:'POST', body:JSON.stringify({fecha_desde:desde, fecha_hasta:hasta}) });
+    if (data.ok) {
+      chequesAceptar = data.cheques;
+      pgChequesAceptar.reset();
+      renderChequesAceptar();
+      if (!chequesAceptar.length) showMsg('cheques-aceptar-msg', data.mensaje || 'No se encontraron cheques a aceptar para el período seleccionado.', 'warn');
+      else showMsg('cheques-aceptar-msg', '');
+    } else {
+      showMsg('cheques-aceptar-msg', '✗ ' + (data.error || 'Error al consultar cheques a aceptar.'), 'error');
+    }
+  } catch(e) {
+    showMsg('cheques-aceptar-msg', '✗ Error de red: ' + e.message, 'error');
+  }
+}
+
+// ── Resumen ───────────────────────────────────────────────────────────────
+function actualizarResumen() {
+  document.getElementById('resumen-wrap').style.display = 'block';
+  const rCob = document.getElementById('res-cobros');
+  const rTr  = document.getElementById('res-transf');
+  const rChq = document.getElementById('res-cheques');
+  // Mostrar el card si el tipo fue consultado, aunque el resultado sea 0
+  if (tiposConsultados.has('cobros')) {
+    rCob.style.display = 'flex';
+    document.getElementById('res-cobros-n').textContent = cobros.length;
+  } else rCob.style.display = 'none';
+  if (tiposConsultados.has('transf')) {
+    rTr.style.display = 'flex';
+    document.getElementById('res-transf-n').textContent = transferencias.length;
+  } else rTr.style.display = 'none';
+  if (tiposConsultados.has('cheques')) {
+    rChq.style.display = 'flex';
+    document.getElementById('res-cheques-n').textContent = cheques.length;
+  } else rChq.style.display = 'none';
+  const rChqA = document.getElementById('res-cheques-aceptar');
+  if (tiposConsultados.has('chequesAceptar')) {
+    rChqA.style.display = 'flex';
+    document.getElementById('res-cheques-aceptar-n').textContent = chequesAceptar.length;
+  } else rChqA.style.display = 'none';
+}
+
+// ── Paginación ────────────────────────────────────────────────────────────
+const pgTransf = {
+  page: 1, size: 50,
+  setSize(n) { this.size = n; this.page = 1; renderTransferencias(); },
+  prev()     { if (this.page > 1) { this.page--; renderTransferencias(); } },
+  next()     { this.page++; renderTransferencias(); },
+  reset()    { this.page = 1; },
+  slice(arr) {
+    if (!this.size) return arr;
+    const start = (this.page - 1) * this.size;
+    return arr.slice(start, start + this.size);
+  },
+  render(total) {
+    if (!this.size) { document.getElementById('pg-transf-info').textContent = `${total} total`; document.getElementById('pg-transf-prev').disabled = true; document.getElementById('pg-transf-next').disabled = true; return; }
+    const pages = Math.max(1, Math.ceil(total / this.size));
+    if (this.page > pages) this.page = pages;
+    const start = (this.page - 1) * this.size + 1;
+    const end   = Math.min(this.page * this.size, total);
+    document.getElementById('pg-transf-info').textContent  = total ? `${start}–${end} de ${total}` : '';
+    document.getElementById('pg-transf-prev').disabled = this.page <= 1;
+    document.getElementById('pg-transf-next').disabled = this.page >= pages;
+  },
+};
+
+const pgCobros = {
+  page: 1, size: 50,
+  setSize(n) { this.size = n; this.page = 1; renderCobros(); },
+  prev()     { if (this.page > 1) { this.page--; renderCobros(); } },
+  next()     { this.page++; renderCobros(); },
+  reset()    { this.page = 1; },
+  slice(arr) {
+    if (!this.size) return arr;
+    const start = (this.page - 1) * this.size;
+    return arr.slice(start, start + this.size);
+  },
+  render(total) {
+    if (!this.size) { document.getElementById('pg-cobros-info').textContent = `${total} total`; document.getElementById('pg-cobros-prev').disabled = true; document.getElementById('pg-cobros-next').disabled = true; return; }
+    const pages = Math.max(1, Math.ceil(total / this.size));
+    if (this.page > pages) this.page = pages;
+    const start = (this.page - 1) * this.size + 1;
+    const end   = Math.min(this.page * this.size, total);
+    document.getElementById('pg-cobros-info').textContent  = total ? `${start}–${end} de ${total}` : '';
+    document.getElementById('pg-cobros-prev').disabled = this.page <= 1;
+    document.getElementById('pg-cobros-next').disabled = this.page >= pages;
+  },
+};
+
+// ── Paginación cheques ────────────────────────────────────────────────────
+const pgCheques = {
+  page: 1, size: 50,
+  setSize(n) { this.size = n; this.page = 1; renderCheques(); },
+  prev()     { if (this.page > 1) { this.page--; renderCheques(); } },
+  next()     { this.page++; renderCheques(); },
+  reset()    { this.page = 1; },
+  slice(arr) {
+    if (!this.size) return arr;
+    const start = (this.page - 1) * this.size;
+    return arr.slice(start, start + this.size);
+  },
+  render(total) {
+    if (!this.size) { document.getElementById('pg-cheques-info').textContent = `${total} total`; document.getElementById('pg-cheques-prev').disabled = true; document.getElementById('pg-cheques-next').disabled = true; return; }
+    const pages = Math.max(1, Math.ceil(total / this.size));
+    if (this.page > pages) this.page = pages;
+    const start = (this.page - 1) * this.size + 1;
+    const end   = Math.min(this.page * this.size, total);
+    document.getElementById('pg-cheques-info').textContent  = total ? `${start}–${end} de ${total}` : '';
+    document.getElementById('pg-cheques-prev').disabled = this.page <= 1;
+    document.getElementById('pg-cheques-next').disabled = this.page >= pages;
+  },
+};
+
+// ── Paginación cheques a aceptar ──────────────────────────────────────────
+const pgChequesAceptar = {
+  page: 1, size: 50,
+  setSize(n) { this.size = n; this.page = 1; renderChequesAceptar(); },
+  prev()     { if (this.page > 1) { this.page--; renderChequesAceptar(); } },
+  next()     { this.page++; renderChequesAceptar(); },
+  reset()    { this.page = 1; },
+  slice(arr) {
+    if (!this.size) return arr;
+    const start = (this.page - 1) * this.size;
+    return arr.slice(start, start + this.size);
+  },
+  render(total) {
+    if (!this.size) { document.getElementById('pg-cheques-aceptar-info').textContent = `${total} total`; document.getElementById('pg-cheques-aceptar-prev').disabled = true; document.getElementById('pg-cheques-aceptar-next').disabled = true; return; }
+    const pages = Math.max(1, Math.ceil(total / this.size));
+    if (this.page > pages) this.page = pages;
+    const start = (this.page - 1) * this.size + 1;
+    const end   = Math.min(this.page * this.size, total);
+    document.getElementById('pg-cheques-aceptar-info').textContent  = total ? `${start}–${end} de ${total}` : '';
+    document.getElementById('pg-cheques-aceptar-prev').disabled = this.page <= 1;
+    document.getElementById('pg-cheques-aceptar-next').disabled = this.page >= pages;
+  },
+};
+
+// ── Estado de filtros/sort ────────────────────────────────────────────────
+const tblState = {
+  cobros:         { q:'', sort:{col:-1,dir:'asc'}, f:{} },
+  transf:         { q:'', sort:{col:-1,dir:'asc'}, f:{} },
+  cheques:        { q:'', sort:{col:-1,dir:'asc'}, f:{} },
+  chequesAceptar: { q:'', sort:{col:-1,dir:'asc'}, f:{} },
+};
+const SORT_KEYS = {
+  cobros:         ['fecha_pago','nombre_cliente','nro_cliente','forma_pago','importe_pago','nro_cheque','informado','anulado'],
+  transf:         ['fecha','descripcion','nombre','cuit_cte','banco','sucursal','nro_comprobante','debito','credito','saldo'],
+  cheques:        ['numero','librador','cuit','fecha_pago','fecha_em','importe','estado','banco'],
+  chequesAceptar: ['numero','librador','cuit','fecha_pago','fecha_em','importe','estado','banco'],
+};
+
+function _parseD(str) {
+  if (!str) return null;
+  const m1 = str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (m1) return new Date(`${m1[3]}-${m1[2]}-${m1[1]}`);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return new Date(str);
+  return null;
+}
+function _fechaGte(val, desde) { if (!desde) return true; const d = _parseD(val); return d ? d >= new Date(desde) : true; }
+function _fechaLte(val, hasta) { if (!hasta) return true; const d = _parseD(val); return d ? d <= new Date(hasta) : true; }
+
+function getFiltered(tipo) {
+  const q = tblState[tipo].q.toLowerCase().trim();
+  const f = tblState[tipo].f || {};
+  let datos = tipo==='cobros' ? cobros : tipo==='cheques' ? cheques : tipo==='chequesAceptar' ? chequesAceptar : transferencias;
+  if (q) datos = datos.filter(r => Object.values(r).some(v => v && typeof v !== 'object' && String(v).toLowerCase().includes(q)));
+  if (tipo === 'cobros') {
+    // sin filtros adicionales, solo búsqueda global
+  } else if (tipo === 'cheques' || tipo === 'chequesAceptar') {
+    if (f.desde)    datos = datos.filter(r => _fechaGte(r.fecha_pago, f.desde));
+    if (f.hasta)    datos = datos.filter(r => _fechaLte(r.fecha_pago, f.hasta));
+    if (f.emDesde)  datos = datos.filter(r => _fechaGte(r.fecha_em,   f.emDesde));
+    if (f.emHasta)  datos = datos.filter(r => _fechaLte(r.fecha_em,   f.emHasta));
+    if (f.librador) datos = datos.filter(r => String(r.librador||'').toLowerCase().includes(f.librador));
+    if (f.cuit)     datos = datos.filter(r => String(r.cuit||'').toLowerCase().includes(f.cuit));
+    if (f.estado)   datos = datos.filter(r => String(r.estado||'').toLowerCase().includes(f.estado.toLowerCase()));
+  } else {
+    if (f.desde)    datos = datos.filter(r => _fechaGte(r.fecha, f.desde));
+    if (f.hasta)    datos = datos.filter(r => _fechaLte(r.fecha, f.hasta));
+    if (f.desc)     datos = datos.filter(r => String(r.descripcion||'').toLowerCase().includes(f.desc));
+    if (f.tipo === 'credito') datos = datos.filter(r => (r.credito||0) > 0);
+    if (f.tipo === 'debito')  datos = datos.filter(r => (r.debito||0)  > 0);
+    if (f.estado) {
+      const est = f.estado.toLowerCase();
+      datos = datos.filter(r => String(r.estado||'').toLowerCase().includes(est));
+    }
+    if (f.montoMin > 0) datos = datos.filter(r => Math.max(r.credito||0, r.debito||0) >= f.montoMin);
+    if (f.montoMax > 0) datos = datos.filter(r => Math.max(r.credito||0, r.debito||0) <= f.montoMax);
+    if (f.ing) datos = datos.filter(r => !(r.descripcion||'').toLowerCase().startsWith('ing.'));
+    if (f.imp) datos = datos.filter(r => !(r.descripcion||'').toLowerCase().startsWith('imp.'));
+    if (f.iva) datos = datos.filter(r => !(r.descripcion||'').toLowerCase().startsWith('iva'));
+  }
+  const {col, dir} = tblState[tipo].sort;
+  if (col >= 0) {
+    const key = SORT_KEYS[tipo][col];
+    datos = [...datos].sort((a,b) => {
+      const va = a[key]??'', vb = b[key]??'';
+      if (typeof va==='number' && typeof vb==='number') return dir==='asc' ? va-vb : vb-va;
+      return dir==='asc' ? String(va).localeCompare(String(vb),'es') : String(vb).localeCompare(String(va),'es');
+    });
+  }
+  return datos;
+}
+
+function buscarTabla(tipo, q) {
+  tblState[tipo].q = q;
+  if (tipo==='transf')         pgTransf.reset();
+  if (tipo==='cobros')         pgCobros.reset();
+  if (tipo==='cheques')        pgCheques.reset();
+  if (tipo==='chequesAceptar') pgChequesAceptar.reset();
+  if (tipo==='cobros') renderCobros();
+  else if (tipo==='cheques') renderCheques();
+  else if (tipo==='chequesAceptar') renderChequesAceptar();
+  else renderTransferencias();
+}
+
+function _limpiarFiltroInputs(tipo) {
+  const campos = {
+    cobros:         [],
+    transf:         ['fp-tr-desde','fp-tr-hasta','fp-tr-desc','fp-tr-tipo','fp-tr-estado','fp-tr-monto-min','fp-tr-monto-max','fp-tr-ing','fp-tr-imp','fp-tr-iva'],
+    cheques:        ['fp-chq-desde','fp-chq-hasta','fp-chq-em-desde','fp-chq-em-hasta','fp-chq-librador','fp-chq-cuit','fp-chq-estado'],
+    chequesAceptar: ['fp-chqa-desde','fp-chqa-hasta','fp-chqa-em-desde','fp-chqa-em-hasta','fp-chqa-librador','fp-chqa-cuit','fp-chqa-estado'],
+  };
+  (campos[tipo]||[]).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.type === 'checkbox') el.checked = false; else el.value = '';
+  });
+}
+
+function limpiarBusqueda(tipo) {
+  tblState[tipo].q = ''; tblState[tipo].sort = {col:-1,dir:'asc'}; tblState[tipo].f = {};
+  const inp = document.getElementById('search-'+tipo); if (inp) inp.value = '';
+  _limpiarFiltroInputs(tipo); _actualizarIconosSort(tipo);
+  if (tipo==='cobros') { pgCobros.reset(); renderCobros(); }
+  else if (tipo==='cheques') { pgCheques.reset(); renderCheques(); }
+  else if (tipo==='chequesAceptar') { pgChequesAceptar.reset(); renderChequesAceptar(); }
+  else renderTransferencias();
+}
+
+function sortTabla(tipo, col) {
+  const st = tblState[tipo].sort;
+  st.dir = (st.col===col && st.dir==='asc') ? 'desc' : 'asc';
+  st.col = col; _actualizarIconosSort(tipo);
+  if (tipo==='cobros') { pgCobros.reset(); renderCobros(); }
+  else if (tipo==='cheques') { pgCheques.reset(); renderCheques(); }
+  else if (tipo==='chequesAceptar') { pgChequesAceptar.reset(); renderChequesAceptar(); }
+  else renderTransferencias();
+}
+
+function _actualizarIconosSort(tipo) {
+  const pfx = {cobros:'cob', transf:'tr', cheques:'chq', chequesAceptar:'chqa'}[tipo];
+  if (!pfx || !SORT_KEYS[tipo]) return;
+  SORT_KEYS[tipo].forEach((_,i) => {
+    const th = document.getElementById(`th-${pfx}-${i}`); if (!th) return;
+    th.classList.remove('sort-asc','sort-desc');
+    if (tblState[tipo].sort.col===i) th.classList.add(tblState[tipo].sort.dir==='asc' ? 'sort-asc' : 'sort-desc');
+  });
+}
+
+function _setCount(tipo, n, total) {
+  const el = document.getElementById('count-'+tipo); if (!el) return;
+  el.textContent = n<total ? `${n} de ${total}` : total ? `${total} registros` : '';
+}
+
+function toggleFiltros(tipo) {
+  const panelId = {transf:'fp-transf', cheques:'fp-cheques', chequesAceptar:'fp-chequesAceptar'}[tipo];
+  const panel = document.getElementById(panelId); if (!panel) return;
+  const btn   = document.getElementById('btn-filtros-' + tipo);
+  const visible = panel.style.display !== 'none';
+  panel.style.display = visible ? 'none' : 'block';
+  if (btn) { if (!visible) btn.classList.add('primary'); else btn.classList.remove('primary'); }
+}
+
+function aplicarFiltrosTabla(tipo) {
+  if (tipo === 'cobros') {
+    tblState.cobros.f = {
+      desde:   document.getElementById('fp-cob-desde').value,
+      hasta:   document.getElementById('fp-cob-hasta').value,
+      empresa: document.getElementById('fp-cob-empresa').value.trim().toLowerCase(),
+      cuit:    document.getElementById('fp-cob-cuit').value.trim().toLowerCase(),
+    };
+    pgCobros.reset();
+    renderCobros();
+  } else if (tipo === 'transf') {
+    tblState.transf.f = {
+      desde:    document.getElementById('fp-tr-desde').value,
+      hasta:    document.getElementById('fp-tr-hasta').value,
+      desc:     document.getElementById('fp-tr-desc').value.trim().toLowerCase(),
+      tipo:     document.getElementById('fp-tr-tipo').value,
+      estado:   document.getElementById('fp-tr-estado').value,
+      montoMin: parseFloat(document.getElementById('fp-tr-monto-min').value) || 0,
+      montoMax: parseFloat(document.getElementById('fp-tr-monto-max').value) || 0,
+      ing:      document.getElementById('fp-tr-ing').checked,
+      imp:      document.getElementById('fp-tr-imp').checked,
+      iva:      document.getElementById('fp-tr-iva').checked,
+    };
+    renderTransferencias();
+  } else if (tipo === 'cheques') {
+    tblState.cheques.f = {
+      desde:    document.getElementById('fp-chq-desde').value,
+      hasta:    document.getElementById('fp-chq-hasta').value,
+      emDesde:  document.getElementById('fp-chq-em-desde').value,
+      emHasta:  document.getElementById('fp-chq-em-hasta').value,
+      librador: document.getElementById('fp-chq-librador').value.trim().toLowerCase(),
+      cuit:     document.getElementById('fp-chq-cuit').value.trim().toLowerCase(),
+      estado:   document.getElementById('fp-chq-estado').value,
+    };
+    pgCheques.reset();
+    renderCheques();
+  } else if (tipo === 'chequesAceptar') {
+    tblState.chequesAceptar.f = {
+      desde:    document.getElementById('fp-chqa-desde').value,
+      hasta:    document.getElementById('fp-chqa-hasta').value,
+      emDesde:  document.getElementById('fp-chqa-em-desde').value,
+      emHasta:  document.getElementById('fp-chqa-em-hasta').value,
+      librador: document.getElementById('fp-chqa-librador').value.trim().toLowerCase(),
+      cuit:     document.getElementById('fp-chqa-cuit').value.trim().toLowerCase(),
+      estado:   document.getElementById('fp-chqa-estado').value,
+    };
+    pgChequesAceptar.reset();
+    renderChequesAceptar();
+  }
+}
+
+function borrarFiltrosTabla(tipo) {
+  tblState[tipo].f = {}; _limpiarFiltroInputs(tipo);
+  if (tipo==='cobros') { pgCobros.reset(); renderCobros(); }
+  else if (tipo==='cheques') { pgCheques.reset(); renderCheques(); }
+  else if (tipo==='chequesAceptar') { pgChequesAceptar.reset(); renderChequesAceptar(); }
+  else renderTransferencias();
+}
+
+// ── Copy ──────────────────────────────────────────────────────────────────
+function copiarTexto(texto, el) {
+  if (!texto) return;
+  navigator.clipboard.writeText(texto).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = texto;
+    Object.assign(ta.style, {position:'fixed',opacity:'0',top:'0',left:'0'});
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+  el.classList.add('flash-copy');
+  setTimeout(() => el.classList.remove('flash-copy'), 560);
+  mostrarToast('Copiado ✓');
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('copy-toast'); if (!t) return;
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(t._tt); t._tt = setTimeout(() => t.style.opacity = '0', 1400);
+}
+
+function initCopyHandlers() {
+  ['tbody-cobros','tbody-transf','tbody-cheques','tbody-cheques-aceptar','tbody-bandeja'].forEach(id => {
+    const tb = document.getElementById(id); if (!tb) return;
+    tb.addEventListener('click', e => {
+      const td = e.target.closest('td');
+      if (!td || td.classList.contains('no-copy')) return;
+      const tr = td.closest('tr');
+      if (tr && tr.classList.contains('detail-row')) return;
+      e.stopPropagation(); copiarTexto(td.innerText.trim(), td);
+    });
+    tb.addEventListener('dblclick', e => {
+      const tr = e.target.closest('tr');
+      if (!tr || tr.classList.contains('detail-row')) return;
+      const txt = Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim()).filter((_,i,a) => i < a.length-1).join('\t');
+      copiarTexto(txt, tr);
+    });
+  });
+}
+
+// ── Tabla Cobros ──────────────────────────────────────────────────────────
+function renderCobros() {
+  const todos = getFiltered('cobros');
+  const datos = pgCobros.slice(todos);
+  const tbody = document.getElementById('tbody-cobros');
+  _setCount('cobros', todos.length, cobros.length);
+  pgCobros.render(todos.length);
+  if (!todos.length) {
+    const msg = cobros.length ? 'Sin resultados — probá otro término' : 'Consultá el banco para ver los cobros';
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text3)">${msg}</td></tr>`;
+    actualizarStatsCobros(); actualizarBadge('cobros', cobros.length); return;
+  }
+  tbody.innerHTML = datos.map(c => {
+    const det = (c.detalle && typeof c.detalle === 'object') ? c.detalle : {};
+    const hasDetail = Object.keys(det).length > 0;
+    const chevronTd = hasDetail
+      ? `<td class="no-copy" style="width:28px;text-align:center" onclick="toggleDetail('${escHtml(c.id)}',this)"><span class="expand-chevron">▶</span></td>`
+      : `<td class="no-copy" style="width:28px"></td>`;
+    const detailRow = hasDetail
+      ? `<tr class="detail-row" id="detail-${escHtml(c.id)}" style="display:none">
+           <td colspan="10" class="no-copy">
+             <div class="detail-grid">${renderDetalleGrid(det, 'galicia')}</div>
+           </td>
+         </tr>`
+      : '';
+    const enBandeja = bandeja.some(b => b.origen_id === c.id);
+    const chkTd = `<td class="no-copy" style="width:32px;text-align:center;padding:4px 6px"><input type="checkbox" class="chk-bnd" ${enBandeja?'checked':''} onclick="event.stopPropagation()" onchange="toggleBandeja('cobros','${escHtml(c.id)}',this)"></td>`;
+    const formaBadge = c.forma_pago ? `<span class="badge purple" style="font-size:10px">${escHtml(c.forma_pago)}</span>` : '—';
+    const infoBadge  = c.informado === 'S'
+      ? `<span class="badge ok" style="font-size:10px">S</span>`
+      : `<span style="font-size:12px;color:var(--text3)">${escHtml(c.informado||'—')}</span>`;
+    const anulBadge  = c.anulado === 'S'
+      ? `<span class="badge" style="font-size:10px;background:var(--red-l);color:var(--red)">S</span>`
+      : `<span style="font-size:12px;color:var(--text3)">${escHtml(c.anulado||'—')}</span>`;
+    return `<tr>
+      ${chkTd}
+      <td style="white-space:nowrap">${_d(c.fecha_pago)}</td>
+      <td>${_d((c.nombre_cliente||'').slice(0,32))}</td>
+      <td style="font-size:12px;color:var(--text3)">${_d(c.nro_cliente)}</td>
+      <td>${formaBadge}</td>
+      <td style="text-align:right;font-weight:600">${fmtMonto(c.importe_pago)}</td>
+      <td style="font-family:monospace;font-size:12px">${_d(c.nro_cheque)}</td>
+      <td>${infoBadge}</td>
+      <td>${anulBadge}</td>
+      ${chevronTd}
+    </tr>${detailRow}`;
+  }).join('');
+  actualizarStatsCobros(); actualizarBadge('cobros', cobros.length);
+}
+
+function actualizarStatsCobros() {
+  const formas = [...new Set(cobros.map(c => c.forma_pago).filter(Boolean))];
+  document.getElementById('st-cob-tot').textContent    = cobros.length;
+  document.getElementById('st-cob-monto').textContent  = fmtMontoShort(cobros.reduce((s,c) => s+(c.importe_pago||0), 0));
+  document.getElementById('st-cob-formas').textContent = formas.length ? formas.join(', ').slice(0,30) : '—';
+}
+
+// ── Tabla Cheques ─────────────────────────────────────────────────────────
+function renderCheques() {
+  const todos = getFiltered('cheques');
+  const datos = pgCheques.slice(todos);
+  const tbody = document.getElementById('tbody-cheques');
+  _setCount('cheques', todos.length, cheques.length);
+  pgCheques.render(todos.length);
+  if (!todos.length) {
+    const msg = cheques.length ? 'Sin resultados — probá otro término' : 'Consultá el banco para ver los cheques';
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text3)">${msg}</td></tr>`;
+    actualizarStatsCheques(); actualizarBadge('cheques', cheques.length); return;
+  }
+  tbody.innerHTML = datos.map(c => {
+    const det = (c.detalle && typeof c.detalle === 'object') ? c.detalle : {};
+    const hasDetail = Object.keys(det).length > 0;
+    const chevronTd = hasDetail
+      ? `<td class="no-copy" style="width:28px;text-align:center" onclick="toggleDetail('${escHtml(c.id)}',this)"><span class="expand-chevron">▶</span></td>`
+      : `<td class="no-copy" style="width:28px"></td>`;
+    const detailRow = hasDetail
+      ? `<tr class="detail-row" id="detail-${escHtml(c.id)}" style="display:none">
+           <td colspan="9" class="no-copy">
+             <div class="detail-grid">${renderDetalleGrid(det, c.banco)}</div>
+           </td>
+         </tr>`
+      : '';
+    const est = (c.estado||'').toLowerCase();
+    const estColor = est.includes('acept') || est.includes('aprob') ? 'ok'
+      : est.includes('rechaz') || est.includes('anul') ? 'red'
+      : 'info';
+    const estadoBadge = c.estado
+      ? `<span class="badge ${estColor==='red'?'':''+estColor}" style="font-size:10px;${estColor==='red'?'background:var(--red-l);color:var(--red)':''}">${escHtml(c.estado)}</span>`
+      : '—';
+    return `<tr>
+      <td style="font-family:monospace;font-size:12px">${_d(c.numero)}</td>
+      <td>${_d((c.librador||'').slice(0,30))}</td>
+      <td style="font-size:12px;color:var(--text3)">${_d(c.cuit)}</td>
+      <td style="white-space:nowrap">${_d(c.fecha_pago)}</td>
+      <td style="white-space:nowrap">${_d(c.fecha_em)}</td>
+      <td style="text-align:right;font-weight:600">${fmtMonto(c.importe)}</td>
+      <td>${estadoBadge}</td>
+      <td style="font-size:12px;color:var(--text3)">${_bancoCelda(c.banco, c.detalle && c.detalle['CMC7'])}</td>
+      ${chevronTd}
+    </tr>${detailRow}`;
+  }).join('');
+  actualizarStatsCheques(); actualizarBadge('cheques', cheques.length);
+}
+
+function actualizarStatsCheques() {
+  const estados = [...new Set(cheques.map(c => c.estado).filter(Boolean))];
+  document.getElementById('st-chq-tot').textContent     = cheques.length;
+  document.getElementById('st-chq-monto').textContent   = fmtMontoShort(cheques.reduce((s,c) => s+(c.importe||0), 0));
+  document.getElementById('st-chq-estados').textContent = estados.length ? estados.join(' · ').slice(0,30) : '—';
+}
+
+// ── Tabla Cheques a Aceptar ───────────────────────────────────────────────
+function renderChequesAceptar() {
+  const todos = getFiltered('chequesAceptar');
+  const datos = pgChequesAceptar.slice(todos);
+  const tbody = document.getElementById('tbody-cheques-aceptar');
+  _setCount('chequesAceptar', todos.length, chequesAceptar.length);
+  pgChequesAceptar.render(todos.length);
+  if (!todos.length) {
+    const msg = chequesAceptar.length ? 'Sin resultados — probá otro término' : 'Consultá el banco para ver los cheques a aceptar';
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text3)">${msg}</td></tr>`;
+    actualizarStatsChequesAceptar(); actualizarBadge('cheques-aceptar', chequesAceptar.length); return;
+  }
+  tbody.innerHTML = datos.map(c => {
+    const det = (c.detalle && typeof c.detalle === 'object') ? c.detalle : {};
+    const hasDetail = Object.keys(det).length > 0;
+    const chevronTd = hasDetail
+      ? `<td class="no-copy" style="width:28px;text-align:center" onclick="toggleDetail('chqa_${escHtml(c.id)}',this)"><span class="expand-chevron">▶</span></td>`
+      : `<td class="no-copy" style="width:28px"></td>`;
+    const detailRow = hasDetail
+      ? `<tr class="detail-row" id="detail-chqa_${escHtml(c.id)}" style="display:none">
+           <td colspan="10" class="no-copy">
+             <div class="detail-grid">${renderDetalleGrid(det, c.banco)}</div>
+           </td>
+         </tr>`
+      : '';
+    const enBandeja = bandeja.some(b => b.origen_id === c.id);
+    const chkTd = `<td class="no-copy" style="width:32px;text-align:center;padding:4px 6px"><input type="checkbox" class="chk-bnd" ${enBandeja?'checked':''} onclick="event.stopPropagation()" onchange="toggleBandeja('chequesAceptar','${escHtml(c.id)}',this)"></td>`;
+    const est = (c.estado||'').toLowerCase();
+    const estColor = est.includes('acept') || est.includes('aprob') ? 'ok'
+      : est.includes('rechaz') || est.includes('anul') ? 'red'
+      : 'info';
+    const estadoBadge = c.estado
+      ? `<span class="badge ${estColor==='red'?'':''+estColor}" style="font-size:10px;${estColor==='red'?'background:var(--red-l);color:var(--red)':''}">${escHtml(c.estado)}</span>`
+      : '—';
+    return `<tr>
+      ${chkTd}
+      <td style="font-family:monospace;font-size:12px">${_d(c.numero)}</td>
+      <td>${_d((c.librador||'').slice(0,30))}</td>
+      <td style="font-size:12px;color:var(--text3)">${_d(c.cuit)}</td>
+      <td style="white-space:nowrap">${_d(c.fecha_pago)}</td>
+      <td style="white-space:nowrap">${_d(c.fecha_em)}</td>
+      <td style="text-align:right;font-weight:600">${fmtMonto(c.importe)}</td>
+      <td>${estadoBadge}</td>
+      <td style="font-size:12px;color:var(--text3)">${_bancoCelda(c.banco, c.detalle && c.detalle['CMC7'])}</td>
+      ${chevronTd}
+    </tr>${detailRow}`;
+  }).join('');
+  actualizarStatsChequesAceptar(); actualizarBadge('cheques-aceptar', chequesAceptar.length);
+}
+
+function actualizarStatsChequesAceptar() {
+  const estados = [...new Set(chequesAceptar.map(c => c.estado).filter(Boolean))];
+  document.getElementById('st-chqa-tot').textContent     = chequesAceptar.length;
+  document.getElementById('st-chqa-monto').textContent   = fmtMontoShort(chequesAceptar.reduce((s,c) => s+(c.importe||0), 0));
+  document.getElementById('st-chqa-estados').textContent = estados.length ? estados.join(' · ').slice(0,30) : '—';
+}
+
+// ── Tabla Transferencias ──────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+// _d: muestra el valor escapado o '—' si viene vacío/null/undefined
+function _d(v) {
+  if (v == null || v === '' || v === 'nan' || v === 'None') return '—';
+  return escHtml(String(v));
+}
+
+function toggleDetail(id, tdEl) {
+  const row = document.getElementById('detail-' + id);
+  if (!row) return;
+  const isOpen = row.style.display !== 'none';
+  row.style.display = isOpen ? 'none' : 'table-row';
+  const chevron = tdEl.querySelector('.expand-chevron');
+  if (chevron) chevron.classList.toggle('open', !isOpen);
+}
+
+function renderTransferencias() {
+  const todos  = getFiltered('transf');
+  const datos  = pgTransf.slice(todos);
+  const tbody  = document.getElementById('tbody-transf');
+  _setCount('transf', todos.length, transferencias.length);
+  pgTransf.render(todos.length);
+  if (!todos.length) {
+    const msg = transferencias.length ? 'Sin resultados — probá otro término' : 'Consultá el banco para ver los movimientos';
+    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text3)">${msg}</td></tr>`;
+    actualizarStatsTransf(); actualizarBadge('transf', transferencias.length); return;
+  }
+  tbody.innerHTML = datos.map(t => {
+    // Armar campos completos para el expandible
+    const camposExpandible = [
+      ['Descripción completa', t.descripcion],
+      ['Nombre / Contraparte',  t.nombre],
+      ['CUIT',                  t.cuit_cte],
+      ['Banco emisor',          t.banco],
+      ['Sucursal',              t.sucursal],
+      ['Nro Cheque / Comprob.', t.nro_comprobante],
+      ['Estado',                t.estado],
+      ['Débitos',               t.debito  > 0 ? fmtMonto(t.debito)  : null],
+      ['Créditos',              t.credito > 0 ? fmtMonto(t.credito) : null],
+      ['Saldo',                 t.saldo   !== 0 ? fmtMonto(t.saldo) : null],
+    ].filter(([,v]) => v);
+    // Agregar campos extra del detalle del backend
+    if (t.detalle && typeof t.detalle === 'object') {
+      Object.entries(t.detalle).forEach(([k,v]) => { if (v) camposExpandible.push([k, v]); });
+    }
+    const chevronTd = `<td class="no-copy" style="width:28px;text-align:center" onclick="toggleDetail('${escHtml(t.id)}',this)"><span class="expand-chevron">▶</span></td>`;
+    const detailRow = `<tr class="detail-row" id="detail-${escHtml(t.id)}" style="display:none">
+         <td colspan="12" class="no-copy">
+           <div class="detail-grid">${camposExpandible.map(([lbl,val]) => {
+             const vals = Array.isArray(val) ? val : [val];
+             return `<div class="detail-field"><span class="detail-label">${escHtml(lbl)}</span><span class="detail-value">${vals.map(v => escHtml(String(v))).join('<br>')}</span></div>`;
+           }).join('')}</div>
+         </td>
+       </tr>`;
+    const enBandeja = bandeja.some(b => b.origen_id === t.id);
+    const chkTd = `<td class="no-copy" style="width:32px;text-align:center;padding:4px 6px"><input type="checkbox" class="chk-bnd" ${enBandeja?'checked':''} onclick="event.stopPropagation()" onchange="toggleBandeja('transf','${escHtml(t.id)}',this)"></td>`;
+    return `<tr>
+      ${chkTd}
+      <td style="white-space:nowrap">${t.fecha||'—'}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(t.descripcion||'')}">${_d((t.descripcion||'').slice(0,32))}</td>
+      <td style="font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(t.nombre||'')}">${_d(t.nombre)}</td>
+      <td style="font-size:11px;color:var(--text2);white-space:nowrap">${_d(t.cuit_cte)}</td>
+      <td style="font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(t.banco||'')}">${_bancoCelda(t.banco)||'—'}</td>
+      <td style="font-size:11px;color:var(--text3)">${_d(t.sucursal)}${(()=>{const loc=lookupSucursal('galicia',t.sucursal);return loc?`<span class="suc-tag">${escHtml(loc)}</span>`:''})()}</td>
+      <td style="font-size:11px;color:var(--text2)">${_d(t.nro_comprobante)}</td>
+      <td style="text-align:right;color:var(--red)">${t.debito > 0 ? fmtMonto(t.debito) : '—'}</td>
+      <td style="text-align:right;font-weight:600;color:var(--green)">${t.credito > 0 ? fmtMonto(t.credito) : '—'}</td>
+      <td style="text-align:right;font-size:12px;color:${t.saldo < 0 ? 'var(--red)' : 'var(--text3)'}">${t.saldo !== 0 ? fmtMonto(t.saldo) : '—'}</td>
+      ${chevronTd}
+    </tr>${detailRow}`;
+  }).join('');
+  actualizarStatsTransf(); actualizarBadge('transf', transferencias.length);
+}
+
+function actualizarStatsTransf() {
+  document.getElementById('st-tr-tot').textContent      = transferencias.length;
+  document.getElementById('st-tr-creditos').textContent = fmtMontoShort(transferencias.reduce((s,t) => s+(t.credito||0), 0));
+  document.getElementById('st-tr-debitos').textContent  = fmtMontoShort(transferencias.reduce((s,t) => s+(t.debito||0), 0));
+}
+
+// ── Badges ────────────────────────────────────────────────────────────────
+function actualizarBadge(tipo, n) {
+  const ids = {cobros:'badge-cobros', transf:'badge-transf', cheques:'badge-cheques', 'cheques-aceptar':'badge-cheques-aceptar', bandeja:'badge-bandeja'};
+  const el = document.getElementById(ids[tipo]); if (!el) return;
+  if (n > 0) { el.style.display = 'block'; el.textContent = n; }
+  else el.style.display = 'none';
+}
+
+// ── Exportar ──────────────────────────────────────────────────────────────
+function exportarTabla(tipo) {
+  let rows, cols, filename;
+  if (tipo === 'cheques') {
+    rows = cheques; cols = ['numero','librador','cuit','fecha_pago','fecha_em','importe','estado','banco']; filename = 'cheques_echeq';
+  } else if (tipo === 'cheques-aceptar') {
+    rows = chequesAceptar; cols = ['numero','librador','cuit','fecha_pago','fecha_em','importe','estado','banco']; filename = 'cheques_a_aceptar';
+  } else if (tipo === 'cobros') {
+    rows = cobros; cols = ['fecha_pago','nombre_cliente','nro_cliente','forma_pago','importe_pago','nro_cheque','informado','anulado']; filename = 'recaudadora';
+  } else {
+    // Descarga el CSV original de Galicia
+    window.open(API + '/galicia/transferencias/csv', '_blank');
+    return;
+  }
+  if (!rows.length) return;
+  const csv = cols.join(',') + '\n' + rows.map(r => cols.map(c => `"${(r[c]||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv);
+  a.download = `galicia_${filename}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// ── Bandeja ───────────────────────────────────────────────────────────────
+function _sucursalDesdeCheque(c) {
+  // Bandeja: mostrar solo el número de CP, sin importar el banco
+  const cp = (c.detalle && c.detalle['C.P del cheque']) || '';
+  return cp || (c.detalle && c.detalle['Sucursal']) || '—';
+}
+
+let _bndSeq = 0;
+function _bndId() { return 'BNJ_' + (++_bndSeq).toString().padStart(4,'0'); }
+
+function toggleBandeja(tipo, itemId, chkEl) {
+  if (chkEl.checked) {
+    let item = null;
+    if (tipo === 'cobros') {
+      const c = cobros.find(x => x.id === itemId);
+      if (c) {
+        const codBanco = c.detalle && c.detalle['Cód. banco'];
+        const numSuc   = c.detalle && c.detalle['Sucursal'];
+        item = {
+          id: _bndId(), origen: 'Recaudadora', origen_id: c.id,
+          cuit:       c.nro_cliente || '—',
+          nombre:     c.nombre_cliente || '—',
+          banco:      _bancoParaBandeja(codBanco),
+          sucursal:   _sucursalParaBandeja(numSuc, 'galicia'),
+          nro_cheque: c.nro_cheque || '—',
+          monto:      c.importe_pago || 0,
+        };
+      }
+    } else if (tipo === 'cheques') {
+      const c = cheques.find(x => x.id === itemId);
+      if (c) item = {
+        id: _bndId(), origen: 'Cheques', origen_id: c.id,
+        cuit:       c.cuit || '—',
+        nombre:     c.librador || '—',
+        banco:      _bancoParaBandeja(c.banco, c.detalle && c.detalle['CMC7']),
+        sucursal:   _sucursalDesdeCheque(c),
+        nro_cheque: c.numero || '—',
+        monto:      c.importe || 0,
+      };
+    } else if (tipo === 'chequesAceptar') {
+      const c = chequesAceptar.find(x => x.id === itemId);
+      if (c) item = {
+        id: _bndId(), origen: 'Cheques A Aceptar', origen_id: c.id,
+        cuit:       c.cuit || '—',
+        nombre:     c.librador || '—',
+        banco:      _bancoParaBandeja(c.banco, c.detalle && c.detalle['CMC7']),
+        sucursal:   _sucursalDesdeCheque(c),
+        nro_cheque: c.numero || '—',
+        monto:      c.importe || 0,
+      };
+    } else if (tipo === 'transf') {
+      const t = transferencias.find(x => x.id === itemId);
+      if (t) item = {
+        id:         _bndId(),
+        origen:     'Movimientos',
+        origen_id:  t.id,
+        cuit:       t.cuit_cte       || '—',
+        nombre:     t.nombre         || (t.descripcion || '').slice(0, 40),
+        banco:      _bancoParaBandeja(t.banco),
+        sucursal:   _sucursalParaBandeja(t.sucursal, 'galicia'),
+        nro_cheque: t.nro_comprobante|| '—',
+        monto:      t.credito > 0 ? t.credito : t.debito,
+      };
+    }
+    if (item) { bandeja.push(item); actualizarBadge('bandeja', bandeja.length); renderBandeja(); }
+  } else {
+    bandeja = bandeja.filter(b => b.origen_id !== itemId);
+    actualizarBadge('bandeja', bandeja.length);
+    renderBandeja();
+  }
+}
+
+function removerBandeja(bndId) {
+  const item = bandeja.find(b => b.id === bndId);
+  bandeja = bandeja.filter(b => b.id !== bndId);
+  actualizarBadge('bandeja', bandeja.length);
+  renderBandeja();
+  if (item) {
+    if (item.origen === 'Recaudadora') renderCobros();
+    else if (item.origen === 'Cheques') renderCheques();
+    else if (item.origen === 'Cheques A Aceptar') renderChequesAceptar();
+    else if (item.origen === 'Movimientos') renderTransferencias();
+  }
+}
+
+function limpiarBandeja() {
+  bandeja = [];
+  actualizarBadge('bandeja', 0);
+  renderBandeja();
+  renderCobros(); renderCheques(); renderChequesAceptar(); renderTransferencias();
+}
+
+function renderBandeja() {
+  const tbody = document.getElementById('tbody-bandeja');
+  const resEl = document.getElementById('bnd-resumen');
+  const cntEl = document.getElementById('bnd-count');
+  const totEl = document.getElementById('bnd-total-monto');
+  if (!bandeja.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora, Cheques o Movimientos</td></tr>`;
+    if (resEl) resEl.style.display = 'none';
+    return;
+  }
+  const totalMonto = bandeja.reduce((s, b) => s + (b.monto || 0), 0);
+  if (resEl) { resEl.style.display = 'flex'; cntEl.textContent = bandeja.length; totEl.textContent = fmtMonto(totalMonto); }
+  const origenBadge = { 'Recaudadora':'purple', 'Cheques':'teal', 'Cheques A Aceptar':'ok', 'Movimientos':'info' };
+  tbody.innerHTML = bandeja.map(b => `<tr>
+    <td class="no-copy" style="text-align:center;padding:4px 6px">
+      <button style="border:none;background:none;cursor:pointer;color:var(--red);font-size:14px;padding:2px 6px" title="Quitar" onclick="removerBandeja('${escHtml(b.id)}')">×</button>
+    </td>
+    <td><span class="badge ${origenBadge[b.origen]||'info'}" style="font-size:10px">${escHtml(b.origen)}</span></td>
+    <td style="font-size:12px;color:var(--text3)">${escHtml(b.cuit)||'—'}</td>
+    <td>${escHtml(b.nombre)||'—'}</td>
+    <td style="font-size:12px;color:var(--text3)">${escHtml(b.banco)||'—'}</td>
+    <td style="font-size:12px;color:var(--text3)">${escHtml(b.sucursal)||'—'}</td>
+    <td style="font-family:monospace;font-size:12px">${escHtml(b.nro_cheque)||'—'}</td>
+    <td style="text-align:right;font-weight:600">${fmtMonto(b.monto)}</td>
+  </tr>`).join('');
+}
+
+function exportarBandeja() {
+  if (!bandeja.length) return;
+  const data = bandeja.map(b => ({
+    'CUIT':         b.cuit,
+    'Nombre':       b.nombre,
+    'Banco emisor': b.banco,
+    'Sucursal':     b.sucursal,
+    'Nro cheque':   b.nro_cheque,
+    'Monto':        b.monto,
+  }));
+  try {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const cols = Object.keys(data[0]).map(k => ({ wch: Math.max(k.length, ...data.map(r => String(r[k]||'').length)) + 2 }));
+    ws['!cols'] = cols;
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Bandeja');
+    XLSX.writeFile(wb, `bandeja_${new Date().toISOString().slice(0,10)}.xlsx`);
+  } catch(e) {
+    const csv = ['CUIT,Nombre,Banco emisor,Sucursal,Nro cheque,Monto'].concat(
+      data.map(r => Object.values(r).map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+    ).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv);
+    a.download = `bandeja_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+}
+
+// ── Carga manual CSV ──────────────────────────────────────────────────────
+function onFileChange(tipo) {
+  const ids  = { recaudadora:'file-recaudadora', cheques_aceptar:'file-cheques_aceptar', movimientos:'file-movimientos' };
+  const lbls = { recaudadora:'lbl-file-recaudadora', cheques_aceptar:'lbl-file-cheques_aceptar', movimientos:'lbl-file-movimientos' };
+  const file = document.getElementById(ids[tipo]).files[0];
+  const lbl  = document.getElementById(lbls[tipo]);
+  if (lbl) lbl.textContent = file ? file.name : 'Seleccionar archivo CSV…';
+  const ua = document.getElementById('ua-' + tipo);
+  if (ua) ua.style.borderColor = file ? 'var(--blue)' : '';
+}
+
+function limpiarUpload(tipo) {
+  const ids = { recaudadora:'file-recaudadora', cheques_aceptar:'file-cheques_aceptar', movimientos:'file-movimientos' };
+  const el = document.getElementById(ids[tipo]);
+  if (el) el.value = '';
+  onFileChange(tipo);
+  showMsg('msg-upload-' + tipo, '');
+}
+
+async function subirCSV(tipo) {
+  const ids = { recaudadora:'file-recaudadora', cheques_aceptar:'file-cheques_aceptar', movimientos:'file-movimientos' };
+  const file = document.getElementById(ids[tipo]).files[0];
+  if (!file) { showMsg('msg-upload-' + tipo, 'Seleccioná un archivo primero.', 'warn'); return; }
+
+  showMsg('msg-upload-' + tipo, '⏳ Procesando…', 'info');
+
+  const fd = new FormData();
+  fd.append('file', file);
+
+  try {
+    const res = await fetch(`${API}/upload/${tipo}`, { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!data.ok) { showMsg('msg-upload-' + tipo, '✗ ' + (data.error || 'Error al procesar'), 'error'); return; }
+
+    showMsg('msg-upload-' + tipo, `✓ ${data.mensaje}`, 'success');
+
+    if (tipo === 'recaudadora') {
+      cobros = data.cobros; tiposConsultados.add('cobros');
+      pgCobros.reset(); renderCobros(); actualizarBadge('cobros', cobros.length);
+      setTimeout(() => ir('recaudadora'), 600);
+    } else if (tipo === 'cheques_aceptar') {
+      chequesAceptar = data.cheques; tiposConsultados.add('chequesAceptar');
+      pgChequesAceptar.reset(); renderChequesAceptar(); actualizarBadge('cheques-aceptar', chequesAceptar.length);
+      setTimeout(() => ir('cheques-aceptar'), 600);
+    } else if (tipo === 'movimientos') {
+      if (data.tipo_detectado === 'recaudadora' && data.cobros) {
+        cobros = data.cobros; tiposConsultados.add('cobros');
+        pgCobros.reset(); renderCobros(); actualizarBadge('cobros', cobros.length);
+        showMsg('msg-upload-movimientos', `✓ Archivo detectado como Cobros Recibidos — ${data.mensaje}`, 'success');
+        setTimeout(() => ir('recaudadora'), 600);
+      } else {
+        transferencias = data.transferencias || []; tiposConsultados.add('transf');
+        pgTransf.reset(); renderTransferencias(); actualizarBadge('transf', transferencias.length);
+        setTimeout(() => ir('transferencias'), 600);
+      }
+    }
+  } catch(e) {
+    showMsg('msg-upload-' + tipo, '✗ Error de red: ' + e.message, 'error');
+  }
+}
+
+// ── Helper: render detalle con enriquecimiento de sucursal ────────────────
+function _bancoKey(bancoNombre) {
+  const b = (bancoNombre || '').toLowerCase();
+  if (b.includes('macro'))   return 'macro';
+  if (b.includes('galicia')) return 'galicia';
+  return '';  // banco sin datos cargados → no mostrar localidad
+}
+
+function renderDetalleGrid(det, bancoNombre) {
+  const bKey = _bancoKey(bancoNombre || '');
+  return Object.entries(det).map(([lbl, val]) => {
+    let displayVal = escHtml(String(val));
+    const lblL = lbl.toLowerCase();
+
+    if (lblL === 'sucursal' || lblL === 'sucursal de pago') {
+      if (bKey) {
+        const loc = lookupSucursal(bKey, String(val).trim());
+        if (loc) displayVal += `<span class="suc-tag">${escHtml(loc)}</span>`;
+      }
+    }
+    // Código de banco (recaudadora envía el número, ej: "285")
+    if (lblL === 'cód. banco' || lblL === 'cod. banco' || lblL === 'código banco' || lblL === 'codigo banco') {
+      const nom = lookupBancoCodigo(String(val).trim());
+      if (nom) displayVal += `<span class="suc-tag">${escHtml(nom)}</span>`;
+    }
+    // CMC7 — extrae código de banco (primeros 3 dígitos) y muestra nombre
+    if (lblL === 'cmc7') {
+      const codBanco = String(val).replace(/\s/g, '').slice(0, 3);
+      const nomBanco = lookupBancoCodigo(codBanco);
+      if (nomBanco) {
+        displayVal += `<span class="suc-tag">${escHtml(nomBanco)}</span>`;
+        // Si es Macro o Galicia y tenemos CP en el detalle, agregar localidad
+        const bKeyCmc7 = _bancoKey(nomBanco);
+        if (bKeyCmc7 && det['C.P del cheque']) {
+          const suc = sucursalesData[bKeyCmc7].find(s => s.cp === det['C.P del cheque']);
+          if (suc) displayVal += `<span class="suc-tag">${escHtml(suc.ciudad||suc.localidad)}</span>`;
+        }
+      }
+    }
+    // C.P del cheque — busca por CP en el banco emisor del cheque
+    if (lblL === 'c.p del cheque' || lblL === 'cp del cheque') {
+      if (bKey) {
+        const cp  = String(val).trim();
+        const suc = sucursalesData[bKey].find(s => s.cp === cp);
+        if (suc) displayVal += `<span class="suc-tag">${escHtml(suc.ciudad||suc.localidad)}</span>`;
+      }
+    }
+    return `<div class="detail-field"><span class="detail-label">${escHtml(lbl)}</span><span class="detail-value">${displayVal}</span></div>`;
+  }).join('');
+}
+
+// ── Bancos BCRA ───────────────────────────────────────────────────────────
+const BANCOS_BCRA = [
+  {codigo:'007',nombre:'Banco de Galicia y Buenos Aires S.A.U.',grupo:'A'},
+  {codigo:'011',nombre:'Banco de la Nación Argentina',grupo:'A'},
+  {codigo:'014',nombre:'Banco de la Provincia de Buenos Aires',grupo:'A'},
+  {codigo:'015',nombre:'Industrial and Commercial Bank of China (Argentina) S.A.U.',grupo:'A'},
+  {codigo:'016',nombre:'Citibank N.A.',grupo:'A'},
+  {codigo:'017',nombre:'Banco BBVA Argentina S.A.',grupo:'A'},
+  {codigo:'020',nombre:'Banco de la Provincia de Córdoba S.A.',grupo:'A'},
+  {codigo:'027',nombre:'Banco Supervielle S.A.',grupo:'A'},
+  {codigo:'029',nombre:'Banco de la Ciudad de Buenos Aires',grupo:'A'},
+  {codigo:'034',nombre:'Banco Patagonia S.A.',grupo:'A'},
+  {codigo:'044',nombre:'Banco Hipotecario S.A.',grupo:'A'},
+  {codigo:'045',nombre:'Banco de San Juan S.A.',grupo:'A'},
+  {codigo:'072',nombre:'Banco Santander Argentina S.A.',grupo:'A'},
+  {codigo:'150',nombre:'HSBC Bank Argentina S.A.',grupo:'A'},
+  {codigo:'191',nombre:'Banco Credicoop Cooperativo Limitado',grupo:'A'},
+  {codigo:'259',nombre:'Banco Itau Argentina S.A.',grupo:'A'},
+  {codigo:'285',nombre:'Banco Macro S.A.',grupo:'A'},
+  {codigo:'330',nombre:'Nuevo Banco de Santa Fe S.A.',grupo:'A'},
+  {codigo:'083',nombre:'Banco del Chubut S.A.',grupo:'B'},
+  {codigo:'086',nombre:'Banco de Santa Cruz S.A.',grupo:'B'},
+  {codigo:'093',nombre:'Banco de la Pampa S.E.M.',grupo:'B'},
+  {codigo:'094',nombre:'Banco de Corrientes S.A.',grupo:'B'},
+  {codigo:'097',nombre:'Banco Provincia del Neuquén S.A.',grupo:'B'},
+  {codigo:'198',nombre:'Banco de Valores S.A.',grupo:'B'},
+  {codigo:'299',nombre:'Banco Comafi S.A.',grupo:'B'},
+  {codigo:'300',nombre:'Banco de Inversión y Comercio Exterior S.A.',grupo:'B'},
+  {codigo:'311',nombre:'Nuevo Banco del Chaco S.A.',grupo:'B'},
+  {codigo:'315',nombre:'Banco de Formosa S.A.',grupo:'B'},
+  {codigo:'319',nombre:'Banco CMF S.A.',grupo:'B'},
+  {codigo:'321',nombre:'Banco de Santiago del Estero S.A.',grupo:'B'},
+  {codigo:'322',nombre:'Banco Industrial S.A.',grupo:'B'},
+  {codigo:'386',nombre:'Nuevo Banco de Entre Ríos S.A.',grupo:'B'},
+  {codigo:'065',nombre:'Banco Municipal de Rosario',grupo:'C'},
+  {codigo:'131',nombre:'Bank of China Limited, Sucursal Buenos Aires',grupo:'C'},
+  {codigo:'143',nombre:'Brubank S.A.U.',grupo:'C'},
+  {codigo:'147',nombre:'Bibank S.A.',grupo:'C'},
+  {codigo:'158',nombre:'Open Bank Argentina S.A.',grupo:'C'},
+  {codigo:'165',nombre:'JPMorgan Chase Bank N.A. (Sucursal Buenos Aires)',grupo:'C'},
+  {codigo:'247',nombre:'Banco Roela S.A.',grupo:'C'},
+  {codigo:'254',nombre:'Banco Mariva S.A.',grupo:'C'},
+  {codigo:'266',nombre:'BNP Paribas',grupo:'C'},
+  {codigo:'268',nombre:'Banco Provincia de Tierra del Fuego',grupo:'C'},
+  {codigo:'269',nombre:'Banco de la República Oriental del Uruguay',grupo:'C'},
+  {codigo:'277',nombre:'Banco Sáenz S.A.',grupo:'C'},
+  {codigo:'281',nombre:'Banco Meridian S.A.',grupo:'C'},
+  {codigo:'301',nombre:'Banco Piano S.A.',grupo:'C'},
+  {codigo:'305',nombre:'Banco Julio S.A.',grupo:'C'},
+  {codigo:'309',nombre:'Banco Rioja S.A.U.',grupo:'C'},
+  {codigo:'310',nombre:'Banco del Sol S.A.',grupo:'C'},
+  {codigo:'312',nombre:'Banco VOII S.A.',grupo:'C'},
+  {codigo:'331',nombre:'Banco Cetelem Argentina S.A.',grupo:'C'},
+  {codigo:'332',nombre:'Banco de Servicios Financieros S.A.',grupo:'C'},
+  {codigo:'338',nombre:'Banco de Servicios y Transacciones S.A.',grupo:'C'},
+  {codigo:'339',nombre:'RCI Banque S.A.',grupo:'C'},
+  {codigo:'340',nombre:'BACS Banco de Crédito y Securitización S.A.',grupo:'C'},
+  {codigo:'341',nombre:'Banco Masventas S.A.',grupo:'C'},
+  {codigo:'384',nombre:'Wilobank S.A.U.',grupo:'C'},
+  {codigo:'389',nombre:'Banco Columbia S.A.',grupo:'C'},
+  {codigo:'426',nombre:'Banco Bica S.A.',grupo:'C'},
+  {codigo:'431',nombre:'Banco Coinag S.A.',grupo:'C'},
+  {codigo:'432',nombre:'Banco de Comercio S.A.',grupo:'C'},
+  {codigo:'435',nombre:'Banco Súcredito Regional S.A.U.',grupo:'C'},
+  {codigo:'448',nombre:'Banco Dino S.A.',grupo:'C'},
+];
+
+// Lookup código → nombre
+const _bancosLookup = {};
+BANCOS_BCRA.forEach(b => {
+  _bancosLookup[b.codigo]                      = b;
+  _bancosLookup[String(parseInt(b.codigo, 10))] = b;
+});
+
+function lookupBancoCodigo(codigo) {
+  if (!codigo) return '';
+  const c = String(codigo).trim();
+  return (_bancosLookup[c] || _bancosLookup[c.padStart(3,'0')] || {}).nombre || '';
+}
+
+// Lookup inverso: nombre → entrada BANCOS_BCRA
+const _skipBanco = new Set(['banco','de','la','los','del','y','s','a','sau','sa','srl','co','ltda',
+  'argentina','buenos','aires','ltd','bank','nuevo','compania','compañia','financiera',
+  'regional','comercio','provincia','servicios','transacciones','nacional','nacion','cooperativo',
+  'limitado','sucursal','asociacion','sociedad','unipersonal','mixta','inversion']);
+const _bancosPorKw = {};
+BANCOS_BCRA.forEach(b => {
+  b.nombre.toLowerCase().replace(/[\.]/g,'').split(/\s+/)
+    .filter(w => w.length > 3 && !_skipBanco.has(w))
+    .forEach(w => { if (!_bancosPorKw[w]) _bancosPorKw[w] = b; });
+});
+
+function findBancoByName(nombre) {
+  if (!nombre) return null;
+  const n = nombre.toLowerCase().replace(/[\.]/g,'');
+  for (const [kw, b] of Object.entries(_bancosPorKw)) {
+    if (n.includes(kw)) return b;
+  }
+  return null;
+}
+
+// Dado un nombre/código de banco y opcionalmente CMC7, retorna la entrada BCRA
+function _resolverBanco(bancoNombre, cmc7) {
+  // 1. Por CMC7 (primeros 3 dígitos)
+  if (cmc7) {
+    const cod  = String(cmc7).replace(/\s/g,'').slice(0, 3);
+    const entry = _bancosLookup[cod] || _bancosLookup[String(parseInt(cod, 10))];
+    if (entry) return entry;
+  }
+  if (bancoNombre) {
+    // 2. Si el valor parece un código numérico (recaudadora envía "285")
+    const codigoDirecto = String(bancoNombre).trim();
+    const byCode = _bancosLookup[codigoDirecto] || _bancosLookup[codigoDirecto.padStart(3,'0')];
+    if (byCode) return byCode;
+    // 3. Por nombre (keywords)
+    return findBancoByName(bancoNombre);
+  }
+  return null;
+}
+
+// Formatea "285 · Banco Macro S.A." para bandeja
+function _bancoParaBandeja(bancoNombre, cmc7) {
+  const entry = _resolverBanco(bancoNombre, cmc7);
+  if (entry) return `${parseInt(entry.codigo, 10)} · ${entry.nombre}`;
+  return bancoNombre || '—';
+}
+
+// Formatea "117 · Capital Federal" para bandeja
+function _sucursalParaBandeja(numero, bancoKey) {
+  const n = String(numero || '').trim();
+  if (!n || n === '—') return '—';
+  const loc = bancoKey ? lookupSucursal(bancoKey, n) : '';
+  return loc ? `${n} · ${loc}` : n;
+}
+
+// Formatea celda de tabla: "285 · BANCO MACRO S.A."
+function _bancoCelda(bancoNombre, cmc7) {
+  const entry = _resolverBanco(bancoNombre, cmc7);
+  if (entry) {
+    const cod = parseInt(entry.codigo, 10);
+    return `<span style="font-weight:600;margin-right:4px">${cod}</span>${escHtml(bancoNombre||entry.nombre)}`;
+  }
+  return escHtml(bancoNombre || '—');
+}
+
+let _bancosQ = '';
+function buscarBancos(q) {
+  _bancosQ = q;
+  renderBancosBCRA();
+}
+
+function renderBancosBCRA() {
+  const q    = _bancosQ.toLowerCase();
+  const data = q
+    ? BANCOS_BCRA.filter(b => b.codigo.includes(q) || b.nombre.toLowerCase().includes(q) || b.grupo.toLowerCase().includes(q))
+    : BANCOS_BCRA;
+  const countEl = document.getElementById('count-bancos');
+  if (countEl) countEl.textContent = q ? `${data.length} de ${BANCOS_BCRA.length}` : `${BANCOS_BCRA.length} bancos`;
+  const grupoColor = {A:'var(--blue)',B:'var(--teal)',C:'var(--amber)'};
+  document.getElementById('tbody-bancos').innerHTML = data.map(b => {
+    const bKey = _bancoKey(b.nombre);
+    const lkpSpan = bKey ? `<span class="suc-tag" style="margin-left:6px">${bKey === 'macro' ? 'Macro' : 'Galicia'}</span>` : '';
+    return `<tr>
+      <td style="font-family:monospace;font-weight:600;color:${grupoColor[b.grupo]||'var(--text)'}">${escHtml(b.codigo)}</td>
+      <td>${escHtml(b.nombre)}${lkpSpan}</td>
+      <td style="font-size:11px;color:var(--text3);text-align:center">${escHtml(b.grupo)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Sucursales ────────────────────────────────────────────────────────────
+let sucursalesData = { macro: [], galicia: [] };
+let sucursalesLookup = { macro: {}, galicia: {} };
+let sucBusqueda = { macro: '', galicia: '' };
+
+function _mkPgSuc(banco) {
+  return {
+    page: 1, size: 50,
+    setSize(n) { this.size = n; this.page = 1; renderSucursales(banco); },
+    prev()     { if (this.page > 1) { this.page--; renderSucursales(banco); } },
+    next()     { this.page++; renderSucursales(banco); },
+    reset()    { this.page = 1; },
+    slice(arr) {
+      if (!this.size) return arr;
+      return arr.slice((this.page - 1) * this.size, this.page * this.size);
+    },
+    render(total) {
+      const infoEl = document.getElementById(`pg-suc-${banco}-info`);
+      const prevEl = document.getElementById(`pg-suc-${banco}-prev`);
+      const nextEl = document.getElementById(`pg-suc-${banco}-next`);
+      if (!infoEl) return;
+      if (!this.size) { infoEl.textContent = `${total} total`; prevEl.disabled = true; nextEl.disabled = true; return; }
+      const pages = Math.max(1, Math.ceil(total / this.size));
+      if (this.page > pages) this.page = pages;
+      const start = (this.page - 1) * this.size + 1;
+      const end   = Math.min(this.page * this.size, total);
+      infoEl.textContent = total ? `${start}–${end} de ${total}` : '';
+      prevEl.disabled = this.page <= 1;
+      nextEl.disabled = this.page >= pages;
+    },
+  };
+}
+const pgSuc = { macro: _mkPgSuc('macro'), galicia: _mkPgSuc('galicia') };
+
+async function cargarSucursales() {
+  for (const banco of ['macro', 'galicia']) {
+    try {
+      const d = await apiFetch(`/sucursales/${banco}`);
+      if (d.ok) {
+        sucursalesData[banco] = d.sucursales || [];
+        // Build lookup: numero → localidad
+        sucursalesLookup[banco] = {};
+        for (const s of sucursalesData[banco]) {
+          if (s.numero) sucursalesLookup[banco][String(s.numero)] = s.localidad || s.ciudad || '';
+        }
+        const fechaEl = document.getElementById(`suc-${banco}-fecha`);
+        if (fechaEl && d.updated) fechaEl.textContent = `Actualizado: ${d.updated} · ${d.total} sucursales`;
+        pgSuc[banco].reset();
+        renderSucursales(banco);
+      }
+    } catch(e) {}
+  }
+}
+
+function lookupSucursal(banco, numero) {
+  if (!numero) return '';
+  return sucursalesLookup[banco][String(numero).trim()] || '';
+}
+
+function lookupSucursalAny(numero) {
+  const n = String(numero || '').trim();
+  return sucursalesLookup['galicia'][n] || sucursalesLookup['macro'][n] || '';
+}
+
+function sucTab(banco) {
+  document.querySelectorAll('.suc-tab').forEach((t,i) => t.classList.toggle('active', ['macro','galicia','bancos'][i]===banco));
+  document.querySelectorAll('.suc-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`suc-panel-${banco}`).classList.add('active');
+  if (banco === 'bancos') renderBancosBCRA();
+}
+
+function renderSucursales(banco) {
+  const q       = sucBusqueda[banco].toLowerCase();
+  const total   = sucursalesData[banco];
+  const filtred = total.filter(s =>
+    !q || Object.values(s).some(v => v && String(v).toLowerCase().includes(q))
+  );
+  const pg      = pgSuc[banco];
+  const datos   = pg.slice(filtred);
+  const tbody   = document.getElementById(`tbody-suc-${banco}`);
+  const countEl = document.getElementById(`count-suc-${banco}`);
+
+  if (countEl) countEl.textContent = q ? `${filtred.length} de ${total.length}` : `${total.length} sucursales`;
+  pg.render(filtred.length);
+
+  if (!filtred.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">${total.length ? 'Sin resultados' : 'Sin datos. Subí un PDF o CSV.'}</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = datos.map(s => `<tr>
+    <td style="font-weight:600;font-family:monospace">${escHtml(s.numero||'')}</td>
+    <td>${escHtml(s.localidad||'—')}</td>
+    <td>${escHtml(s.ciudad||'—')}</td>
+    <td style="font-size:12px;color:var(--text3)">${escHtml(s.provincia||'—')}</td>
+    <td style="font-size:12px;color:var(--text3)">${escHtml(s.cp||'—')}</td>
+    <td style="font-size:11px;color:var(--text3)">${escHtml(s.domicilio||'—')}</td>
+  </tr>`).join('');
+}
+
+function buscarSucursal(banco, q) {
+  sucBusqueda[banco] = q;
+  pgSuc[banco].reset();
+  renderSucursales(banco);
+}
+
+function onSucFileChange(banco) {
+  const file = document.getElementById(`file-suc-${banco}`).files[0];
+  const lbl  = document.getElementById(`lbl-suc-${banco}`);
+  if (lbl) lbl.textContent = file ? file.name : 'Seleccionar PDF o CSV…';
+  const ua = document.getElementById(`ua-suc-${banco}`);
+  if (ua) ua.style.borderColor = file ? 'var(--blue)' : '';
+  document.getElementById(`btn-suc-${banco}`).disabled = !file;
+}
+
+async function subirSucursales(banco) {
+  const file = document.getElementById(`file-suc-${banco}`).files[0];
+  if (!file) return;
+  showMsg(`msg-suc-${banco}`, '⏳ Procesando…', 'info');
+  document.getElementById(`btn-suc-${banco}`).disabled = true;
+  const fd = new FormData();
+  fd.append('file', file);
+  try {
+    const res  = await fetch(`${API}/sucursales/${banco}/upload`, { method:'POST', body: fd });
+    const data = await res.json();
+    if (data.ok) {
+      sucursalesData[banco] = data.sucursales || [];
+      sucursalesLookup[banco] = {};
+      for (const s of sucursalesData[banco]) {
+        if (s.numero) sucursalesLookup[banco][String(s.numero)] = s.localidad || s.ciudad || '';
+      }
+      const fechaEl = document.getElementById(`suc-${banco}-fecha`);
+      if (fechaEl && data.updated) fechaEl.textContent = `Actualizado: ${data.updated} · ${data.total} sucursales`;
+      pgSuc[banco].reset();
+      renderSucursales(banco);
+      showMsg(`msg-suc-${banco}`, `✓ ${data.mensaje}`, 'success');
+    } else {
+      showMsg(`msg-suc-${banco}`, `✗ ${data.error}`, 'error');
+    }
+  } catch(e) {
+    showMsg(`msg-suc-${banco}`, `✗ Error: ${e.message}`, 'error');
+  }
+  document.getElementById(`btn-suc-${banco}`).disabled = false;
+}
+
+// ── Auth de la app ────────────────────────────────────────────────────────
+async function checkAuth() {
+  try {
+    const res  = await fetch('/api/app/check', {credentials:'include'});
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('login-overlay').style.display = 'none';
+      document.getElementById('nav-user').textContent = data.usuario;
+      cargarSucursales();
+      await checkGaliciaStatus();
+    } else {
+      document.getElementById('login-overlay').style.display = 'flex';
+    }
+  } catch(e) {
+    document.getElementById('login-overlay').style.display = 'flex';
+  }
+}
+
+async function checkGaliciaStatus() {
+  try {
+    const data = await apiFetch('/galicia/status');
+    if (data.conectado) {
+      document.getElementById('btn-gal-logout').style.display = 'inline-flex';
+      document.getElementById('btn-gal-login').style.display  = 'none';
+      document.getElementById('btn-consultar').disabled = false;
+      document.getElementById('gal-session-lbl').textContent = 'Sesión activa';
+      document.getElementById('gal-session-lbl').style.color = 'var(--green)';
+      document.getElementById('dot-galicia').className  = 'status-dot ok';
+      document.getElementById('lbl-galicia').textContent = 'Galicia: conectado';
+      document.getElementById('gal-empresa').disabled = false;
+      document.getElementById('btn-cambiar-empresa').disabled = false;
+      if (data.empresa) _setEmpresaUI(data.empresa);
+    } else {
+      // Sesión de Galicia perdida — resetear UI al estado desconectado
+      document.getElementById('btn-gal-logout').style.display = 'none';
+      document.getElementById('btn-gal-login').style.display  = 'inline-flex';
+      document.getElementById('btn-consultar').disabled = true;
+      document.getElementById('gal-session-lbl').textContent = 'No conectado';
+      document.getElementById('gal-session-lbl').style.color = 'var(--text3)';
+      document.getElementById('dot-galicia').className  = 'status-dot off';
+      document.getElementById('lbl-galicia').textContent = 'Sin conexión';
+      document.getElementById('gal-empresa').disabled = true;
+      document.getElementById('btn-cambiar-empresa').disabled = true;
+      document.getElementById('gal-empresa-lbl').textContent = '';
+    }
+  } catch(e) {}
+}
+
+async function doLogin() {
+  const btn  = document.getElementById('login-btn');
+  const errEl = document.getElementById('login-err');
+  const usuario = document.getElementById('login-user').value.trim();
+  const pass    = document.getElementById('login-pass').value;
+  errEl.style.display = 'none';
+  if (!usuario || !pass) {
+    errEl.textContent = 'Ingresá usuario y contraseña.';
+    errEl.style.display = 'block';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Ingresando…';
+  try {
+    const res  = await fetch('/api/app/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      credentials: 'include',
+      body: JSON.stringify({usuario, password: pass}),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('login-overlay').style.display = 'none';
+      document.getElementById('nav-user').textContent = data.usuario;
+      cargarSucursales();
+    } else {
+      errEl.textContent = data.error || 'Usuario o contraseña incorrectos.';
+      errEl.style.display = 'block';
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-pass').focus();
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión con el servidor.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Ingresar';
+  }
+}
+
+async function doLogout() {
+  try { await fetch('/api/app/logout', {method:'POST', credentials:'include'}); } catch(e) {}
+  document.getElementById('login-overlay').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('nav-user').textContent = '—';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+function init() {
+  cargarConfig();
+  const hoy    = new Date().toISOString().slice(0,10);
+  const hace30 = new Date(Date.now()-30*864e5).toISOString().slice(0,10);
+  const qDesde = document.getElementById('q-desde');
+  const qHasta = document.getElementById('q-hasta');
+  qDesde.max = hoy; qDesde.value = hace30;
+  qHasta.max = hoy; qHasta.value = hoy;
+  initCopyHandlers();
+  checkAuth();
+}
+init();
+</script>
+</body>
+</html>
