@@ -36,6 +36,16 @@ app.config.update(
 )
 CORS(app, supports_credentials=True)
 
+
+@app.errorhandler(Exception)
+def handle_any_exception(e):
+    from werkzeug.exceptions import HTTPException
+    if isinstance(e, HTTPException):
+        return e   # 404, 403, etc. se manejan normalmente
+    import traceback
+    traceback.print_exc()
+    return jsonify({'ok': False, 'error': str(e)}), 500
+
 # ─── Users / passwords ────────────────────────────────────────────────────────
 _BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
 USERS_FILE = os.path.join(_BASE_DIR, '..', 'users.json')
@@ -192,9 +202,12 @@ def _need_galicia():
 
 @app.route('/api/galicia/status')
 def galicia_status():
-    c = _galicia_client()
-    empresa = c._empresa_activa if c else ''
-    return jsonify({'conectado': c is not None, 'empresa': empresa})
+    try:
+        c = _galicia_client()
+        empresa = c._empresa_activa if c else ''
+        return jsonify({'conectado': c is not None, 'empresa': empresa})
+    except Exception as e:
+        return jsonify({'conectado': False, 'empresa': '', 'error': str(e)})
 
 
 @app.route('/api/galicia/login', methods=['POST'])
@@ -211,7 +224,7 @@ def galicia_login():
             try: prev.logout()
             except Exception: pass
         _session['client'] = None
-        client = GaliciaClient(headless=True)
+        client = GaliciaClient(headless=False)
         ok, msg = client.login(usuario, password)
         if ok:
             _session['client'] = client

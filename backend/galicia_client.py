@@ -56,6 +56,8 @@ class GaliciaClient:
                 ),
             )
             self._page = self._context.new_page()
+            self._page.on('close', self._on_close)
+            self._browser.on('disconnected', self._on_close)
 
             self._page.goto(LOGIN_URL, timeout=45000)
             self._page.wait_for_load_state("domcontentloaded", timeout=30000)
@@ -135,6 +137,12 @@ class GaliciaClient:
 
     def __del__(self):
         self._cleanup()
+
+    def _on_close(self):
+        """Llamado cuando el usuario cierra la ventana del browser Playwright."""
+        self._logged_in = False
+        self._page = None
+        self._context = None
 
     def _leer_empresa_activa(self) -> str:
         """Lee el nombre de la empresa activa del header del portal."""

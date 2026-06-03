@@ -101,6 +101,17 @@ th.sort-desc::after{content:' ▼';font-size:8px;color:var(--blue)}
 .filtro-panel{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
 .filtro-panel .fg{margin-bottom:10px}
 #copy-toast{position:fixed;bottom:24px;right:24px;background:#1a1a18;color:#fff;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:500;z-index:9999;opacity:0;transition:opacity .22s;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+#query-banner{display:none;position:sticky;top:0;z-index:400;background:var(--blue-l);border-bottom:2px solid var(--blue-b);padding:9px 22px;align-items:center;gap:10px;font-size:13px;color:#0C447C;font-weight:500}
+#query-banner small{font-size:11px;font-weight:400;color:var(--blue)}
+#query-banner svg{flex-shrink:0;animation:spinIcon 1s linear infinite}
+@keyframes spinIcon{to{transform:rotate(360deg)}}
+body.querying .main .btn{pointer-events:none;opacity:.5}
+body.querying .main button:not(.expand-chevron){pointer-events:none;opacity:.5}
+body.querying .main input[type=file]{pointer-events:none}
+body.querying .chk-bnd{pointer-events:none;opacity:.45}
+.detail-field{cursor:pointer;border-radius:4px;padding:2px 4px;transition:background .12s}
+.detail-field:hover{background:var(--blue-l)}
+.detail-field.flash-copy{animation:flashCell .52s ease}
 .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
 .page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .page-hdr h2{font-size:18px;font-weight:600}
@@ -264,6 +275,12 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
 
 <!-- ── MAIN ─────────────────────────────────────────────────────────────── -->
 <main class="main">
+
+<div id="query-banner">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+  Consultando el banco… los botones están deshabilitados.
+  <small>Podés navegar por las pestañas</small>
+</div>
 
 <!-- CONFIG ───────────────────────────────────────────────────────────────── -->
 <div class="page active" id="page-config">
@@ -845,7 +862,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     </div>
 
     <div class="tbl-toolbar">
-      <input id="search-suc-macro" type="text" placeholder="Buscar sucursal Macro…" oninput="buscarSucursal('macro',this.value)"/>
+      <input id="search-suc-macro" type="text" placeholder="Buscar por número, localidad, ciudad, provincia…" oninput="buscarSucursal('macro',this.value)"/>
       <span class="tbl-count" id="count-suc-macro"></span>
     </div>
     <div class="tbl-wrap">
@@ -894,7 +911,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     </div>
 
     <div class="tbl-toolbar">
-      <input id="search-suc-galicia" type="text" placeholder="Buscar sucursal Galicia…" oninput="buscarSucursal('galicia',this.value)"/>
+      <input id="search-suc-galicia" type="text" placeholder="Buscar por número, localidad, ciudad, provincia…" oninput="buscarSucursal('galicia',this.value)"/>
       <span class="tbl-count" id="count-suc-galicia"></span>
     </div>
     <div class="tbl-wrap">
@@ -943,7 +960,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     </div>
 
     <div class="tbl-toolbar">
-      <input id="search-bancos" type="text" placeholder="Buscar banco por código o nombre…" oninput="buscarBancos(this.value)"/>
+      <input id="search-bancos" type="text" placeholder="Buscar por código, nombre, grupo…" oninput="buscarBancos(this.value)"/>
       <span class="tbl-count" id="count-bancos"></span>
     </div>
     <div class="tbl-wrap">
@@ -972,6 +989,15 @@ let cheques          = [];
 let chequesAceptar   = [];
 let tiposConsultados = new Set();
 let bandeja = [];
+let _querying = false;
+let _galiciaPoll = null;
+
+function _setQuerying(on) {
+  _querying = on;
+  document.body.classList.toggle('querying', on);
+  const banner = document.getElementById('query-banner');
+  if (banner) banner.style.display = on ? 'flex' : 'none';
+}
 
 const NAV_MAP = { config:0, galicia:1, recaudadora:2, transferencias:3, cheques:4, 'cheques-aceptar':5, sucursales:6, carga:7, bandeja:8 };
 
@@ -1054,9 +1080,20 @@ async function loginGalicia() {
       document.getElementById('lbl-galicia').textContent = 'Galicia: conectado';
       document.getElementById('gal-empresa').disabled = false;
       document.getElementById('btn-cambiar-empresa').disabled = false;
-      // Priorizar la empresa detectada del portal; fallback a localStorage
-      const _cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
-      _setEmpresaUI(data.empresa || _cfg.galEmpresa || document.getElementById('gal-empresa').value);
+      const _cfg          = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
+      const _empresaDeseada = _cfg.galEmpresa || '';
+      const _empresaActiva  = data.empresa || '';
+      if (_empresaDeseada &&
+          _empresaDeseada.toLowerCase() !== _empresaActiva.toLowerCase()) {
+        // Hay empresa guardada distinta a la activa → auto-cambiar sin pisar localStorage
+        document.getElementById('gal-empresa').value = _empresaDeseada;
+        document.getElementById('gal-empresa-lbl').textContent = `(cambiando a ${_empresaDeseada}…)`;
+        setTimeout(cambiarEmpresaGalicia, 800);
+      } else {
+        // Empresa activa coincide con la guardada (o no hay preferencia)
+        _setEmpresaUI(_empresaActiva || _empresaDeseada || document.getElementById('gal-empresa').value);
+      }
+      _startGaliciaPoll();
     } else {
       showMsg('gal-msg', '✗ ' + data.error, 'error');
       const passEl = document.getElementById('gal-pass');
@@ -1128,6 +1165,7 @@ async function consultarTodo() {
   if (desde > hasta) { showMsg('gal-msg', 'La fecha desde no puede ser posterior a la fecha hasta.', 'warn'); return; }
 
   document.getElementById('btn-consultar').disabled = true;
+  _setQuerying(true);
   document.getElementById('resumen-wrap').style.display = 'none';
   showMsg('gal-msg', '⏳ Consultando...', 'info');
 
@@ -1161,6 +1199,7 @@ async function consultarTodo() {
   if (doChqA) promesas.push(consultarChequesAceptar(desde, hasta));
   await Promise.all(promesas);
 
+  _setQuerying(false);
   actualizarResumen();
   showMsg('gal-msg', '✓ Consulta finalizada.', 'success');
   document.getElementById('btn-consultar').disabled = false;
@@ -1579,7 +1618,16 @@ function initCopyHandlers() {
       const td = e.target.closest('td');
       if (!td || td.classList.contains('no-copy')) return;
       const tr = td.closest('tr');
-      if (tr && tr.classList.contains('detail-row')) return;
+      if (tr && tr.classList.contains('detail-row')) {
+        // Copiar el valor del campo del detalle expandido
+        const field = e.target.closest('.detail-field');
+        if (field) {
+          const valEl = field.querySelector('.detail-value');
+          const txt = (valEl ? valEl.innerText : field.innerText).trim();
+          if (txt) { e.stopPropagation(); copiarTexto(txt, field); }
+        }
+        return;
+      }
       e.stopPropagation(); copiarTexto(td.innerText.trim(), td);
     });
     tb.addEventListener('dblclick', e => {
@@ -1873,14 +1921,65 @@ function exportarTabla(tipo) {
 }
 
 // ── Bandeja ───────────────────────────────────────────────────────────────
+function _soloNumero(valor) {
+  // "285 · Banco Macro S.A." → "285"   |   "117 · Capital Federal" → "117"
+  // Si no hay número al inicio, devuelve el valor original
+  const m = String(valor || '').match(/^(\d+)\s*[·\-]/);
+  return m ? m[1] : (valor || '—');
+}
+
 function _sucursalDesdeCheque(c) {
-  // Bandeja: mostrar solo el número de CP, sin importar el banco
-  const cp = (c.detalle && c.detalle['C.P del cheque']) || '';
-  return cp || (c.detalle && c.detalle['Sucursal']) || '—';
+  // Sucursal del detalle, o extraída del CMC7 posiciones 3-5. Nunca el CP.
+  const sd = c.detalle && c.detalle['Sucursal'];
+  if (sd && sd !== '—') return String(sd).trim();
+  const cmc7 = c.detalle && c.detalle['CMC7'];
+  if (cmc7) {
+    const raw = String(cmc7).replace(/\s/g, '');
+    if (raw.length >= 6) return raw.slice(3, 6);
+  }
+  return '—';
 }
 
 let _bndSeq = 0;
 function _bndId() { return 'BNJ_' + (++_bndSeq).toString().padStart(4,'0'); }
+
+// Formatea el número de cheque para la bandeja: BBB-SSS-NNNNNN
+// Para cobros (recaudadora): usa Cód. banco, Sucursal, nro_cheque del detalle
+// Para cheques/chequesAceptar: usa CMC7 (primeros 3 banco, siguientes 3 sucursal, resto número)
+// Si falta info devuelve el número crudo o '—'
+function _buildNroCheque(tipo, c) {
+  if (tipo === 'cobros') {
+    const banco = (c.detalle && c.detalle['Cód. banco']) || '';
+    const suc   = (c.detalle && c.detalle['Sucursal'])   || '';
+    const num   = (c.nro_cheque || '').trim();
+    if (!banco && !suc) return num || '—';
+    const b = String(banco).trim().padStart(3,'0');
+    const s = String(suc).trim().padStart(3,'0');
+    return num ? `${b}-${s}-${num}` : `${b}-${s}`;
+  }
+  // cheques / chequesAceptar
+  const cmc7 = c.detalle && c.detalle['CMC7'];
+  const raw  = cmc7 ? String(cmc7).replace(/\s/g, '') : '';
+  // Banco: primeros 3 dígitos del CMC7
+  const codBanco = raw.slice(0, 3);
+  // Sucursal: detalle['Sucursal'] o inferida del CMC7 (entre banco y CP)
+  const sucDetalle = (c.detalle && c.detalle['Sucursal']) || '';
+  const cp = (c.detalle && c.detalle['C.P del cheque']) || '';
+  let suc = sucDetalle && sucDetalle !== '—' ? sucDetalle.trim() : '';
+  if (!suc && raw && cp) {
+    // El CMC7 es [3 banco][? sucursal][CP][resto]. Buscar el CP dentro del raw
+    const cpIdx = raw.indexOf(cp, 3);
+    if (cpIdx > 3) suc = raw.slice(3, cpIdx);
+  }
+  if (!suc && raw.length >= 6) suc = raw.slice(3, 6);  // fallback 3 dígitos
+  // Número de cheque: si no viene, no mostrar nada
+  const num = (c.numero || '').trim();
+  if (!num) return '—';
+  if (!codBanco && !suc) return num;
+  const b = codBanco || '---';
+  const s = suc || '---';
+  return `${b}-${s}-${num}`;
+}
 
 function toggleBandeja(tipo, itemId, chkEl) {
   if (chkEl.checked) {
@@ -1896,32 +1995,40 @@ function toggleBandeja(tipo, itemId, chkEl) {
           nombre:     c.nombre_cliente || '—',
           banco:      _bancoParaBandeja(codBanco),
           sucursal:   _sucursalParaBandeja(numSuc, 'galicia'),
-          nro_cheque: c.nro_cheque || '—',
+          nro_cheque: _buildNroCheque('cobros', c),
           monto:      c.importe_pago || 0,
         };
       }
     } else if (tipo === 'cheques') {
       const c = cheques.find(x => x.id === itemId);
-      if (c) item = {
-        id: _bndId(), origen: 'Cheques', origen_id: c.id,
-        cuit:       c.cuit || '—',
-        nombre:     c.librador || '—',
-        banco:      _bancoParaBandeja(c.banco, c.detalle && c.detalle['CMC7']),
-        sucursal:   _sucursalDesdeCheque(c),
-        nro_cheque: c.numero || '—',
-        monto:      c.importe || 0,
-      };
+      if (c) {
+        const _sucChq = _sucursalDesdeCheque(c);
+        const _bkChq  = _bancoKey(c.banco || '');
+        item = {
+          id: _bndId(), origen: 'Cheques', origen_id: c.id,
+          cuit:       c.cuit || '—',
+          nombre:     c.librador || '—',
+          banco:      _bancoParaBandeja(c.banco, c.detalle && c.detalle['CMC7']),
+          sucursal:   _sucChq && _sucChq !== '—' ? _sucursalParaBandeja(_sucChq, _bkChq) : '—',
+          nro_cheque: _buildNroCheque('cheques', c),
+          monto:      c.importe || 0,
+        };
+      }
     } else if (tipo === 'chequesAceptar') {
       const c = chequesAceptar.find(x => x.id === itemId);
-      if (c) item = {
-        id: _bndId(), origen: 'Cheques A Aceptar', origen_id: c.id,
-        cuit:       c.cuit || '—',
-        nombre:     c.librador || '—',
-        banco:      _bancoParaBandeja(c.banco, c.detalle && c.detalle['CMC7']),
-        sucursal:   _sucursalDesdeCheque(c),
-        nro_cheque: c.numero || '—',
-        monto:      c.importe || 0,
-      };
+      if (c) {
+        const _sucChqa = _sucursalDesdeCheque(c);
+        const _bkChqa  = _bancoKey(c.banco || '');
+        item = {
+          id: _bndId(), origen: 'Cheques A Aceptar', origen_id: c.id,
+          cuit:       c.cuit || '—',
+          nombre:     c.librador || '—',
+          banco:      _bancoParaBandeja(c.banco, c.detalle && c.detalle['CMC7']),
+          sucursal:   _sucChqa && _sucChqa !== '—' ? _sucursalParaBandeja(_sucChqa, _bkChqa) : '—',
+          nro_cheque: _buildNroCheque('cheques', c),
+          monto:      c.importe || 0,
+        };
+      }
     } else if (tipo === 'transf') {
       const t = transferencias.find(x => x.id === itemId);
       if (t) item = {
@@ -1996,8 +2103,8 @@ function exportarBandeja() {
   const data = bandeja.map(b => ({
     'CUIT':         b.cuit,
     'Nombre':       b.nombre,
-    'Banco emisor': b.banco,
-    'Sucursal':     b.sucursal,
+    'Banco emisor': _soloNumero(b.banco),
+    'Sucursal':     _soloNumero(b.sucursal),
     'Nro cheque':   b.nro_cheque,
     'Monto':        b.monto,
   }));
@@ -2105,20 +2212,7 @@ function renderDetalleGrid(det, bancoNombre) {
       const nom = lookupBancoCodigo(String(val).trim());
       if (nom) displayVal += `<span class="suc-tag">${escHtml(nom)}</span>`;
     }
-    // CMC7 — extrae código de banco (primeros 3 dígitos) y muestra nombre
-    if (lblL === 'cmc7') {
-      const codBanco = String(val).replace(/\s/g, '').slice(0, 3);
-      const nomBanco = lookupBancoCodigo(codBanco);
-      if (nomBanco) {
-        displayVal += `<span class="suc-tag">${escHtml(nomBanco)}</span>`;
-        // Si es Macro o Galicia y tenemos CP en el detalle, agregar localidad
-        const bKeyCmc7 = _bancoKey(nomBanco);
-        if (bKeyCmc7 && det['C.P del cheque']) {
-          const suc = sucursalesData[bKeyCmc7].find(s => s.cp === det['C.P del cheque']);
-          if (suc) displayVal += `<span class="suc-tag">${escHtml(suc.ciudad||suc.localidad)}</span>`;
-        }
-      }
-    }
+    // CMC7 — solo mostrar el valor crudo; banco y localidad se extraen para bandeja
     // C.P del cheque — busca por CP en el banco emisor del cheque
     if (lblL === 'c.p del cheque' || lblL === 'cp del cheque') {
       if (bKey) {
@@ -2530,6 +2624,7 @@ async function checkGaliciaStatus() {
       document.getElementById('gal-empresa').disabled = false;
       document.getElementById('btn-cambiar-empresa').disabled = false;
       if (data.empresa) _setEmpresaUI(data.empresa);
+      _startGaliciaPoll();
     } else {
       // Sesión de Galicia perdida — resetear UI al estado desconectado
       document.getElementById('btn-gal-logout').style.display = 'none';
@@ -2593,6 +2688,23 @@ async function doLogout() {
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
   document.getElementById('nav-user').textContent = '—';
+}
+
+// ── Poll Galicia status (detecta cierre de ventana del browser) ───────────
+function _startGaliciaPoll() {
+  if (_galiciaPoll) return;
+  _galiciaPoll = setInterval(async () => {
+    const btnLogout = document.getElementById('btn-gal-logout');
+    if (!btnLogout || btnLogout.style.display === 'none') {
+      clearInterval(_galiciaPoll); _galiciaPoll = null; return;
+    }
+    const eraConectado = document.getElementById('dot-galicia').className.includes('ok');
+    await checkGaliciaStatus();
+    const ahoraConectado = document.getElementById('dot-galicia').className.includes('ok');
+    if (eraConectado && !ahoraConectado) {
+      clearInterval(_galiciaPoll); _galiciaPoll = null;
+    }
+  }, 10000);
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
