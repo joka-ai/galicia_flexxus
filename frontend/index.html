@@ -1082,7 +1082,7 @@ async function loginGalicia() {
       document.getElementById('lbl-galicia').textContent = 'Galicia: conectado';
       document.getElementById('gal-empresa').disabled = false;
       document.getElementById('btn-cambiar-empresa').disabled = false;
-      const _cfg          = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
+      let _cfg = {}; try { _cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}'); } catch(e) {}
       const _empresaDeseada = _cfg.galEmpresa || '';
       const _empresaActiva  = data.empresa || '';
       if (_empresaDeseada &&
