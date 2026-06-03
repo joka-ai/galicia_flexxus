@@ -1028,16 +1028,18 @@ function fmtMontoShort(n) {
 }
 
 async function apiFetch(path, opts={}) {
-  const res = await fetch(API + path, { headers: {'Content-Type':'application/json'}, ...opts });
+  const res = await fetch(API + path, { credentials:'include', headers: {'Content-Type':'application/json'}, ...opts });
   return res.json();
 }
 
 // ── Config ────────────────────────────────────────────────────────────────
 function guardarConfig() {
-  localStorage.setItem('galicia_cfg', JSON.stringify({
-    galUser:    document.getElementById('gal-user').value,
-    galEmpresa: document.getElementById('gal-empresa').value,
-  }));
+  try {
+    localStorage.setItem('galicia_cfg', JSON.stringify({
+      galUser:    document.getElementById('gal-user').value,
+      galEmpresa: document.getElementById('gal-empresa').value,
+    }));
+  } catch(e) {}
   showMsg('cfg-msg', '✓ Configuración guardada.', 'success');
 }
 
