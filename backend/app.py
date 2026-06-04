@@ -141,7 +141,19 @@ def _pw(fn, *args, **kwargs):
 
 def _galicia_client():
     c = _session.get('client')
-    return c if (c and c._logged_in) else None
+    if not c or not c._logged_in:
+        return None
+    # Verificación activa: si el browser fue cerrado por el usuario
+    try:
+        if c._page and c._page.is_closed():
+            c._logged_in = False
+            return None
+        if c._browser and not c._browser.is_connected():
+            c._logged_in = False
+            return None
+    except Exception:
+        pass
+    return c
 
 # ─── Auth guard ───────────────────────────────────────────────────────────────
 _EXEMPT = {'/api/app/login', '/api/app/logout', '/api/app/check', '/api/debug/log'}

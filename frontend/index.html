@@ -1643,10 +1643,10 @@ function initCopyHandlers() {
     const tb = document.getElementById(id); if (!tb) return;
     tb.addEventListener('click', e => {
       const td = e.target.closest('td');
-      if (!td || td.classList.contains('no-copy')) return;
+      if (!td) return;
       const tr = td.closest('tr');
+      // Primero verificar si es una fila de detalle expandido
       if (tr && tr.classList.contains('detail-row')) {
-        // Copiar el valor del campo del detalle expandido
         const field = e.target.closest('.detail-field');
         if (field) {
           const valEl = field.querySelector('.detail-value');
@@ -1655,6 +1655,8 @@ function initCopyHandlers() {
         }
         return;
       }
+      // Para filas normales, respetar no-copy
+      if (td.classList.contains('no-copy')) return;
       e.stopPropagation(); copiarTexto(td.innerText.trim(), td);
     });
     tb.addEventListener('dblclick', e => {
