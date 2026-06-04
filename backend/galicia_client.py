@@ -59,8 +59,8 @@ class GaliciaClient:
             self._page.on('close', self._on_close)
             self._browser.on('disconnected', self._on_close)
 
-            self._page.goto(LOGIN_URL, timeout=45000)
-            self._page.wait_for_load_state("domcontentloaded", timeout=30000)
+            # Intenta cargar la página con reintento automático en caso de timeout
+            self._goto_con_retry(LOGIN_URL)
             self._cerrar_banners()
 
             user_input = self._page.locator("#userInput")
@@ -645,6 +645,22 @@ class GaliciaClient:
         if not fecha_desde or fecha_desde < limite:
             return limite
         return fecha_desde
+
+    def _goto_con_retry(self, url: str, timeout: int = 60000, reintentos: int = 2):
+        """Navega a la URL con reintentos automáticos en caso de timeout."""
+        ultimo_error = None
+        for intento in range(reintentos):
+            try:
+                self._page.goto(url, timeout=timeout)
+                self._page.wait_for_load_state("domcontentloaded", timeout=30000)
+                return
+            except Exception as e:
+                ultimo_error = e
+                if intento < reintentos - 1 and 'timeout' in str(e).lower():
+                    time.sleep(3)
+                    continue
+                break
+        raise ultimo_error
 
     def _cerrar_banners(self):
         selectores = [
