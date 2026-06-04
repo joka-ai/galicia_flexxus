@@ -138,11 +138,11 @@ class GaliciaClient:
     def __del__(self):
         self._cleanup()
 
-    def _on_close(self):
-        """Llamado cuando el usuario cierra la ventana del browser Playwright."""
+    def _on_close(self, *args):
+        """Llamado cuando el usuario cierra la ventana del browser Playwright.
+        Playwright pasa el objeto page/browser como argumento — se acepta con *args."""
         self._logged_in = False
-        self._page = None
-        self._context = None
+        # No tocar _page/_context acá: puede haber una consulta activa en el hilo de Playwright
 
     def _leer_empresa_activa(self) -> str:
         """Lee el nombre de la empresa activa del header del portal."""
@@ -501,23 +501,23 @@ class GaliciaClient:
 
         try:
             csv_item = self._page.locator('[aria-label="Detalle de cheques en .CSV"]').first
-            csv_item.wait_for(state="visible", timeout=3000)
+            csv_item.wait_for(state="visible", timeout=8000)
         except Exception:
             return [], SIN_DATOS
 
         csv_item.click()
-        time.sleep(0.5)
+        time.sleep(0.8)
 
         try:
             modal = self._page.locator('[data-automation-id="modalComponent"]').first
-            modal.wait_for(state="visible", timeout=3000)
+            modal.wait_for(state="visible", timeout=8000)
             try:
                 self._page.locator('label:has-text("Todas las páginas")').first.click()
-                time.sleep(0.3)
+                time.sleep(0.5)
             except Exception:
                 pass
             continuar = self._page.locator('button[aria-label="Continuar"]').first
-            continuar.wait_for(state="visible", timeout=2000)
+            continuar.wait_for(state="visible", timeout=5000)
         except Exception:
             return [], "Error al manejar el modal de descarga"
 
@@ -605,7 +605,7 @@ class GaliciaClient:
 
         try:
             csv_item = self._page.locator('[aria-label="Detalle de cheques en .CSV"]').first
-            csv_item.wait_for(state="visible", timeout=3000)
+            csv_item.wait_for(state="visible", timeout=8000)
         except Exception:
             return [], SIN_DATOS
 
@@ -613,18 +613,17 @@ class GaliciaClient:
             tmp = os.path.join(tempfile.gettempdir(), 'galicia_cheques_aceptar_latest.csv')
             with self._page.expect_download(timeout=30000) as dl_info:
                 csv_item.click()
-                time.sleep(0.5)
-                # Modal de paginación es opcional en esta sección
+                time.sleep(0.8)
                 try:
                     modal = self._page.locator('[data-automation-id="modalComponent"]').first
-                    modal.wait_for(state="visible", timeout=2500)
+                    modal.wait_for(state="visible", timeout=8000)
                     try:
                         self._page.locator('label:has-text("Todas las páginas")').first.click()
-                        time.sleep(0.3)
+                        time.sleep(0.5)
                     except Exception:
                         pass
                     continuar = self._page.locator('button[aria-label="Continuar"]').first
-                    if continuar.is_visible(timeout=2000):
+                    if continuar.is_visible(timeout=5000):
                         continuar.click()
                 except Exception:
                     pass
