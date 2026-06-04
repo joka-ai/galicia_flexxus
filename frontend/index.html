@@ -1030,7 +1030,13 @@ function ir(p) {
 
 function showMsg(id, text, tipo='info') {
   const el = document.getElementById(id);
-  if (el) el.innerHTML = text ? `<div class="alert ${tipo}">${text}</div>` : '';
+  if (!el) return;
+  el.innerHTML = text ? `<div class="alert ${tipo}">${text}</div>` : '';
+  clearTimeout(el._msgTimer);
+  if (text && tipo !== 'error') {
+    const delay = tipo === 'warn' ? 7000 : tipo === 'success' ? 4000 : 5000;
+    el._msgTimer = setTimeout(() => { el.innerHTML = ''; }, delay);
+  }
 }
 
 function fmtMonto(n) {
