@@ -2,9 +2,12 @@
 Galicia | Backend — Flask API
 """
 import os
+import sys
 import json
 import hashlib
 import logging
+import logging.handlers
+import platform
 import tempfile
 import time
 from collections import defaultdict
@@ -24,7 +27,23 @@ from file_processor import (
 import sucursales_manager
 
 # ─── Logging ──────────────────────────────────────────────────────────────────
-logging.getLogger('werkzeug').setLevel(logging.ERROR)
+_BASE_DIR_LOG = os.path.dirname(os.path.abspath(__file__))
+_LOG_DIR      = os.path.join(_BASE_DIR_LOG, '..', 'logs')
+os.makedirs(_LOG_DIR, exist_ok=True)
+_LOG_FILE = os.path.join(_LOG_DIR, 'debug.log')
+
+_fmt = logging.Formatter('%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+                          datefmt='%Y-%m-%d %H:%M:%S')
+_fh  = logging.handlers.RotatingFileHandler(
+    _LOG_FILE, maxBytes=5*1024*1024, backupCount=2, encoding='utf-8')
+_fh.setFormatter(_fmt)
+_fh.setLevel(logging.DEBUG)
+
+logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().addHandler(_fh)
+logging.getLogger('werkzeug').setLevel(logging.WARNING)
+
+_log = logging.getLogger('galicia_app')
 
 # ─── App ──────────────────────────────────────────────────────────────────────
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
@@ -122,7 +141,7 @@ def _galicia_client():
     return c if (c and c._logged_in) else None
 
 # ─── Auth guard ───────────────────────────────────────────────────────────────
-_EXEMPT = {'/api/app/login', '/api/app/logout', '/api/app/check'}
+_EXEMPT = {'/api/app/login', '/api/app/logout', '/api/app/check', '/api/debug/log'}
 
 
 @app.before_request
@@ -135,6 +154,20 @@ def _require_login():
     return None
 
 # ─── Static files ─────────────────────────────────────────────────────────────
+@app.route('/api/debug/log', methods=['POST'])
+def debug_log_frontend():
+    data = request.json or {}
+    msg  = data.get('message', '')
+    lvl  = data.get('level', 'error').lower()
+    logger = logging.getLogger('frontend')
+    if lvl == 'warn':
+        logger.warning(msg)
+    elif lvl == 'info':
+        logger.info(msg)
+    else:
+        logger.error(msg)
+    return jsonify({'ok': True})
+
 @app.route('/')
 def index():
     return send_from_directory('../frontend', 'index.html')
@@ -396,5 +429,13 @@ def api_sucursales_upload(banco):
 # ─── Entry point ──────────────────────────────────────────────────────────────
 if __name__ == '__main__':
     sucursales_manager.init()
+    _log.info('=' * 60)
+    _log.info('Galicia | Consultas — iniciando')
+    _log.info(f'Python   : {sys.version}')
+    _log.info(f'SO       : {platform.system()} {platform.version()}')
+    _log.info(f'Maquina  : {platform.node()}')
+    _log.info(f'Log file : {os.path.abspath(_LOG_FILE)}')
+    _log.info('=' * 60)
     print(f"\n{'='*50}\n  Galicia | Consultas — http://localhost:5000\n{'='*50}\n")
+    print(f"  Debug log: {os.path.abspath(_LOG_FILE)}\n")
     app.run(debug=False, port=5000, threaded=True)

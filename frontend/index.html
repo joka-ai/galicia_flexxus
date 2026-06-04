@@ -983,6 +983,23 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
 <script>
 const API = '/api';
 
+// ── Debug: captura errores JS y los guarda en el log del servidor ─────────
+function _debugLog(level, msg) {
+  try {
+    fetch('/api/debug/log', {
+      method: 'POST', credentials: 'include',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({level, message: msg})
+    }).catch(() => {});
+  } catch(_) {}
+}
+window.addEventListener('error', e => {
+  _debugLog('error', `[JS] ${e.message} — ${e.filename}:${e.lineno}:${e.colno}\n${e.error?.stack||''}`);
+});
+window.addEventListener('unhandledrejection', e => {
+  _debugLog('error', `[Promise] ${e.reason}`);
+});
+
 let cobros           = [];
 let transferencias   = [];
 let cheques          = [];
