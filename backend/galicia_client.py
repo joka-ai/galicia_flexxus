@@ -208,7 +208,7 @@ class GaliciaClient:
         if not self._logged_in or not self._page:
             return [], "No hay sesión activa"
         try:
-            self._page.goto(COBROS_URL, timeout=30000)
+            self._goto_con_retry(COBROS_URL)
             try:
                 self._page.wait_for_load_state("networkidle", timeout=20000)
             except Exception:
@@ -313,7 +313,7 @@ class GaliciaClient:
             return [], "No hay sesión activa"
         fecha_desde = self._limitar_90_dias(fecha_desde)
         try:
-            self._page.goto(MOVIMIENTOS_URL, timeout=30000)
+            self._goto_con_retry(MOVIMIENTOS_URL)
             try:
                 self._page.wait_for_load_state("networkidle", timeout=25000)
             except Exception:
@@ -405,7 +405,7 @@ class GaliciaClient:
         if not self._logged_in or not self._page:
             return [], "No hay sesión activa"
         try:
-            self._page.goto(CHEQUES_URL, timeout=30000)
+            self._goto_con_retry(CHEQUES_URL)
             try:
                 self._page.wait_for_load_state("networkidle", timeout=20000)
             except Exception:
@@ -540,7 +540,7 @@ class GaliciaClient:
         if not self._logged_in or not self._page:
             return [], "No hay sesión activa"
         try:
-            self._page.goto(CHEQUES_URL, timeout=30000)
+            self._goto_con_retry(CHEQUES_URL)
             try:
                 self._page.wait_for_load_state("networkidle", timeout=20000)
             except Exception:
