@@ -34,10 +34,10 @@ if not exist "venv\" (
 )
 echo.
 
-:: Activar entorno (a partir de aqui usar "python", no "py")
+:: Activar entorno
 call venv\Scripts\activate.bat
 
-:: Instalar librerias en el entorno virtual
+:: Instalar librerias
 echo  [3/5] Instalando librerias (solo la primera vez, puede tardar 2-3 min)...
 python -m pip install --upgrade pip --quiet
 python -m pip install flask flask-cors requests pandas openpyxl xlrd playwright bcrypt pdfplumber --quiet
@@ -50,17 +50,15 @@ python -m playwright install chromium >nul 2>&1
 echo  [OK] Chromium listo
 echo.
 
-:: Lanzar servidor
+:: Lanzar servidor (Python abre el browser automaticamente en el puerto disponible)
 echo  [5/5] Iniciando servidor...
 echo.
 echo  ============================================
-echo   Abriendo http://localhost:5000
+echo   El browser se abre solo. Puerto automatico.
 echo   NO CIERRES ESTA VENTANA mientras lo uses!
+echo   Si algo falla, manda el archivo logs\debug.log
 echo  ============================================
 echo.
-
-timeout /t 2 /nobreak >nul
-start "" "http://localhost:5000"
 
 cd backend
 python app.py

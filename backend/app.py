@@ -4,12 +4,15 @@ Galicia | Backend — Flask API
 import os
 import sys
 import json
+import socket
 import hashlib
 import logging
 import logging.handlers
 import platform
 import tempfile
+import threading
 import time
+import webbrowser
 from collections import defaultdict
 from datetime import timedelta
 from concurrent.futures import ThreadPoolExecutor
@@ -427,15 +430,34 @@ def api_sucursales_upload(banco):
         return jsonify({'ok': False, 'error': str(e)}), 500
 
 # ─── Entry point ──────────────────────────────────────────────────────────────
+def _puerto_libre(inicio=5000, fin=5020) -> int:
+    """Devuelve el primer puerto disponible en el rango dado."""
+    for p in range(inicio, fin):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.bind(('127.0.0.1', p))
+                return p
+            except OSError:
+                continue
+    return inicio  # fallback (si todos están ocupados igual intenta)
+
+
 if __name__ == '__main__':
     sucursales_manager.init()
+    PORT = _puerto_libre()
+    URL  = f'http://localhost:{PORT}'
+
     _log.info('=' * 60)
     _log.info('Galicia | Consultas — iniciando')
     _log.info(f'Python   : {sys.version}')
     _log.info(f'SO       : {platform.system()} {platform.version()}')
     _log.info(f'Maquina  : {platform.node()}')
+    _log.info(f'Puerto   : {PORT}')
     _log.info(f'Log file : {os.path.abspath(_LOG_FILE)}')
     _log.info('=' * 60)
-    print(f"\n{'='*50}\n  Galicia | Consultas — http://localhost:5000\n{'='*50}\n")
+
+    print(f"\n{'='*50}\n  Galicia | Consultas — {URL}\n{'='*50}\n")
     print(f"  Debug log: {os.path.abspath(_LOG_FILE)}\n")
-    app.run(debug=False, port=5000, threaded=True)
+
+    threading.Timer(1.5, lambda: webbrowser.open(URL)).start()
+    app.run(debug=False, host='127.0.0.1', port=PORT, threaded=True)
