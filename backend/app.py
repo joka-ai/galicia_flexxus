@@ -25,7 +25,6 @@ from galicia_client import GaliciaClient
 from file_processor import (
     procesar_csv_recaudadora_galicia,
     procesar_csv_cheques_galicia,
-    procesar_csv_extracto_galicia,
 )
 import sucursales_manager
 
@@ -128,8 +127,6 @@ _pw_executor = ThreadPoolExecutor(max_workers=1)
 _session: dict = {
     'client':            None,
     'cobros':            [],
-    'transferencias':    [],
-    'cheques':           [],
     'cheques_a_aceptar': [],
 }
 
@@ -333,14 +330,6 @@ def _galicia_query(method: str, result_key: str, store_key: str):
 def galicia_recaudadora():
     return _galicia_query('obtener_recaudadora',     'cobros',        'cobros')
 
-@app.route('/api/galicia/transferencias',  methods=['POST'])
-def galicia_transferencias():
-    return _galicia_query('obtener_transferencias',  'transferencias', 'transferencias')
-
-@app.route('/api/galicia/cheques',         methods=['POST'])
-def galicia_cheques():
-    return _galicia_query('obtener_cheques',         'cheques',       'cheques')
-
 @app.route('/api/galicia/cheques_a_aceptar', methods=['POST'])
 def galicia_cheques_a_aceptar():
     return _galicia_query('obtener_cheques_a_aceptar', 'cheques',     'cheques_a_aceptar')
@@ -363,18 +352,6 @@ def upload_csv(tipo):
         if tipo == 'cheques_aceptar':
             datos, msg = procesar_csv_cheques_galicia(tmp)
             return jsonify({'ok': True, 'cheques': datos, 'total': len(datos), 'mensaje': msg})
-
-        if tipo == 'movimientos':
-            try:
-                datos, msg = procesar_csv_recaudadora_galicia(tmp)
-                if datos:
-                    return jsonify({'ok': True, 'tipo_detectado': 'recaudadora',
-                                    'cobros': datos, 'total': len(datos), 'mensaje': msg})
-            except Exception:
-                pass
-            datos, msg = procesar_csv_extracto_galicia(tmp)
-            return jsonify({'ok': True, 'tipo_detectado': 'movimientos',
-                            'transferencias': datos, 'total': len(datos), 'mensaje': msg})
 
         return jsonify({'ok': False, 'error': f'Tipo desconocido: {tipo}'}), 400
     except Exception as e:

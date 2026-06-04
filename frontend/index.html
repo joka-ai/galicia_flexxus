@@ -226,16 +226,6 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
       Recaudadora
       <span class="nav-badge" id="badge-cobros" style="display:none">0</span>
     </div>
-    <div class="nav-item" onclick="ir('transferencias')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
-      Movimientos
-      <span class="nav-badge" id="badge-transf" style="display:none">0</span>
-    </div>
-    <div class="nav-item" onclick="ir('cheques')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="7" y1="15" x2="13" y2="15"/><line x1="17" y1="15" x2="19" y2="15"/></svg>
-      Cheques ECHEQs
-      <span class="nav-badge" id="badge-cheques" style="display:none">0</span>
-    </div>
     <div class="nav-item" onclick="ir('cheques-aceptar')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><polyline points="9 11 12 14 22 9"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       Cheques a Aceptar
@@ -337,20 +327,6 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
           <div class="tipo-card-sub">Cobranza Integrada</div>
         </div>
       </label>
-      <label class="tipo-card selected" id="tc-transferencias" onclick="toggleTipo('transferencias')">
-        <input type="checkbox" id="chk-tipo-transferencias" checked onchange="syncTipoCard('transferencias')"/>
-        <div class="tipo-card-body">
-          <div class="tipo-card-title">Movimientos</div>
-          <div class="tipo-card-sub">Todos los movimientos de cuenta</div>
-        </div>
-      </label>
-      <label class="tipo-card" id="tc-cheques" onclick="toggleTipo('cheques')">
-        <input type="checkbox" id="chk-tipo-cheques" onchange="syncTipoCard('cheques')"/>
-        <div class="tipo-card-body">
-          <div class="tipo-card-title">Cheques ECHEQs</div>
-          <div class="tipo-card-sub">Cheques electrónicos recibidos</div>
-        </div>
-      </label>
       <label class="tipo-card selected" id="tc-cheques-aceptar" onclick="toggleTipo('cheques-aceptar')">
         <input type="checkbox" id="chk-tipo-cheques-aceptar" checked onchange="syncTipoCard('cheques-aceptar')"/>
         <div class="tipo-card-body">
@@ -375,24 +351,6 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
         <div>
           <div class="resumen-num" id="res-cobros-n">0</div>
           <div class="resumen-lbl">Cobros Recaudadora</div>
-        </div>
-      </div>
-      <div class="resumen-item" onclick="ir('transferencias')" id="res-transf" style="display:none">
-        <div class="resumen-icon tr">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
-        </div>
-        <div>
-          <div class="resumen-num" id="res-transf-n">0</div>
-          <div class="resumen-lbl">Movimientos de cuenta</div>
-        </div>
-      </div>
-      <div class="resumen-item" onclick="ir('cheques')" id="res-cheques" style="display:none">
-        <div class="resumen-icon" style="background:var(--amber-l)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="7" y1="15" x2="13" y2="15"/><line x1="17" y1="15" x2="19" y2="15"/></svg>
-        </div>
-        <div>
-          <div class="resumen-num" id="res-cheques-n">0</div>
-          <div class="resumen-lbl">Cheques ECHEQs</div>
         </div>
       </div>
       <div class="resumen-item" onclick="ir('cheques-aceptar')" id="res-cheques-aceptar" style="display:none">
@@ -464,107 +422,6 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
   <p style="font-size:11px;color:var(--text3);margin-top:8px">Clic en celda → copia celda &nbsp;·&nbsp; Doble clic en fila → copia fila completa</p>
 </div>
 
-<!-- MOVIMIENTOS ─────────────────────────────────────────────────────────── -->
-<div class="page" id="page-transferencias">
-  <div class="page-hdr">
-    <h2>Movimientos de cuenta</h2>
-  </div>
-
-  <div class="stats">
-    <div class="stat"><div class="stat-n" id="st-tr-tot">0</div><div class="stat-l">Total movimientos</div></div>
-    <div class="stat"><div class="stat-n" id="st-tr-creditos">$0</div><div class="stat-l">Total créditos</div></div>
-    <div class="stat"><div class="stat-n" id="st-tr-debitos">$0</div><div class="stat-l">Total débitos</div></div>
-  </div>
-
-  <div id="transferencias-msg"></div>
-
-  <div class="tbl-toolbar">
-    <input id="search-transf" type="text" placeholder="Buscar en movimientos…" oninput="buscarTabla('transf',this.value)"/>
-    <button class="btn sm" id="btn-filtros-transf" onclick="toggleFiltros('transf')">⊞ Filtros</button>
-    <button class="btn sm" onclick="limpiarBusqueda('transf')">✕</button>
-    <span class="tbl-count" id="count-transf"></span>
-  </div>
-
-  <div id="fp-transf" class="filtro-panel" style="display:none">
-    <div class="fg w3">
-      <div class="field"><label>Fecha desde</label><input id="fp-tr-desde" type="date"/></div>
-      <div class="field"><label>Fecha hasta</label><input id="fp-tr-hasta" type="date"/></div>
-      <div class="field"><label>Descripción</label><input id="fp-tr-desc" type="text" placeholder="Texto en descripción"/></div>
-      <div class="field">
-        <label>Tipo de movimiento</label>
-        <select id="fp-tr-tipo">
-          <option value="">Todos</option>
-          <option value="credito">Créditos</option>
-          <option value="debito">Débitos</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Estado</label>
-        <select id="fp-tr-estado">
-          <option value="">Todos</option>
-          <option value="imput">Imputados</option>
-          <option value="pendiente">Pendientes</option>
-        </select>
-      </div>
-      <div class="field"><label>Monto mínimo</label><input id="fp-tr-monto-min" type="number" min="0" step="0.01" placeholder="0,00"/></div>
-      <div class="field"><label>Monto máximo</label><input id="fp-tr-monto-max" type="number" min="0" step="0.01" placeholder="0,00"/></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:10px;padding:8px 0;border-top:1px solid var(--border)">
-      <span style="font-size:12px;font-weight:600;color:var(--text2)">Ocultar de la lista:</span>
-      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;font-weight:400">
-        <input type="checkbox" id="fp-tr-ing" style="width:14px;height:14px;accent-color:var(--blue)"> ING <span style="font-size:11px;color:var(--text3)">(Ing. Brutos…)</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;font-weight:400">
-        <input type="checkbox" id="fp-tr-imp" style="width:14px;height:14px;accent-color:var(--blue)"> IMP <span style="font-size:11px;color:var(--text3)">(Imp. Ing. Brutos…)</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;font-weight:400">
-        <input type="checkbox" id="fp-tr-iva" style="width:14px;height:14px;accent-color:var(--blue)"> IVA <span style="font-size:11px;color:var(--text3)">(Iva…)</span>
-      </label>
-    </div>
-    <div class="btn-row" style="margin-bottom:0">
-      <button class="btn sm primary" onclick="aplicarFiltrosTabla('transf')">Aplicar</button>
-      <button class="btn sm" onclick="borrarFiltrosTabla('transf')">Borrar filtros</button>
-    </div>
-  </div>
-
-  <div class="tbl-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:32px"></th>
-          <th class="sortable" id="th-tr-0" onclick="sortTabla('transf',0)">Fecha</th>
-          <th class="sortable" id="th-tr-1" onclick="sortTabla('transf',1)">Descripción</th>
-          <th class="sortable" id="th-tr-2" onclick="sortTabla('transf',2)">Nombre</th>
-          <th class="sortable" id="th-tr-3" onclick="sortTabla('transf',3)">CUIT</th>
-          <th class="sortable" id="th-tr-4" onclick="sortTabla('transf',4)">Banco</th>
-          <th class="sortable" id="th-tr-5" onclick="sortTabla('transf',5)">Sucursal</th>
-          <th class="sortable" id="th-tr-6" onclick="sortTabla('transf',6)">Nro Cheque</th>
-          <th class="sortable" id="th-tr-7" onclick="sortTabla('transf',7)" style="text-align:right">Débitos</th>
-          <th class="sortable" id="th-tr-8" onclick="sortTabla('transf',8)" style="text-align:right">Créditos</th>
-          <th class="sortable" id="th-tr-9" onclick="sortTabla('transf',9)" style="text-align:right">Saldo</th>
-          <th style="width:28px"></th>
-        </tr>
-      </thead>
-      <tbody id="tbody-transf">
-        <tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text3)">Consultá el banco para ver los movimientos</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="pagination" id="pg-transf">
-    <label style="font-size:12px;color:var(--text3)">Filas:</label>
-    <select id="pg-transf-size" onchange="pgTransf.setSize(+this.value)">
-      <option value="25">25</option>
-      <option value="50" selected>50</option>
-      <option value="100">100</option>
-      <option value="0">Todas</option>
-    </select>
-    <button onclick="pgTransf.prev()" id="pg-transf-prev">‹ Ant</button>
-    <span class="pg-info" id="pg-transf-info"></span>
-    <button onclick="pgTransf.next()" id="pg-transf-next">Sig ›</button>
-  </div>
-  <p style="font-size:11px;color:var(--text3);margin-top:8px">Clic en celda → copia celda &nbsp;·&nbsp; Doble clic en fila → copia fila completa</p>
-</div>
-
 <!-- BANDEJA ─────────────────────────────────────────────────────────────── -->
 <div class="page" id="page-bandeja">
   <div class="page-hdr">
@@ -593,7 +450,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
         </tr>
       </thead>
       <tbody id="tbody-bandeja">
-        <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora, Cheques o Movimientos</td></tr>
+        <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora o Cheques a Aceptar</td></tr>
       </tbody>
     </table>
   </div>
@@ -639,115 +496,6 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     <div id="msg-upload-cheques_aceptar" style="margin-top:8px"></div>
   </div>
 
-  <!-- Movimientos -->
-  <div class="card">
-    <div class="card-title">Movimientos de Cuenta</div>
-    <div class="upload-area" id="ua-movimientos">
-      <label class="upload-label" for="file-movimientos">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <span id="lbl-file-movimientos">Seleccionar archivo CSV…</span>
-      </label>
-      <input type="file" id="file-movimientos" accept=".csv" onchange="onFileChange('movimientos')">
-    </div>
-    <div class="upload-hint">Fecha;Descripción;Débitos;Créditos;Saldo  (extracto cuenta corriente Galicia)</div>
-    <div class="btn-row" style="margin-top:10px;margin-bottom:0">
-      <button class="btn primary sm" onclick="subirCSV('movimientos')">⬆ Cargar</button>
-      <button class="btn sm" onclick="limpiarUpload('movimientos')">✕ Limpiar</button>
-    </div>
-    <div id="msg-upload-movimientos" style="margin-top:8px"></div>
-  </div>
-</div>
-
-<!-- CHEQUES ECHEQs ──────────────────────────────────────────────────────── -->
-<div class="page" id="page-cheques">
-  <div class="page-hdr">
-    <h2>Cheques Electrónicos Recibidos</h2>
-  </div>
-
-  <div class="stats">
-    <div class="stat"><div class="stat-n" id="st-chq-tot">0</div><div class="stat-l">Total cheques</div></div>
-    <div class="stat"><div class="stat-n" id="st-chq-monto">$0</div><div class="stat-l">Monto total</div></div>
-    <div class="stat"><div class="stat-n" id="st-chq-estados">—</div><div class="stat-l">Estados</div></div>
-  </div>
-
-  <div id="cheques-msg"></div>
-
-  <div class="tbl-toolbar">
-    <input id="search-cheques" type="text" placeholder="Buscar en cheques…" oninput="buscarTabla('cheques',this.value)"/>
-    <button class="btn sm" id="btn-filtros-cheques" onclick="toggleFiltros('cheques')">⊞ Filtros</button>
-    <button class="btn sm" onclick="limpiarBusqueda('cheques')">✕</button>
-    <span class="tbl-count" id="count-cheques"></span>
-  </div>
-
-  <div id="fp-cheques" class="filtro-panel" style="display:none">
-    <div class="fg">
-      <div class="field"><label>Fecha pago desde</label><input id="fp-chq-desde" type="date"/></div>
-      <div class="field"><label>Fecha pago hasta</label><input id="fp-chq-hasta" type="date"/></div>
-      <div class="field"><label>Fecha emisión desde</label><input id="fp-chq-em-desde" type="date"/></div>
-      <div class="field"><label>Fecha emisión hasta</label><input id="fp-chq-em-hasta" type="date"/></div>
-      <div class="field"><label>Librador</label><input id="fp-chq-librador" type="text" placeholder="Nombre librador"/></div>
-      <div class="field"><label>CUIT</label><input id="fp-chq-cuit" type="text" placeholder="30-XXXXXXXX-X"/></div>
-      <div class="field span2">
-        <label>Estado</label>
-        <select id="fp-chq-estado">
-          <option value="">Todos</option>
-          <option value="Recibidos">Recibidos</option>
-          <option value="Disponible">Disponible</option>
-          <option value="Endoso Recibido">Endoso Recibido</option>
-          <option value="Cesion Recibida">Cesion Recibida</option>
-          <option value="Repudiado">Repudiado</option>
-          <option value="Deposito en proceso">Depósito en proceso</option>
-          <option value="Presentado al cobro">Presentado al cobro</option>
-          <option value="Aval Pendiente">Aval Pendiente</option>
-          <option value="Devolucion Pendiente">Devolución Pendiente</option>
-          <option value="Pagado">Pagado</option>
-          <option value="En custodia">En custodia</option>
-          <option value="Vendido">Vendido</option>
-          <option value="Rechazado">Rechazado</option>
-          <option value="Vencido">Vencido</option>
-          <option value="Anulado">Anulado</option>
-        </select>
-      </div>
-    </div>
-    <div class="btn-row" style="margin-bottom:0">
-      <button class="btn sm primary" onclick="aplicarFiltrosTabla('cheques')">Aplicar</button>
-      <button class="btn sm" onclick="borrarFiltrosTabla('cheques')">Borrar filtros</button>
-    </div>
-  </div>
-
-  <div class="tbl-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th class="sortable" id="th-chq-0" onclick="sortTabla('cheques',0)">Nº Cheque</th>
-          <th class="sortable" id="th-chq-1" onclick="sortTabla('cheques',1)">Librador</th>
-          <th class="sortable" id="th-chq-2" onclick="sortTabla('cheques',2)">CUIT</th>
-          <th class="sortable" id="th-chq-3" onclick="sortTabla('cheques',3)">Fecha pago</th>
-          <th class="sortable" id="th-chq-4" onclick="sortTabla('cheques',4)">Fecha emisión</th>
-          <th class="sortable" id="th-chq-5" onclick="sortTabla('cheques',5)" style="text-align:right">Importe</th>
-          <th class="sortable" id="th-chq-6" onclick="sortTabla('cheques',6)">Estado</th>
-          <th class="sortable" id="th-chq-7" onclick="sortTabla('cheques',7)">Banco emisor</th>
-          <th style="width:28px"></th>
-        </tr>
-      </thead>
-      <tbody id="tbody-cheques">
-        <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text3)">Consultá el banco para ver los cheques</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="pagination" id="pg-cheques">
-    <label style="font-size:12px;color:var(--text3)">Filas:</label>
-    <select id="pg-cheques-size" onchange="pgCheques.setSize(+this.value)">
-      <option value="25">25</option>
-      <option value="50" selected>50</option>
-      <option value="100">100</option>
-      <option value="0">Todas</option>
-    </select>
-    <button onclick="pgCheques.prev()" id="pg-cheques-prev">‹ Ant</button>
-    <span class="pg-info" id="pg-cheques-info"></span>
-    <button onclick="pgCheques.next()" id="pg-cheques-next">Sig ›</button>
-  </div>
-  <p style="font-size:11px;color:var(--text3);margin-top:8px">Clic en celda → copia celda &nbsp;·&nbsp; Doble clic en fila → copia fila completa</p>
 </div>
 
 <!-- CHEQUES A ACEPTAR ────────────────────────────────────────────────────── -->
@@ -1001,8 +749,6 @@ window.addEventListener('unhandledrejection', e => {
 });
 
 let cobros           = [];
-let transferencias   = [];
-let cheques          = [];
 let chequesAceptar   = [];
 let tiposConsultados = new Set();
 let bandeja = [];
@@ -1016,7 +762,7 @@ function _setQuerying(on) {
   if (banner) banner.style.display = on ? 'flex' : 'none';
 }
 
-const NAV_MAP = { config:0, galicia:1, recaudadora:2, transferencias:3, cheques:4, 'cheques-aceptar':5, sucursales:6, carga:7, bandeja:8 };
+const NAV_MAP = { config:0, galicia:1, recaudadora:2, 'cheques-aceptar':3, sucursales:4, carga:5, bandeja:6 };
 
 function ir(p) {
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
@@ -1187,11 +933,9 @@ async function consultarTodo() {
   const desde = document.getElementById('q-desde').value;
   const hasta = document.getElementById('q-hasta').value;
   const doRec  = document.getElementById('chk-tipo-recaudadora').checked;
-  const doTr   = document.getElementById('chk-tipo-transferencias').checked;
-  const doChq  = document.getElementById('chk-tipo-cheques').checked;
   const doChqA = document.getElementById('chk-tipo-cheques-aceptar').checked;
 
-  if (!doRec && !doTr && !doChq && !doChqA) { showMsg('gal-msg', 'Seleccioná al menos un tipo de consulta.', 'warn'); return; }
+  if (!doRec && !doChqA) { showMsg('gal-msg', 'Seleccioná al menos un tipo de consulta.', 'warn'); return; }
   if (!desde || !hasta) { showMsg('gal-msg', 'Completá las fechas Desde y Hasta.', 'warn'); return; }
   const hoy = new Date().toISOString().slice(0,10);
   if (hasta > hoy)   { showMsg('gal-msg', 'La fecha hasta no puede ser posterior a hoy.', 'warn'); return; }
@@ -1209,16 +953,6 @@ async function consultarTodo() {
     cobros = []; pgCobros.reset(); renderCobros();
     showMsg('recaudadora-msg', '');
   }
-  if (doTr) {
-    tiposConsultados.add('transf');
-    transferencias = []; pgTransf.reset(); renderTransferencias();
-    showMsg('transferencias-msg', '');
-  }
-  if (doChq) {
-    tiposConsultados.add('cheques');
-    cheques = []; pgCheques.reset(); renderCheques();
-    showMsg('cheques-msg', '');
-  }
   if (doChqA) {
     tiposConsultados.add('chequesAceptar');
     chequesAceptar = []; pgChequesAceptar.reset(); renderChequesAceptar();
@@ -1227,8 +961,6 @@ async function consultarTodo() {
 
   const promesas = [];
   if (doRec)  promesas.push(consultarRecaudadora(desde, hasta));
-  if (doTr)   promesas.push(consultarTransferencias(desde, hasta));
-  if (doChq)  promesas.push(consultarCheques(desde, hasta));
   if (doChqA) promesas.push(consultarChequesAceptar(desde, hasta));
   await Promise.all(promesas);
 
@@ -1255,40 +987,6 @@ async function consultarRecaudadora(desde, hasta) {
   }
 }
 
-async function consultarTransferencias(desde, hasta) {
-  try {
-    const data = await apiFetch('/galicia/transferencias', { method:'POST', body:JSON.stringify({fecha_desde:desde, fecha_hasta:hasta}) });
-    if (data.ok) {
-      transferencias = data.transferencias;
-      pgTransf.reset();
-      renderTransferencias();
-      if (!transferencias.length) showMsg('transferencias-msg', data.mensaje || 'No se encontraron movimientos para el período seleccionado.', 'warn');
-      else showMsg('transferencias-msg', '');
-    } else {
-      showMsg('transferencias-msg', '✗ ' + (data.error || 'Error al consultar movimientos.'), 'error');
-    }
-  } catch(e) {
-    showMsg('transferencias-msg', '✗ Error de red: ' + e.message, 'error');
-  }
-}
-
-async function consultarCheques(desde, hasta) {
-  try {
-    const data = await apiFetch('/galicia/cheques', { method:'POST', body:JSON.stringify({fecha_desde:desde, fecha_hasta:hasta}) });
-    if (data.ok) {
-      cheques = data.cheques;
-      pgCheques.reset();
-      renderCheques();
-      if (!cheques.length) showMsg('cheques-msg', data.mensaje || 'No se encontraron cheques para el período seleccionado.', 'warn');
-      else showMsg('cheques-msg', '');
-    } else {
-      showMsg('cheques-msg', '✗ ' + (data.error || 'Error al consultar cheques.'), 'error');
-    }
-  } catch(e) {
-    showMsg('cheques-msg', '✗ Error de red: ' + e.message, 'error');
-  }
-}
-
 async function consultarChequesAceptar(desde, hasta) {
   try {
     const data = await apiFetch('/galicia/cheques_a_aceptar', { method:'POST', body:JSON.stringify({fecha_desde:desde, fecha_hasta:hasta}) });
@@ -1310,21 +1008,11 @@ async function consultarChequesAceptar(desde, hasta) {
 function actualizarResumen() {
   document.getElementById('resumen-wrap').style.display = 'block';
   const rCob = document.getElementById('res-cobros');
-  const rTr  = document.getElementById('res-transf');
-  const rChq = document.getElementById('res-cheques');
   // Mostrar el card si el tipo fue consultado, aunque el resultado sea 0
   if (tiposConsultados.has('cobros')) {
     rCob.style.display = 'flex';
     document.getElementById('res-cobros-n').textContent = cobros.length;
   } else rCob.style.display = 'none';
-  if (tiposConsultados.has('transf')) {
-    rTr.style.display = 'flex';
-    document.getElementById('res-transf-n').textContent = transferencias.length;
-  } else rTr.style.display = 'none';
-  if (tiposConsultados.has('cheques')) {
-    rChq.style.display = 'flex';
-    document.getElementById('res-cheques-n').textContent = cheques.length;
-  } else rChq.style.display = 'none';
   const rChqA = document.getElementById('res-cheques-aceptar');
   if (tiposConsultados.has('chequesAceptar')) {
     rChqA.style.display = 'flex';
@@ -1333,29 +1021,6 @@ function actualizarResumen() {
 }
 
 // ── Paginación ────────────────────────────────────────────────────────────
-const pgTransf = {
-  page: 1, size: 50,
-  setSize(n) { this.size = n; this.page = 1; renderTransferencias(); },
-  prev()     { if (this.page > 1) { this.page--; renderTransferencias(); } },
-  next()     { this.page++; renderTransferencias(); },
-  reset()    { this.page = 1; },
-  slice(arr) {
-    if (!this.size) return arr;
-    const start = (this.page - 1) * this.size;
-    return arr.slice(start, start + this.size);
-  },
-  render(total) {
-    if (!this.size) { document.getElementById('pg-transf-info').textContent = `${total} total`; document.getElementById('pg-transf-prev').disabled = true; document.getElementById('pg-transf-next').disabled = true; return; }
-    const pages = Math.max(1, Math.ceil(total / this.size));
-    if (this.page > pages) this.page = pages;
-    const start = (this.page - 1) * this.size + 1;
-    const end   = Math.min(this.page * this.size, total);
-    document.getElementById('pg-transf-info').textContent  = total ? `${start}–${end} de ${total}` : '';
-    document.getElementById('pg-transf-prev').disabled = this.page <= 1;
-    document.getElementById('pg-transf-next').disabled = this.page >= pages;
-  },
-};
-
 const pgCobros = {
   page: 1, size: 50,
   setSize(n) { this.size = n; this.page = 1; renderCobros(); },
@@ -1376,30 +1041,6 @@ const pgCobros = {
     document.getElementById('pg-cobros-info').textContent  = total ? `${start}–${end} de ${total}` : '';
     document.getElementById('pg-cobros-prev').disabled = this.page <= 1;
     document.getElementById('pg-cobros-next').disabled = this.page >= pages;
-  },
-};
-
-// ── Paginación cheques ────────────────────────────────────────────────────
-const pgCheques = {
-  page: 1, size: 50,
-  setSize(n) { this.size = n; this.page = 1; renderCheques(); },
-  prev()     { if (this.page > 1) { this.page--; renderCheques(); } },
-  next()     { this.page++; renderCheques(); },
-  reset()    { this.page = 1; },
-  slice(arr) {
-    if (!this.size) return arr;
-    const start = (this.page - 1) * this.size;
-    return arr.slice(start, start + this.size);
-  },
-  render(total) {
-    if (!this.size) { document.getElementById('pg-cheques-info').textContent = `${total} total`; document.getElementById('pg-cheques-prev').disabled = true; document.getElementById('pg-cheques-next').disabled = true; return; }
-    const pages = Math.max(1, Math.ceil(total / this.size));
-    if (this.page > pages) this.page = pages;
-    const start = (this.page - 1) * this.size + 1;
-    const end   = Math.min(this.page * this.size, total);
-    document.getElementById('pg-cheques-info').textContent  = total ? `${start}–${end} de ${total}` : '';
-    document.getElementById('pg-cheques-prev').disabled = this.page <= 1;
-    document.getElementById('pg-cheques-next').disabled = this.page >= pages;
   },
 };
 
@@ -1430,14 +1071,10 @@ const pgChequesAceptar = {
 // ── Estado de filtros/sort ────────────────────────────────────────────────
 const tblState = {
   cobros:         { q:'', sort:{col:-1,dir:'asc'}, f:{} },
-  transf:         { q:'', sort:{col:-1,dir:'asc'}, f:{} },
-  cheques:        { q:'', sort:{col:-1,dir:'asc'}, f:{} },
   chequesAceptar: { q:'', sort:{col:-1,dir:'asc'}, f:{} },
 };
 const SORT_KEYS = {
   cobros:         ['fecha_pago','nombre_cliente','nro_cliente','forma_pago','importe_pago','nro_cheque','informado','anulado'],
-  transf:         ['fecha','descripcion','nombre','cuit_cte','banco','sucursal','nro_comprobante','debito','credito','saldo'],
-  cheques:        ['numero','librador','cuit','fecha_pago','fecha_em','importe','estado','banco'],
   chequesAceptar: ['numero','librador','cuit','fecha_pago','fecha_em','importe','estado','banco'],
 };
 
@@ -1454,11 +1091,9 @@ function _fechaLte(val, hasta) { if (!hasta) return true; const d = _parseD(val)
 function getFiltered(tipo) {
   const q = tblState[tipo].q.toLowerCase().trim();
   const f = tblState[tipo].f || {};
-  let datos = tipo==='cobros' ? cobros : tipo==='cheques' ? cheques : tipo==='chequesAceptar' ? chequesAceptar : transferencias;
+  let datos = tipo==='cobros' ? cobros : chequesAceptar;
   if (q) datos = datos.filter(r => Object.values(r).some(v => v && typeof v !== 'object' && String(v).toLowerCase().includes(q)));
-  if (tipo === 'cobros') {
-    // sin filtros adicionales, solo búsqueda global
-  } else if (tipo === 'cheques' || tipo === 'chequesAceptar') {
+  if (tipo === 'chequesAceptar') {
     if (f.desde)    datos = datos.filter(r => _fechaGte(r.fecha_pago, f.desde));
     if (f.hasta)    datos = datos.filter(r => _fechaLte(r.fecha_pago, f.hasta));
     if (f.emDesde)  datos = datos.filter(r => _fechaGte(r.fecha_em,   f.emDesde));
@@ -1466,21 +1101,6 @@ function getFiltered(tipo) {
     if (f.librador) datos = datos.filter(r => String(r.librador||'').toLowerCase().includes(f.librador));
     if (f.cuit)     datos = datos.filter(r => String(r.cuit||'').toLowerCase().includes(f.cuit));
     if (f.estado)   datos = datos.filter(r => String(r.estado||'').toLowerCase().includes(f.estado.toLowerCase()));
-  } else {
-    if (f.desde)    datos = datos.filter(r => _fechaGte(r.fecha, f.desde));
-    if (f.hasta)    datos = datos.filter(r => _fechaLte(r.fecha, f.hasta));
-    if (f.desc)     datos = datos.filter(r => String(r.descripcion||'').toLowerCase().includes(f.desc));
-    if (f.tipo === 'credito') datos = datos.filter(r => (r.credito||0) > 0);
-    if (f.tipo === 'debito')  datos = datos.filter(r => (r.debito||0)  > 0);
-    if (f.estado) {
-      const est = f.estado.toLowerCase();
-      datos = datos.filter(r => String(r.estado||'').toLowerCase().includes(est));
-    }
-    if (f.montoMin > 0) datos = datos.filter(r => Math.max(r.credito||0, r.debito||0) >= f.montoMin);
-    if (f.montoMax > 0) datos = datos.filter(r => Math.max(r.credito||0, r.debito||0) <= f.montoMax);
-    if (f.ing) datos = datos.filter(r => !(r.descripcion||'').toLowerCase().startsWith('ing.'));
-    if (f.imp) datos = datos.filter(r => !(r.descripcion||'').toLowerCase().startsWith('imp.'));
-    if (f.iva) datos = datos.filter(r => !(r.descripcion||'').toLowerCase().startsWith('iva'));
   }
   const {col, dir} = tblState[tipo].sort;
   if (col >= 0) {
@@ -1496,21 +1116,15 @@ function getFiltered(tipo) {
 
 function buscarTabla(tipo, q) {
   tblState[tipo].q = q;
-  if (tipo==='transf')         pgTransf.reset();
   if (tipo==='cobros')         pgCobros.reset();
-  if (tipo==='cheques')        pgCheques.reset();
   if (tipo==='chequesAceptar') pgChequesAceptar.reset();
   if (tipo==='cobros') renderCobros();
-  else if (tipo==='cheques') renderCheques();
-  else if (tipo==='chequesAceptar') renderChequesAceptar();
-  else renderTransferencias();
+  else renderChequesAceptar();
 }
 
 function _limpiarFiltroInputs(tipo) {
   const campos = {
     cobros:         [],
-    transf:         ['fp-tr-desde','fp-tr-hasta','fp-tr-desc','fp-tr-tipo','fp-tr-estado','fp-tr-monto-min','fp-tr-monto-max','fp-tr-ing','fp-tr-imp','fp-tr-iva'],
-    cheques:        ['fp-chq-desde','fp-chq-hasta','fp-chq-em-desde','fp-chq-em-hasta','fp-chq-librador','fp-chq-cuit','fp-chq-estado'],
     chequesAceptar: ['fp-chqa-desde','fp-chqa-hasta','fp-chqa-em-desde','fp-chqa-em-hasta','fp-chqa-librador','fp-chqa-cuit','fp-chqa-estado'],
   };
   (campos[tipo]||[]).forEach(id => {
@@ -1525,9 +1139,7 @@ function limpiarBusqueda(tipo) {
   const inp = document.getElementById('search-'+tipo); if (inp) inp.value = '';
   _limpiarFiltroInputs(tipo); _actualizarIconosSort(tipo);
   if (tipo==='cobros') { pgCobros.reset(); renderCobros(); }
-  else if (tipo==='cheques') { pgCheques.reset(); renderCheques(); }
-  else if (tipo==='chequesAceptar') { pgChequesAceptar.reset(); renderChequesAceptar(); }
-  else renderTransferencias();
+  else { pgChequesAceptar.reset(); renderChequesAceptar(); }
 }
 
 function sortTabla(tipo, col) {
@@ -1535,13 +1147,11 @@ function sortTabla(tipo, col) {
   st.dir = (st.col===col && st.dir==='asc') ? 'desc' : 'asc';
   st.col = col; _actualizarIconosSort(tipo);
   if (tipo==='cobros') { pgCobros.reset(); renderCobros(); }
-  else if (tipo==='cheques') { pgCheques.reset(); renderCheques(); }
-  else if (tipo==='chequesAceptar') { pgChequesAceptar.reset(); renderChequesAceptar(); }
-  else renderTransferencias();
+  else { pgChequesAceptar.reset(); renderChequesAceptar(); }
 }
 
 function _actualizarIconosSort(tipo) {
-  const pfx = {cobros:'cob', transf:'tr', cheques:'chq', chequesAceptar:'chqa'}[tipo];
+  const pfx = {cobros:'cob', chequesAceptar:'chqa'}[tipo];
   if (!pfx || !SORT_KEYS[tipo]) return;
   SORT_KEYS[tipo].forEach((_,i) => {
     const th = document.getElementById(`th-${pfx}-${i}`); if (!th) return;
@@ -1556,7 +1166,7 @@ function _setCount(tipo, n, total) {
 }
 
 function toggleFiltros(tipo) {
-  const panelId = {transf:'fp-transf', cheques:'fp-cheques', chequesAceptar:'fp-chequesAceptar'}[tipo];
+  const panelId = {chequesAceptar:'fp-chequesAceptar'}[tipo];
   const panel = document.getElementById(panelId); if (!panel) return;
   const btn   = document.getElementById('btn-filtros-' + tipo);
   const visible = panel.style.display !== 'none';
@@ -1574,32 +1184,6 @@ function aplicarFiltrosTabla(tipo) {
     };
     pgCobros.reset();
     renderCobros();
-  } else if (tipo === 'transf') {
-    tblState.transf.f = {
-      desde:    document.getElementById('fp-tr-desde').value,
-      hasta:    document.getElementById('fp-tr-hasta').value,
-      desc:     document.getElementById('fp-tr-desc').value.trim().toLowerCase(),
-      tipo:     document.getElementById('fp-tr-tipo').value,
-      estado:   document.getElementById('fp-tr-estado').value,
-      montoMin: parseFloat(document.getElementById('fp-tr-monto-min').value) || 0,
-      montoMax: parseFloat(document.getElementById('fp-tr-monto-max').value) || 0,
-      ing:      document.getElementById('fp-tr-ing').checked,
-      imp:      document.getElementById('fp-tr-imp').checked,
-      iva:      document.getElementById('fp-tr-iva').checked,
-    };
-    renderTransferencias();
-  } else if (tipo === 'cheques') {
-    tblState.cheques.f = {
-      desde:    document.getElementById('fp-chq-desde').value,
-      hasta:    document.getElementById('fp-chq-hasta').value,
-      emDesde:  document.getElementById('fp-chq-em-desde').value,
-      emHasta:  document.getElementById('fp-chq-em-hasta').value,
-      librador: document.getElementById('fp-chq-librador').value.trim().toLowerCase(),
-      cuit:     document.getElementById('fp-chq-cuit').value.trim().toLowerCase(),
-      estado:   document.getElementById('fp-chq-estado').value,
-    };
-    pgCheques.reset();
-    renderCheques();
   } else if (tipo === 'chequesAceptar') {
     tblState.chequesAceptar.f = {
       desde:    document.getElementById('fp-chqa-desde').value,
@@ -1618,9 +1202,7 @@ function aplicarFiltrosTabla(tipo) {
 function borrarFiltrosTabla(tipo) {
   tblState[tipo].f = {}; _limpiarFiltroInputs(tipo);
   if (tipo==='cobros') { pgCobros.reset(); renderCobros(); }
-  else if (tipo==='cheques') { pgCheques.reset(); renderCheques(); }
-  else if (tipo==='chequesAceptar') { pgChequesAceptar.reset(); renderChequesAceptar(); }
-  else renderTransferencias();
+  else { pgChequesAceptar.reset(); renderChequesAceptar(); }
 }
 
 // ── Copy ──────────────────────────────────────────────────────────────────
@@ -1645,7 +1227,7 @@ function mostrarToast(msg) {
 }
 
 function initCopyHandlers() {
-  ['tbody-cobros','tbody-transf','tbody-cheques','tbody-cheques-aceptar','tbody-bandeja'].forEach(id => {
+  ['tbody-cobros','tbody-cheques-aceptar','tbody-bandeja'].forEach(id => {
     const tb = document.getElementById(id); if (!tb) return;
     tb.addEventListener('click', e => {
       const td = e.target.closest('td');
@@ -1731,60 +1313,6 @@ function actualizarStatsCobros() {
   document.getElementById('st-cob-formas').textContent = formas.length ? formas.join(', ').slice(0,30) : '—';
 }
 
-// ── Tabla Cheques ─────────────────────────────────────────────────────────
-function renderCheques() {
-  const todos = getFiltered('cheques');
-  const datos = pgCheques.slice(todos);
-  const tbody = document.getElementById('tbody-cheques');
-  _setCount('cheques', todos.length, cheques.length);
-  pgCheques.render(todos.length);
-  if (!todos.length) {
-    const msg = cheques.length ? 'Sin resultados — probá otro término' : 'Consultá el banco para ver los cheques';
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text3)">${msg}</td></tr>`;
-    actualizarStatsCheques(); actualizarBadge('cheques', cheques.length); return;
-  }
-  tbody.innerHTML = datos.map(c => {
-    const det = (c.detalle && typeof c.detalle === 'object') ? c.detalle : {};
-    const hasDetail = Object.keys(det).length > 0;
-    const chevronTd = hasDetail
-      ? `<td class="no-copy" style="width:28px;text-align:center" onclick="toggleDetail('${escHtml(c.id)}',this)"><span class="expand-chevron">▶</span></td>`
-      : `<td class="no-copy" style="width:28px"></td>`;
-    const detailRow = hasDetail
-      ? `<tr class="detail-row" id="detail-${escHtml(c.id)}" style="display:none">
-           <td colspan="9" class="no-copy">
-             <div class="detail-grid">${renderDetalleGrid(det, c.banco)}</div>
-           </td>
-         </tr>`
-      : '';
-    const est = (c.estado||'').toLowerCase();
-    const estColor = est.includes('acept') || est.includes('aprob') ? 'ok'
-      : est.includes('rechaz') || est.includes('anul') ? 'red'
-      : 'info';
-    const estadoBadge = c.estado
-      ? `<span class="badge ${estColor==='red'?'':''+estColor}" style="font-size:10px;${estColor==='red'?'background:var(--red-l);color:var(--red)':''}">${escHtml(c.estado)}</span>`
-      : '—';
-    return `<tr>
-      <td style="font-family:monospace;font-size:12px">${_d(c.numero)}</td>
-      <td>${_d((c.librador||'').slice(0,30))}</td>
-      <td style="font-size:12px;color:var(--text3)">${_d(c.cuit)}</td>
-      <td style="white-space:nowrap">${_d(c.fecha_pago)}</td>
-      <td style="white-space:nowrap">${_d(c.fecha_em)}</td>
-      <td style="text-align:right;font-weight:600">${fmtMonto(c.importe)}</td>
-      <td>${estadoBadge}</td>
-      <td style="font-size:12px;color:var(--text3)">${_bancoCelda(c.banco, c.detalle && c.detalle['CMC7'])}</td>
-      ${chevronTd}
-    </tr>${detailRow}`;
-  }).join('');
-  actualizarStatsCheques(); actualizarBadge('cheques', cheques.length);
-}
-
-function actualizarStatsCheques() {
-  const estados = [...new Set(cheques.map(c => c.estado).filter(Boolean))];
-  document.getElementById('st-chq-tot').textContent     = cheques.length;
-  document.getElementById('st-chq-monto').textContent   = fmtMontoShort(cheques.reduce((s,c) => s+(c.importe||0), 0));
-  document.getElementById('st-chq-estados').textContent = estados.length ? estados.join(' · ').slice(0,30) : '—';
-}
-
 // ── Tabla Cheques a Aceptar ───────────────────────────────────────────────
 function renderChequesAceptar() {
   const todos = getFiltered('chequesAceptar');
@@ -1842,7 +1370,6 @@ function actualizarStatsChequesAceptar() {
   document.getElementById('st-chqa-estados').textContent = estados.length ? estados.join(' · ').slice(0,30) : '—';
 }
 
-// ── Tabla Transferencias ──────────────────────────────────────────────────
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -1861,73 +1388,9 @@ function toggleDetail(id, tdEl) {
   if (chevron) chevron.classList.toggle('open', !isOpen);
 }
 
-function renderTransferencias() {
-  const todos  = getFiltered('transf');
-  const datos  = pgTransf.slice(todos);
-  const tbody  = document.getElementById('tbody-transf');
-  _setCount('transf', todos.length, transferencias.length);
-  pgTransf.render(todos.length);
-  if (!todos.length) {
-    const msg = transferencias.length ? 'Sin resultados — probá otro término' : 'Consultá el banco para ver los movimientos';
-    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text3)">${msg}</td></tr>`;
-    actualizarStatsTransf(); actualizarBadge('transf', transferencias.length); return;
-  }
-  tbody.innerHTML = datos.map(t => {
-    // Armar campos completos para el expandible
-    const camposExpandible = [
-      ['Descripción completa', t.descripcion],
-      ['Nombre / Contraparte',  t.nombre],
-      ['CUIT',                  t.cuit_cte],
-      ['Banco emisor',          t.banco],
-      ['Sucursal',              t.sucursal],
-      ['Nro Cheque / Comprob.', t.nro_comprobante],
-      ['Estado',                t.estado],
-      ['Débitos',               t.debito  > 0 ? fmtMonto(t.debito)  : null],
-      ['Créditos',              t.credito > 0 ? fmtMonto(t.credito) : null],
-      ['Saldo',                 t.saldo   !== 0 ? fmtMonto(t.saldo) : null],
-    ].filter(([,v]) => v);
-    // Agregar campos extra del detalle del backend
-    if (t.detalle && typeof t.detalle === 'object') {
-      Object.entries(t.detalle).forEach(([k,v]) => { if (v) camposExpandible.push([k, v]); });
-    }
-    const chevronTd = `<td class="no-copy" style="width:28px;text-align:center" onclick="toggleDetail('${escHtml(t.id)}',this)"><span class="expand-chevron">▶</span></td>`;
-    const detailRow = `<tr class="detail-row" id="detail-${escHtml(t.id)}" style="display:none">
-         <td colspan="12" class="no-copy">
-           <div class="detail-grid">${camposExpandible.map(([lbl,val]) => {
-             const vals = Array.isArray(val) ? val : [val];
-             return `<div class="detail-field"><span class="detail-label">${escHtml(lbl)}</span><span class="detail-value">${vals.map(v => escHtml(String(v))).join('<br>')}</span></div>`;
-           }).join('')}</div>
-         </td>
-       </tr>`;
-    const enBandeja = bandeja.some(b => b.origen_id === t.id);
-    const chkTd = `<td class="no-copy" style="width:32px;text-align:center;padding:4px 6px"><input type="checkbox" class="chk-bnd" ${enBandeja?'checked':''} onclick="event.stopPropagation()" onchange="toggleBandeja('transf','${escHtml(t.id)}',this)"></td>`;
-    return `<tr>
-      ${chkTd}
-      <td style="white-space:nowrap">${t.fecha||'—'}</td>
-      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(t.descripcion||'')}">${_d((t.descripcion||'').slice(0,32))}</td>
-      <td style="font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(t.nombre||'')}">${_d(t.nombre)}</td>
-      <td style="font-size:11px;color:var(--text2);white-space:nowrap">${_d(t.cuit_cte)}</td>
-      <td style="font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(t.banco||'')}">${_bancoCelda(t.banco)||'—'}</td>
-      <td style="font-size:11px;color:var(--text3)">${_d(t.sucursal)}${(()=>{const loc=lookupSucursal('galicia',t.sucursal);return loc?`<span class="suc-tag">${escHtml(loc)}</span>`:''})()}</td>
-      <td style="font-size:11px;color:var(--text2)">${_d(t.nro_comprobante)}</td>
-      <td style="text-align:right;color:var(--red)">${t.debito > 0 ? fmtMonto(t.debito) : '—'}</td>
-      <td style="text-align:right;font-weight:600;color:var(--green)">${t.credito > 0 ? fmtMonto(t.credito) : '—'}</td>
-      <td style="text-align:right;font-size:12px;color:${t.saldo < 0 ? 'var(--red)' : 'var(--text3)'}">${t.saldo !== 0 ? fmtMonto(t.saldo) : '—'}</td>
-      ${chevronTd}
-    </tr>${detailRow}`;
-  }).join('');
-  actualizarStatsTransf(); actualizarBadge('transf', transferencias.length);
-}
-
-function actualizarStatsTransf() {
-  document.getElementById('st-tr-tot').textContent      = transferencias.length;
-  document.getElementById('st-tr-creditos').textContent = fmtMontoShort(transferencias.reduce((s,t) => s+(t.credito||0), 0));
-  document.getElementById('st-tr-debitos').textContent  = fmtMontoShort(transferencias.reduce((s,t) => s+(t.debito||0), 0));
-}
-
 // ── Badges ────────────────────────────────────────────────────────────────
 function actualizarBadge(tipo, n) {
-  const ids = {cobros:'badge-cobros', transf:'badge-transf', cheques:'badge-cheques', 'cheques-aceptar':'badge-cheques-aceptar', bandeja:'badge-bandeja'};
+  const ids = {cobros:'badge-cobros', 'cheques-aceptar':'badge-cheques-aceptar', bandeja:'badge-bandeja'};
   const el = document.getElementById(ids[tipo]); if (!el) return;
   if (n > 0) { el.style.display = 'block'; el.textContent = n; }
   else el.style.display = 'none';
@@ -1936,15 +1399,11 @@ function actualizarBadge(tipo, n) {
 // ── Exportar ──────────────────────────────────────────────────────────────
 function exportarTabla(tipo) {
   let rows, cols, filename;
-  if (tipo === 'cheques') {
-    rows = cheques; cols = ['numero','librador','cuit','fecha_pago','fecha_em','importe','estado','banco']; filename = 'cheques_echeq';
-  } else if (tipo === 'cheques-aceptar') {
+  if (tipo === 'cheques-aceptar') {
     rows = chequesAceptar; cols = ['numero','librador','cuit','fecha_pago','fecha_em','importe','estado','banco']; filename = 'cheques_a_aceptar';
   } else if (tipo === 'cobros') {
     rows = cobros; cols = ['fecha_pago','nombre_cliente','nro_cliente','forma_pago','importe_pago','nro_cheque','informado','anulado']; filename = 'recaudadora';
   } else {
-    // Descarga el CSV original de Galicia
-    window.open(API + '/galicia/transferencias/csv', '_blank');
     return;
   }
   if (!rows.length) return;
@@ -2034,21 +1493,6 @@ function toggleBandeja(tipo, itemId, chkEl) {
           monto:      c.importe_pago || 0,
         };
       }
-    } else if (tipo === 'cheques') {
-      const c = cheques.find(x => x.id === itemId);
-      if (c) {
-        const _sucChq = _sucursalDesdeCheque(c);
-        const _bkChq  = _bancoKey(c.banco || '');
-        item = {
-          id: _bndId(), origen: 'Cheques', origen_id: c.id,
-          cuit:       c.cuit || '—',
-          nombre:     c.librador || '—',
-          banco:      _bancoParaBandeja(c.banco, c.detalle && c.detalle['CMC7']),
-          sucursal:   _sucChq && _sucChq !== '—' ? _sucursalParaBandeja(_sucChq, _bkChq) : '—',
-          nro_cheque: _buildNroCheque('cheques', c),
-          monto:      c.importe || 0,
-        };
-      }
     } else if (tipo === 'chequesAceptar') {
       const c = chequesAceptar.find(x => x.id === itemId);
       if (c) {
@@ -2064,19 +1508,6 @@ function toggleBandeja(tipo, itemId, chkEl) {
           monto:      c.importe || 0,
         };
       }
-    } else if (tipo === 'transf') {
-      const t = transferencias.find(x => x.id === itemId);
-      if (t) item = {
-        id:         _bndId(),
-        origen:     'Movimientos',
-        origen_id:  t.id,
-        cuit:       t.cuit_cte       || '—',
-        nombre:     t.nombre         || (t.descripcion || '').slice(0, 40),
-        banco:      _bancoParaBandeja(t.banco),
-        sucursal:   _sucursalParaBandeja(t.sucursal, 'galicia'),
-        nro_cheque: t.nro_comprobante|| '—',
-        monto:      t.credito > 0 ? t.credito : t.debito,
-      };
     }
     if (item) { bandeja.push(item); actualizarBadge('bandeja', bandeja.length); renderBandeja(); }
   } else {
@@ -2093,9 +1524,7 @@ function removerBandeja(bndId) {
   renderBandeja();
   if (item) {
     if (item.origen === 'Recaudadora') renderCobros();
-    else if (item.origen === 'Cheques') renderCheques();
     else if (item.origen === 'Cheques A Aceptar') renderChequesAceptar();
-    else if (item.origen === 'Movimientos') renderTransferencias();
   }
 }
 
@@ -2103,7 +1532,7 @@ function limpiarBandeja() {
   bandeja = [];
   actualizarBadge('bandeja', 0);
   renderBandeja();
-  renderCobros(); renderCheques(); renderChequesAceptar(); renderTransferencias();
+  renderCobros(); renderChequesAceptar();
 }
 
 function renderBandeja() {
@@ -2112,13 +1541,13 @@ function renderBandeja() {
   const cntEl = document.getElementById('bnd-count');
   const totEl = document.getElementById('bnd-total-monto');
   if (!bandeja.length) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora, Cheques o Movimientos</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora o Cheques a Aceptar</td></tr>`;
     if (resEl) resEl.style.display = 'none';
     return;
   }
   const totalMonto = bandeja.reduce((s, b) => s + (b.monto || 0), 0);
   if (resEl) { resEl.style.display = 'flex'; cntEl.textContent = bandeja.length; totEl.textContent = fmtMonto(totalMonto); }
-  const origenBadge = { 'Recaudadora':'purple', 'Cheques':'teal', 'Cheques A Aceptar':'ok', 'Movimientos':'info' };
+  const origenBadge = { 'Recaudadora':'purple', 'Cheques A Aceptar':'ok' };
   tbody.innerHTML = bandeja.map(b => `<tr>
     <td class="no-copy" style="text-align:center;padding:4px 6px">
       <button style="border:none;background:none;cursor:pointer;color:var(--red);font-size:14px;padding:2px 6px" title="Quitar" onclick="removerBandeja('${escHtml(b.id)}')">×</button>
@@ -2163,8 +1592,8 @@ function exportarBandeja() {
 
 // ── Carga manual CSV ──────────────────────────────────────────────────────
 function onFileChange(tipo) {
-  const ids  = { recaudadora:'file-recaudadora', cheques_aceptar:'file-cheques_aceptar', movimientos:'file-movimientos' };
-  const lbls = { recaudadora:'lbl-file-recaudadora', cheques_aceptar:'lbl-file-cheques_aceptar', movimientos:'lbl-file-movimientos' };
+  const ids  = { recaudadora:'file-recaudadora', cheques_aceptar:'file-cheques_aceptar' };
+  const lbls = { recaudadora:'lbl-file-recaudadora', cheques_aceptar:'lbl-file-cheques_aceptar' };
   const file = document.getElementById(ids[tipo]).files[0];
   const lbl  = document.getElementById(lbls[tipo]);
   if (lbl) lbl.textContent = file ? file.name : 'Seleccionar archivo CSV…';
@@ -2173,7 +1602,7 @@ function onFileChange(tipo) {
 }
 
 function limpiarUpload(tipo) {
-  const ids = { recaudadora:'file-recaudadora', cheques_aceptar:'file-cheques_aceptar', movimientos:'file-movimientos' };
+  const ids = { recaudadora:'file-recaudadora', cheques_aceptar:'file-cheques_aceptar' };
   const el = document.getElementById(ids[tipo]);
   if (el) el.value = '';
   onFileChange(tipo);
@@ -2181,7 +1610,7 @@ function limpiarUpload(tipo) {
 }
 
 async function subirCSV(tipo) {
-  const ids = { recaudadora:'file-recaudadora', cheques_aceptar:'file-cheques_aceptar', movimientos:'file-movimientos' };
+  const ids = { recaudadora:'file-recaudadora', cheques_aceptar:'file-cheques_aceptar' };
   const file = document.getElementById(ids[tipo]).files[0];
   if (!file) { showMsg('msg-upload-' + tipo, 'Seleccioná un archivo primero.', 'warn'); return; }
 
@@ -2205,17 +1634,6 @@ async function subirCSV(tipo) {
       chequesAceptar = data.cheques; tiposConsultados.add('chequesAceptar');
       pgChequesAceptar.reset(); renderChequesAceptar(); actualizarBadge('cheques-aceptar', chequesAceptar.length);
       setTimeout(() => ir('cheques-aceptar'), 600);
-    } else if (tipo === 'movimientos') {
-      if (data.tipo_detectado === 'recaudadora' && data.cobros) {
-        cobros = data.cobros; tiposConsultados.add('cobros');
-        pgCobros.reset(); renderCobros(); actualizarBadge('cobros', cobros.length);
-        showMsg('msg-upload-movimientos', `✓ Archivo detectado como Cobros Recibidos — ${data.mensaje}`, 'success');
-        setTimeout(() => ir('recaudadora'), 600);
-      } else {
-        transferencias = data.transferencias || []; tiposConsultados.add('transf');
-        pgTransf.reset(); renderTransferencias(); actualizarBadge('transf', transferencias.length);
-        setTimeout(() => ir('transferencias'), 600);
-      }
     }
   } catch(e) {
     showMsg('msg-upload-' + tipo, '✗ Error de red: ' + e.message, 'error');

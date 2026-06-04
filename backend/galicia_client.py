@@ -17,12 +17,10 @@ except ImportError:
 from file_processor import (
     procesar_csv_recaudadora_galicia,
     procesar_csv_cheques_galicia,
-    procesar_csv_extracto_galicia,
 )
 
 LOGIN_URL       = "https://empresas.bancogalicia.com.ar/login"
 COBROS_URL      = "https://empresas.bancogalicia.com.ar/cobros/CobranzasInformadas"
-MOVIMIENTOS_URL = "https://empresas.bancogalicia.com.ar/cuentas/movimientos"
 CHEQUES_URL     = "https://empresas.bancogalicia.com.ar/cheques/recibidos"
 
 
@@ -306,132 +304,8 @@ class GaliciaClient:
             return [], f"Error al descargar el CSV: {e}"
 
     # ─────────────────────────────────────────────────────────────────────────
-    # MOVIMIENTOS DE CUENTA
+    # CHEQUES A ACEPTAR — helpers compartidos
     # ─────────────────────────────────────────────────────────────────────────
-    def obtener_transferencias(self, fecha_desde: str, fecha_hasta: str) -> Tuple[List[Dict], str]:
-        if not self._logged_in or not self._page:
-            return [], "No hay sesión activa"
-        fecha_desde = self._limitar_90_dias(fecha_desde)
-        try:
-            self._goto_con_retry(MOVIMIENTOS_URL)
-            try:
-                self._page.wait_for_load_state("networkidle", timeout=25000)
-            except Exception:
-                pass
-            time.sleep(2)
-            self._cerrar_banners()
-
-            if "login" in self._page.url.lower():
-                self._logged_in = False
-                return [], "La sesión expiró. Iniciá sesión nuevamente."
-
-            self._filtrar_fecha_movimientos(fecha_desde, fecha_hasta)
-            time.sleep(1)
-            return self._descargar_csv_movimientos()
-        except Exception as e:
-            return [], str(e)
-
-    def _filtrar_fecha_movimientos(self, fecha_desde: str, fecha_hasta: str):
-        if not fecha_desde and not fecha_hasta:
-            return
-        try:
-            filtros_btn = self._page.locator('button[aria-label="filter2"], button:has-text("Filtros")').first
-            filtros_btn.wait_for(state="visible", timeout=8000)
-            filtros_btn.click()
-            time.sleep(0.8)
-
-            date_input = self._page.locator('input[placeholder="Desde - Hasta"]').first
-            date_input.wait_for(state="visible", timeout=5000)
-            date_input.click()
-            time.sleep(0.5)
-
-            if fecha_desde:
-                self._click_dia_datepicker(fecha_desde)
-                time.sleep(0.4)
-            if fecha_hasta:
-                self._click_dia_datepicker(fecha_hasta)
-                time.sleep(0.4)
-
-            try:
-                self._page.keyboard.press("Escape")
-            except Exception:
-                pass
-            time.sleep(0.3)
-
-            self._page.locator('button[aria-label="Aplicar"]').first.click()
-            try:
-                self._page.wait_for_load_state("networkidle", timeout=10000)
-            except Exception:
-                pass
-            time.sleep(1)
-        except Exception:
-            pass
-
-    def _descargar_csv_movimientos(self) -> Tuple[List[Dict], str]:
-        SIN_DATOS = "No se encontraron movimientos para el período seleccionado"
-        try:
-            dl_btn = self._page.locator(
-                'button[aria-haspopup="true"][class*="button__border"]'
-            ).first
-            dl_btn.wait_for(state="visible", timeout=5000)
-        except Exception:
-            return [], SIN_DATOS
-
-        dl_btn.click()
-        time.sleep(0.3)
-
-        try:
-            csv_item = self._page.locator('[aria-label=".CSV"]').first
-            csv_item.wait_for(state="visible", timeout=3000)
-        except Exception:
-            return [], SIN_DATOS
-
-        try:
-            with self._page.expect_download(timeout=30000) as dl_info:
-                csv_item.click()
-            dl  = dl_info.value
-            tmp = os.path.join(tempfile.gettempdir(), 'galicia_extracto_latest.csv')
-            dl.save_as(tmp)
-            time.sleep(0.5)
-            movs, msg = procesar_csv_extracto_galicia(tmp)
-            return (movs, msg) if movs else ([], SIN_DATOS)
-        except Exception as e:
-            return [], f"Error al descargar el CSV: {e}"
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # CHEQUES ELECTRÓNICOS RECIBIDOS
-    # ─────────────────────────────────────────────────────────────────────────
-    def obtener_cheques(self, fecha_desde: str, fecha_hasta: str) -> Tuple[List[Dict], str]:
-        if not self._logged_in or not self._page:
-            return [], "No hay sesión activa"
-        try:
-            self._goto_con_retry(CHEQUES_URL)
-            try:
-                self._page.wait_for_load_state("networkidle", timeout=20000)
-            except Exception:
-                pass
-            time.sleep(1.5)
-            self._cerrar_banners()
-
-            if "login" in self._page.url.lower():
-                self._logged_in = False
-                return [], "La sesión expiró. Iniciá sesión nuevamente."
-
-            try:
-                self._page.wait_for_selector(
-                    'input[placeholder="Desde - Hasta"], table, [class*="table"]',
-                    timeout=15000,
-                )
-            except Exception:
-                pass
-            time.sleep(0.5)
-
-            self._filtrar_fecha_cheques(fecha_desde, fecha_hasta)
-            time.sleep(1)
-            return self._descargar_csv_cheques()
-        except Exception as e:
-            return [], str(e)
-
     def _filtrar_fecha_cheques(self, fecha_desde: str, fecha_hasta: str):
         if not fecha_desde and not fecha_hasta:
             return
@@ -484,54 +358,6 @@ class GaliciaClient:
                 pass
         except Exception:
             pass
-
-    def _descargar_csv_cheques(self) -> Tuple[List[Dict], str]:
-        SIN_DATOS = "No se encontraron cheques para el período seleccionado"
-        try:
-            dl_btn = self._page.locator(
-                'button[aria-haspopup="true"][title="Descargar"],'
-                'button[aria-haspopup="true"][aria-label="Menuitem"]'
-            ).first
-            dl_btn.wait_for(state="visible", timeout=8000)
-        except Exception:
-            return [], SIN_DATOS
-
-        dl_btn.click()
-        time.sleep(0.4)
-
-        try:
-            csv_item = self._page.locator('[aria-label="Detalle de cheques en .CSV"]').first
-            csv_item.wait_for(state="visible", timeout=8000)
-        except Exception:
-            return [], SIN_DATOS
-
-        csv_item.click()
-        time.sleep(0.8)
-
-        try:
-            modal = self._page.locator('[data-automation-id="modalComponent"]').first
-            modal.wait_for(state="visible", timeout=8000)
-            try:
-                self._page.locator('label:has-text("Todas las páginas")').first.click()
-                time.sleep(0.5)
-            except Exception:
-                pass
-            continuar = self._page.locator('button[aria-label="Continuar"]').first
-            continuar.wait_for(state="visible", timeout=5000)
-        except Exception:
-            return [], "Error al manejar el modal de descarga"
-
-        try:
-            with self._page.expect_download(timeout=30000) as dl_info:
-                continuar.click()
-            dl  = dl_info.value
-            tmp = os.path.join(tempfile.gettempdir(), 'galicia_cheques_latest.csv')
-            dl.save_as(tmp)
-            time.sleep(0.5)
-            cheques, msg = procesar_csv_cheques_galicia(tmp)
-            return (cheques, msg) if cheques else ([], SIN_DATOS)
-        except Exception as e:
-            return [], f"Error al descargar: {e}"
 
     # ─────────────────────────────────────────────────────────────────────────
     # CHEQUES A ACEPTAR
