@@ -135,12 +135,15 @@ class MacroClient:
                     except Exception:
                         pass
                     time.sleep(1.5)
+                    self._empresa_activa = empresa
                     try:
                         inst = self._page.locator('.widget_institutionName').first
                         if inst.is_visible(timeout=2000):
-                            self._empresa_activa = inst.inner_text(timeout=1000).strip()
+                            texto = inst.inner_text(timeout=1000).strip()
+                            if texto:
+                                self._empresa_activa = texto
                     except Exception:
-                        self._empresa_activa = empresa
+                        pass
                     return True, f"Empresa {self._empresa_activa} seleccionada"
             return False, f"Empresa '{empresa}' no encontrada. Disponibles: {', '.join(self._empresas)}"
         except Exception as e:
