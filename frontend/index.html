@@ -2479,6 +2479,7 @@ function _poblarEmpresasMacro(empresas, empresaActiva) {
   const tieneLista = empresas.length > 0;
   sel.disabled = !tieneLista;
   document.getElementById('btn-mac-cambiar-empresa').disabled = !tieneLista;
+  document.getElementById('btn-mac-consultar').disabled = !empresaActiva;
 }
 
 async function logoutMacro() {
@@ -2492,6 +2493,7 @@ async function logoutMacro() {
   document.getElementById('mac-empresa').disabled  = true;
   document.getElementById('mac-empresa').innerHTML = '<option value="">— elegir empresa —</option>';
   document.getElementById('btn-mac-cambiar-empresa').disabled = true;
+  document.getElementById('btn-mac-consultar').disabled = true;
   document.getElementById('mac-empresa-lbl').textContent = '';
   showMsg('mac-msg', 'Sesión cerrada.', 'info');
 }
