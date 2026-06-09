@@ -207,12 +207,14 @@ class MacroClient:
         try:
             self._navegar_inicio()
 
-            # Abrir panel de filtros si está cerrado
-            btn_buscar = self._page.locator('#searchMoves_arrowButton')
+            # Abrir panel de filtros de movimientos si está cerrado
+            btn_buscar = self._page.locator(
+                '#searchMoves_arrowButton[value="Buscar movimientos"]'
+            )
             btn_buscar.wait_for(state='visible', timeout=10000)
             if btn_buscar.get_attribute('aria-expanded') == 'false':
                 btn_buscar.click()
-                time.sleep(0.5)
+                time.sleep(0.8)
 
             # Fechas en formato DD/MM/YYYY
             fd = self._a_ddmmyyyy(fecha_desde)
@@ -242,8 +244,8 @@ class MacroClient:
             if tipo_mov and tipo_mov != 'Ninguno':
                 self._page.locator('#movementType').select_option(tipo_mov)
 
-            # Click Buscar (botón primary, no el Cerrar secondary)
-            self._page.locator('button.action-button_primary_contextual').click()
+            # Click Buscar (id="Boton2" en el panel de movimientos)
+            self._page.locator('#Boton2').click()
             try:
                 self._page.wait_for_load_state('networkidle', timeout=20000)
             except Exception:
@@ -263,7 +265,8 @@ class MacroClient:
             return [], f"Error al obtener transferencias: {e}"
 
     def _navegar_inicio(self):
-        """Navega al Inicio (home) donde está el panel de movimientos."""
+        """Navega al Inicio, selecciona Cuenta Corriente Bancaria y queda en su detalle."""
+        # 1. Ir a home
         try:
             home = self._page.locator('[id="home"]').first
             if home.is_visible(timeout=1000):
@@ -279,7 +282,33 @@ class MacroClient:
             self._page.wait_for_load_state('networkidle', timeout=10000)
         except Exception:
             pass
-        time.sleep(1.5)
+        time.sleep(1)
+
+        # 2. Hacer click en la fila "CUENTA CORRIENTE BANCARIA" de la tabla de cuentas
+        try:
+            cta = self._page.locator(
+                '#collectionTableCuentas td:has-text("CUENTA CORRIENTE BANCARIA")'
+            ).first
+            cta.wait_for(state='visible', timeout=10000)
+            cta.click()
+        except Exception as e:
+            raise RuntimeError(f"No se encontró Cuenta Corriente Bancaria en la tabla: {e}")
+
+        # 3. Esperar a que cargue el detalle de la cuenta (panel de movimientos)
+        try:
+            self._page.wait_for_load_state('networkidle', timeout=15000)
+        except Exception:
+            pass
+        time.sleep(1)
+
+        # 4. Confirmar que estamos en el detalle correcto
+        try:
+            self._page.wait_for_selector(
+                '#searchMoves_arrowButton[value="Buscar movimientos"]',
+                timeout=10000,
+            )
+        except Exception:
+            pass
 
     def _a_ddmmyyyy(self, date_str: str) -> str:
         if not date_str:
