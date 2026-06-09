@@ -2177,8 +2177,9 @@ function _startGaliciaPoll() {
     const ahoraConectado = document.getElementById('dot-galicia').className.includes('ok');
     if (eraConectado && !ahoraConectado) {
       clearInterval(_galiciaPoll); _galiciaPoll = null;
+      showMsg('gal-msg', '⚠ Se cerró la ventana del banco. La sesión fue cerrada.', 'warn');
     }
-  }, 10000);
+  }, 5000);
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────

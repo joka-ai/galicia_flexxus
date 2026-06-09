@@ -149,7 +149,9 @@ def _galicia_client():
             c._logged_in = False
             return None
     except Exception:
-        pass
+        # Si no podemos verificar el estado, asumir que está cerrado
+        c._logged_in = False
+        return None
     return c
 
 # ─── Auth guard ───────────────────────────────────────────────────────────────
