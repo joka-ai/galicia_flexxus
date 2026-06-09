@@ -283,6 +283,12 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
       <div class="field"><label>Contraseña</label><input id="gal-pass" type="password" placeholder="••••••••"/></div>
     </div>
   </div>
+  <div class="card">
+    <div class="card-title">🏢 Datos de empresa</div>
+    <div class="fg w1">
+      <div class="field"><label>Razón Social (propia)</label><input id="cfg-razon-social" placeholder="Ej: Flash Trade SA — se usa para marcar cheques propios"/></div>
+    </div>
+  </div>
   <div class="btn-row">
     <button class="btn primary" onclick="guardarConfig()">💾 Guardar configuración</button>
   </div>
@@ -441,16 +447,20 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
         <tr>
           <th style="width:28px"></th>
           <th>Origen</th>
-          <th>CUIT</th>
-          <th>Nombre cliente</th>
-          <th>Banco emisor</th>
-          <th>Sucursal</th>
+          <th>Nombre</th>
+          <th>Suc. Dep.</th>
           <th>Nro cheque</th>
           <th style="text-align:right">Monto</th>
+          <th>Fecha em.</th>
+          <th>Propio</th>
+          <th>Común</th>
+          <th>Orden</th>
+          <th>Cruzado</th>
+          <th>Elect.</th>
         </tr>
       </thead>
       <tbody id="tbody-bandeja">
-        <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora o Cheques a Aceptar</td></tr>
+        <tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora o Cheques a Aceptar</td></tr>
       </tbody>
     </table>
   </div>
@@ -805,8 +815,9 @@ async function apiFetch(path, opts={}) {
 function guardarConfig() {
   try {
     localStorage.setItem('galicia_cfg', JSON.stringify({
-      galUser:    document.getElementById('gal-user').value,
-      galEmpresa: document.getElementById('gal-empresa').value,
+      galUser:      document.getElementById('gal-user').value,
+      galEmpresa:   document.getElementById('gal-empresa').value,
+      razonSocial1: document.getElementById('cfg-razon-social').value,
     }));
   } catch(e) {}
   showMsg('cfg-msg', '✓ Configuración guardada.', 'success');
@@ -815,8 +826,9 @@ function guardarConfig() {
 function cargarConfig() {
   try {
     const cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
-    if (cfg.galUser)    document.getElementById('gal-user').value    = cfg.galUser;
-    if (cfg.galEmpresa) document.getElementById('gal-empresa').value = cfg.galEmpresa;
+    if (cfg.galUser)      document.getElementById('gal-user').value         = cfg.galUser;
+    if (cfg.galEmpresa)   document.getElementById('gal-empresa').value      = cfg.galEmpresa;
+    if (cfg.razonSocial1) document.getElementById('cfg-razon-social').value = cfg.razonSocial1;
   } catch(e) {}
 }
 
@@ -1437,6 +1449,28 @@ function _sucursalDesdeCheque(c) {
 let _bndSeq = 0;
 function _bndId() { return 'BNJ_' + (++_bndSeq).toString().padStart(4,'0'); }
 
+function _getRazonSocial1() {
+  try { return (JSON.parse(localStorage.getItem('galicia_cfg') || '{}').razonSocial1 || '').trim().toUpperCase(); }
+  catch(e) { return ''; }
+}
+function _esPropio(nombre) {
+  const rs1 = _getRazonSocial1();
+  if (!rs1 || !nombre) return 'N';
+  return (nombre||'').trim().toUpperCase() === rs1 ? 'S' : 'N';
+}
+function _esOrden(clausula) {
+  if (!clausula) return 'N';
+  const cl = String(clausula).toLowerCase();
+  if (cl.includes('no a la orden')) return 'N';
+  if (cl.includes('a la orden'))    return 'S';
+  return 'N';
+}
+function _esElectronico(tipo, c) {
+  if (tipo === 'chequesAceptar') return 'S';
+  const fp = (c.forma_pago || '').toLowerCase();
+  return (fp.includes('echeq') || fp.includes('electr')) ? 'S' : 'N';
+}
+
 // Formatea el número de cheque para la bandeja: BBB-SSS-NNNNNN
 // Para cobros (recaudadora): usa Cód. banco, Sucursal, nro_cheque del detalle
 // Para cheques/chequesAceptar: usa CMC7 (primeros 3 banco, siguientes 3 sucursal, resto número)
@@ -1481,31 +1515,36 @@ function toggleBandeja(tipo, itemId, chkEl) {
     if (tipo === 'cobros') {
       const c = cobros.find(x => x.id === itemId);
       if (c) {
-        const codBanco = c.detalle && c.detalle['Cód. banco'];
-        const numSuc   = c.detalle && c.detalle['Sucursal'];
+        const numSucDep = _soloNumero(c.detalle && c.detalle['Sucursal']);
         item = {
           id: _bndId(), origen: 'Recaudadora', origen_id: c.id,
-          cuit:       c.nro_cliente || '—',
-          nombre:     c.nombre_cliente || '—',
-          banco:      _bancoParaBandeja(codBanco),
-          sucursal:   _sucursalParaBandeja(numSuc, 'galicia'),
-          nro_cheque: _buildNroCheque('cobros', c),
-          monto:      c.importe_pago || 0,
+          nombre:      c.nombre_cliente || '—',
+          sucursal_dep: numSucDep && numSucDep !== '—' ? numSucDep : '-',
+          nro_cheque:  _buildNroCheque('cobros', c),
+          monto:       c.importe_pago || 0,
+          fecha_em:    '-',
+          propio:      _esPropio(c.nombre_cliente),
+          comun:       'N',
+          orden:       'N',
+          cruzado:     'N',
+          electronico: _esElectronico('cobros', c),
         };
       }
     } else if (tipo === 'chequesAceptar') {
       const c = chequesAceptar.find(x => x.id === itemId);
       if (c) {
-        const _sucChqa = _sucursalDesdeCheque(c);
-        const _bkChqa  = _bancoKey(c.banco || '');
         item = {
           id: _bndId(), origen: 'Cheques A Aceptar', origen_id: c.id,
-          cuit:       c.cuit || '—',
-          nombre:     c.librador || '—',
-          banco:      _bancoParaBandeja(c.banco, c.detalle && c.detalle['CMC7']),
-          sucursal:   _sucChqa && _sucChqa !== '—' ? _sucursalParaBandeja(_sucChqa, _bkChqa) : '—',
-          nro_cheque: _buildNroCheque('cheques', c),
-          monto:      c.importe || 0,
+          nombre:      c.librador || '—',
+          sucursal_dep: '-',
+          nro_cheque:  _buildNroCheque('cheques', c),
+          monto:       c.importe || 0,
+          fecha_em:    c.fecha_em || '-',
+          propio:      _esPropio(c.librador),
+          comun:       'N',
+          orden:       _esOrden(c.detalle && c.detalle['Cláusula']),
+          cruzado:     'N',
+          electronico: 'S',
         };
       }
     }
@@ -1541,36 +1580,47 @@ function renderBandeja() {
   const cntEl = document.getElementById('bnd-count');
   const totEl = document.getElementById('bnd-total-monto');
   if (!bandeja.length) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora o Cheques a Aceptar</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text3)">Seleccioná filas con el ✓ en las tablas de Recaudadora o Cheques a Aceptar</td></tr>`;
     if (resEl) resEl.style.display = 'none';
     return;
   }
   const totalMonto = bandeja.reduce((s, b) => s + (b.monto || 0), 0);
   if (resEl) { resEl.style.display = 'flex'; cntEl.textContent = bandeja.length; totEl.textContent = fmtMonto(totalMonto); }
   const origenBadge = { 'Recaudadora':'purple', 'Cheques A Aceptar':'ok' };
+  const _yn = v => v === 'S'
+    ? `<span class="badge ok" style="font-size:10px">S</span>`
+    : `<span style="font-size:11px;color:var(--text3)">N</span>`;
   tbody.innerHTML = bandeja.map(b => `<tr>
     <td class="no-copy" style="text-align:center;padding:4px 6px">
       <button style="border:none;background:none;cursor:pointer;color:var(--red);font-size:14px;padding:2px 6px" title="Quitar" onclick="removerBandeja('${escHtml(b.id)}')">×</button>
     </td>
     <td><span class="badge ${origenBadge[b.origen]||'info'}" style="font-size:10px">${escHtml(b.origen)}</span></td>
-    <td style="font-size:12px;color:var(--text3)">${escHtml(b.cuit)||'—'}</td>
     <td>${escHtml(b.nombre)||'—'}</td>
-    <td style="font-size:12px;color:var(--text3)">${escHtml(b.banco)||'—'}</td>
-    <td style="font-size:12px;color:var(--text3)">${escHtml(b.sucursal)||'—'}</td>
+    <td style="font-family:monospace;font-size:12px;color:var(--text3)">${escHtml(b.sucursal_dep)||'-'}</td>
     <td style="font-family:monospace;font-size:12px">${escHtml(b.nro_cheque)||'—'}</td>
     <td style="text-align:right;font-weight:600">${fmtMonto(b.monto)}</td>
+    <td style="white-space:nowrap;font-size:12px;color:var(--text3)">${escHtml(b.fecha_em)||'-'}</td>
+    <td>${_yn(b.propio)}</td>
+    <td><span style="font-size:11px;color:var(--text3)">N</span></td>
+    <td>${_yn(b.orden)}</td>
+    <td><span style="font-size:11px;color:var(--text3)">N</span></td>
+    <td>${_yn(b.electronico)}</td>
   </tr>`).join('');
 }
 
 function exportarBandeja() {
   if (!bandeja.length) return;
   const data = bandeja.map(b => ({
-    'CUIT':         b.cuit,
-    'Nombre':       b.nombre,
-    'Banco emisor': _soloNumero(b.banco),
-    'Sucursal':     _soloNumero(b.sucursal),
-    'Nro cheque':   b.nro_cheque,
-    'Monto':        b.monto,
+    'Nombre':        b.nombre,
+    'Suc. Depósito': b.sucursal_dep,
+    'Nro Cheque':    b.nro_cheque,
+    'Monto':         b.monto,
+    'Fecha Emisión': b.fecha_em,
+    'Propio':        b.propio,
+    'Común':         b.comun,
+    'Orden':         b.orden,
+    'Cruzado':       b.cruzado,
+    'Electrónico':   b.electronico,
   }));
   try {
     const ws = XLSX.utils.json_to_sheet(data);
@@ -1580,8 +1630,9 @@ function exportarBandeja() {
     XLSX.utils.book_append_sheet(wb, ws, 'Bandeja');
     XLSX.writeFile(wb, `bandeja_${new Date().toISOString().slice(0,10)}.xlsx`);
   } catch(e) {
-    const csv = ['CUIT,Nombre,Banco emisor,Sucursal,Nro cheque,Monto'].concat(
-      data.map(r => Object.values(r).map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+    const headers = ['Nombre','Suc. Depósito','Nro Cheque','Monto','Fecha Emisión','Propio','Común','Orden','Cruzado','Electrónico'];
+    const csv = [headers.join(',')].concat(
+      data.map(r => Object.values(r).map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','))
     ).join('\n');
     const a = document.createElement('a');
     a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv);
