@@ -932,19 +932,7 @@ async function loginGalicia() {
       document.getElementById('lbl-galicia').textContent = 'Galicia: conectado';
       document.getElementById('gal-empresa').disabled = false;
       document.getElementById('btn-cambiar-empresa').disabled = false;
-      let _cfg = {}; try { _cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}'); } catch(e) {}
-      const _empresaDeseada = _cfg.galEmpresa || '';
-      const _empresaActiva  = data.empresa || '';
-      if (_empresaDeseada &&
-          _empresaDeseada.toLowerCase() !== _empresaActiva.toLowerCase()) {
-        // Hay empresa guardada distinta a la activa → auto-cambiar sin pisar localStorage
-        document.getElementById('gal-empresa').value = _empresaDeseada;
-        document.getElementById('gal-empresa-lbl').textContent = `(cambiando a ${_empresaDeseada}…)`;
-        setTimeout(cambiarEmpresaGalicia, 800);
-      } else {
-        // Empresa activa coincide con la guardada (o no hay preferencia)
-        _setEmpresaUI(_empresaActiva || _empresaDeseada || document.getElementById('gal-empresa').value);
-      }
+      _setEmpresaUI(data.empresa || document.getElementById('gal-empresa').value);
       _startGaliciaPoll();
     } else {
       showMsg('gal-msg', '✗ ' + data.error, 'error');
