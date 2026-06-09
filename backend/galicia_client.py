@@ -278,7 +278,7 @@ class GaliciaClient:
             pass
 
     def _descargar_csv_recaudadora(self) -> Tuple[List[Dict], str]:
-        SIN_DATOS = "No se encontraron cobros para el período seleccionado"
+        SIN_DATOS = "0 cobros para el período seleccionado"
         try:
             dl_btn = self._page.locator(
                 'button[aria-haspopup="true"][class*="button--icon-only"]'
@@ -286,6 +286,13 @@ class GaliciaClient:
             dl_btn.wait_for(state="visible", timeout=8000)
         except Exception:
             return [], SIN_DATOS
+
+        # Botón deshabilitado = no hay resultados para descargar
+        try:
+            if dl_btn.is_disabled():
+                return [], SIN_DATOS
+        except Exception:
+            pass
 
         dl_btn.click()
         time.sleep(0.4)
@@ -421,7 +428,7 @@ class GaliciaClient:
             return [], str(e)
 
     def _descargar_csv_cheques_a_aceptar(self) -> Tuple[List[Dict], str]:
-        SIN_DATOS = "No se encontraron cheques a aceptar para el período seleccionado"
+        SIN_DATOS = "0 cheques a aceptar para el período seleccionado"
         try:
             dl_btn = self._page.locator(
                 'button[aria-haspopup="true"][title="Descargar"],'
@@ -430,6 +437,13 @@ class GaliciaClient:
             dl_btn.wait_for(state="visible", timeout=8000)
         except Exception:
             return [], SIN_DATOS
+
+        # Botón deshabilitado = no hay cheques para descargar
+        try:
+            if dl_btn.is_disabled():
+                return [], SIN_DATOS
+        except Exception:
+            pass
 
         dl_btn.click()
         time.sleep(0.4)
