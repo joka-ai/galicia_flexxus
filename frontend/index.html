@@ -590,13 +590,13 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
   <div class="page-hdr"><h2>Sucursales</h2></div>
 
   <div class="suc-tabs">
-    <div class="suc-tab active" onclick="sucTab('macro')">Banco Macro</div>
-    <div class="suc-tab" onclick="sucTab('galicia')">Banco Galicia</div>
+    <div class="suc-tab" onclick="sucTab('macro')">Banco Macro</div>
+    <div class="suc-tab active" onclick="sucTab('galicia')">Banco Galicia</div>
     <div class="suc-tab" onclick="sucTab('bancos')">Bancos BCRA</div>
   </div>
 
   <!-- MACRO -->
-  <div class="suc-panel active" id="suc-panel-macro">
+  <div class="suc-panel" id="suc-panel-macro">
     <div class="card" style="margin-bottom:14px">
       <div class="card-title">Actualizar datos</div>
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
@@ -642,7 +642,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
   </div>
 
   <!-- GALICIA -->
-  <div class="suc-panel" id="suc-panel-galicia">
+  <div class="suc-panel active" id="suc-panel-galicia">
     <div class="card" style="margin-bottom:14px">
       <div class="card-title">Actualizar datos</div>
       <div style="font-size:12px;color:var(--amber);background:var(--amber-l);border:1px solid var(--amber-b);padding:8px 12px;border-radius:var(--radius);margin-bottom:10px">
@@ -1629,7 +1629,7 @@ function renderBandeja() {
     </td>
     <td><span class="badge ${origenBadge[b.origen]||'info'}" style="font-size:10px">${escHtml(b.origen)}</span></td>
     <td>${escHtml(b.nombre)||'—'}</td>
-    <td style="font-family:monospace;font-size:12px;color:var(--text3)">${escHtml(b.sucursal_dep)||'-'}</td>
+    <td style="font-size:12px;color:var(--text3)">${(() => { const n=b.sucursal_dep; if(!n||n==='-') return '-'; const loc=lookupSucursal('galicia',n); return escHtml(n)+(loc?` <span class="suc-tag">localidad: ${escHtml(loc)}</span>`:''); })()}</td>
     <td style="font-family:monospace;font-size:12px">${escHtml(b.nro_cheque)||'—'}</td>
     <td style="text-align:right;font-weight:600">${fmtMonto(b.monto)}</td>
     <td style="white-space:nowrap;font-size:12px;color:var(--text3)">${escHtml(b.fecha_em)||'-'}</td>
@@ -1727,36 +1727,21 @@ async function subirCSV(tipo) {
 // ── Helper: render detalle con enriquecimiento de sucursal ────────────────
 function _bancoKey(bancoNombre) {
   const b = (bancoNombre || '').toLowerCase();
-  if (b.includes('macro'))   return 'macro';
   if (b.includes('galicia')) return 'galicia';
-  return '';  // banco sin datos cargados → no mostrar localidad
+  return '';
 }
 
 function renderDetalleGrid(det, bancoNombre) {
-  const bKey = _bancoKey(bancoNombre || '');
   return Object.entries(det).map(([lbl, val]) => {
     let displayVal = escHtml(String(val));
     const lblL = lbl.toLowerCase();
-
     if (lblL === 'sucursal' || lblL === 'sucursal de pago') {
-      if (bKey) {
-        const loc = lookupSucursal(bKey, String(val).trim());
-        if (loc) displayVal += `<span class="suc-tag">${escHtml(loc)}</span>`;
-      }
+      const loc = lookupSucursal('galicia', String(val).trim());
+      if (loc) displayVal += `<span class="suc-tag">localidad: ${escHtml(loc)}</span>`;
     }
-    // Código de banco (recaudadora envía el número, ej: "285")
     if (lblL === 'cód. banco' || lblL === 'cod. banco' || lblL === 'código banco' || lblL === 'codigo banco') {
       const nom = lookupBancoCodigo(String(val).trim());
       if (nom) displayVal += `<span class="suc-tag">${escHtml(nom)}</span>`;
-    }
-    // CMC7 — solo mostrar el valor crudo; banco y localidad se extraen para bandeja
-    // C.P del cheque — busca por CP en el banco emisor del cheque
-    if (lblL === 'c.p del cheque' || lblL === 'cp del cheque') {
-      if (bKey) {
-        const cp  = String(val).trim();
-        const suc = sucursalesData[bKey].find(s => s.cp === cp);
-        if (suc) displayVal += `<span class="suc-tag">${escHtml(suc.ciudad||suc.localidad)}</span>`;
-      }
     }
     return `<div class="detail-field"><span class="detail-label">${escHtml(lbl)}</span><span class="detail-value">${displayVal}</span></div>`;
   }).join('');
@@ -1975,7 +1960,7 @@ function renderBancosBCRA() {
   const grupoColor = {A:'var(--blue)',B:'var(--teal)',C:'var(--amber)'};
   document.getElementById('tbody-bancos').innerHTML = data.map(b => {
     const bKey = _bancoKey(b.nombre);
-    const lkpSpan = bKey ? `<span class="suc-tag" style="margin-left:6px">${bKey === 'macro' ? 'Macro' : 'Galicia'}</span>` : '';
+    const lkpSpan = bKey ? `<span class="suc-tag" style="margin-left:6px">Galicia</span>` : '';
     return `<tr>
       <td style="font-family:monospace;font-weight:600;color:${grupoColor[b.grupo]||'var(--text)'}">${escHtml(b.codigo)}</td>
       <td>${escHtml(b.nombre)}${lkpSpan}</td>
@@ -2019,23 +2004,20 @@ function _mkPgSuc(banco) {
 const pgSuc = { macro: _mkPgSuc('macro'), galicia: _mkPgSuc('galicia') };
 
 async function cargarSucursales() {
-  for (const banco of ['macro', 'galicia']) {
-    try {
-      const d = await apiFetch(`/sucursales/${banco}`);
-      if (d.ok) {
-        sucursalesData[banco] = d.sucursales || [];
-        // Build lookup: numero → localidad
-        sucursalesLookup[banco] = {};
-        for (const s of sucursalesData[banco]) {
-          if (s.numero) sucursalesLookup[banco][String(s.numero)] = s.localidad || s.ciudad || '';
-        }
-        const fechaEl = document.getElementById(`suc-${banco}-fecha`);
-        if (fechaEl && d.updated) fechaEl.textContent = `Actualizado: ${d.updated} · ${d.total} sucursales`;
-        pgSuc[banco].reset();
-        renderSucursales(banco);
+  try {
+    const d = await apiFetch('/sucursales/galicia');
+    if (d.ok) {
+      sucursalesData.galicia = d.sucursales || [];
+      sucursalesLookup.galicia = {};
+      for (const s of sucursalesData.galicia) {
+        if (s.numero) sucursalesLookup.galicia[String(s.numero)] = s.localidad || s.ciudad || '';
       }
-    } catch(e) {}
-  }
+      const fechaEl = document.getElementById('suc-galicia-fecha');
+      if (fechaEl && d.updated) fechaEl.textContent = `Actualizado: ${d.updated} · ${d.total} sucursales`;
+      pgSuc.galicia.reset();
+      renderSucursales('galicia');
+    }
+  } catch(e) {}
 }
 
 function lookupSucursal(banco, numero) {
@@ -2044,8 +2026,7 @@ function lookupSucursal(banco, numero) {
 }
 
 function lookupSucursalAny(numero) {
-  const n = String(numero || '').trim();
-  return sucursalesLookup['galicia'][n] || sucursalesLookup['macro'][n] || '';
+  return sucursalesLookup['galicia'][String(numero || '').trim()] || '';
 }
 
 function sucTab(banco) {
