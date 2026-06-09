@@ -172,9 +172,17 @@ class GaliciaClient:
             item = self._page.locator(f'li[title="{empresa}"]').first
             item.wait_for(state="visible", timeout=5000)
             item.click()
+            time.sleep(0.5)
 
-            # Esperar que el nombre de la empresa aparezca en el header del portal
-            # Eso confirma que el cambio terminó, sin importar el modal ni networkidle
+            # 1. Si aparece un modal de carga, esperar que cierre
+            try:
+                modal = self._page.locator('[data-automation-id="modalComponent"]').first
+                modal.wait_for(state="visible", timeout=4000)
+                modal.wait_for(state="hidden", timeout=25000)
+            except Exception:
+                pass  # No apareció modal o ya cerró
+
+            # 2. Esperar que el nombre de empresa figure en el header
             empresa_upper = empresa.upper()
             try:
                 self._page.wait_for_function(
@@ -185,13 +193,14 @@ class GaliciaClient:
                     timeout=20000,
                 )
             except Exception:
-                # Fallback: esperar que el modal de carga cierre si apareció
-                try:
-                    modal = self._page.locator('[data-automation-id="modalComponent"]').first
-                    modal.wait_for(state="hidden", timeout=15000)
-                except Exception:
-                    pass
-                time.sleep(1)
+                pass
+
+            # 3. Esperar que la página termine de cargar
+            try:
+                self._page.wait_for_load_state("networkidle", timeout=15000)
+            except Exception:
+                pass
+            time.sleep(1.5)
 
             self._cerrar_banners()
             self._empresa_activa = empresa

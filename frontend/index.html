@@ -858,6 +858,7 @@ async function cambiarEmpresaGalicia() {
   const empresa = document.getElementById('gal-empresa').value;
   showMsg('gal-msg', `⏳ Cambiando a ${empresa}...`, 'info');
   document.getElementById('btn-cambiar-empresa').disabled = true;
+  _setQuerying(true);
   try {
     const data = await apiFetch('/galicia/cambiar_empresa', { method:'POST', body:JSON.stringify({empresa}) });
     if (data.ok) {
@@ -868,8 +869,10 @@ async function cambiarEmpresaGalicia() {
     }
   } catch(e) {
     showMsg('gal-msg', '✗ Error de red: ' + e.message, 'error');
+  } finally {
+    _setQuerying(false);
+    document.getElementById('btn-cambiar-empresa').disabled = false;
   }
-  document.getElementById('btn-cambiar-empresa').disabled = false;
 }
 
 // ── Selector de tipo ──────────────────────────────────────────────────────
