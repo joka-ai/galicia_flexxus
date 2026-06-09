@@ -396,7 +396,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     <table>
       <thead>
         <tr>
-          <th style="width:32px"></th>
+          <th style="width:32px;text-align:center"><input type="checkbox" id="chk-all-cobros" onclick="toggleSelectAll('cobros',this)" title="Seleccionar / deseleccionar todos los visibles" style="cursor:pointer;accent-color:var(--blue)"></th>
           <th class="sortable" id="th-cob-0" onclick="sortTabla('cobros',0)">Fecha pago</th>
           <th class="sortable" id="th-cob-1" onclick="sortTabla('cobros',1)">Nombre cliente</th>
           <th class="sortable" id="th-cob-2" onclick="sortTabla('cobros',2)">Nro cliente</th>
@@ -559,7 +559,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     <table>
       <thead>
         <tr>
-          <th style="width:32px"></th>
+          <th style="width:32px;text-align:center"><input type="checkbox" id="chk-all-chequesAceptar" onclick="toggleSelectAll('chequesAceptar',this)" title="Seleccionar / deseleccionar todos los visibles" style="cursor:pointer;accent-color:var(--blue)"></th>
           <th class="sortable" id="th-chqa-0" onclick="sortTabla('chequesAceptar',0)">Nº Cheque</th>
           <th class="sortable" id="th-chqa-1" onclick="sortTabla('chequesAceptar',1)">Librador</th>
           <th class="sortable" id="th-chqa-2" onclick="sortTabla('chequesAceptar',2)">CUIT</th>
@@ -1316,6 +1316,7 @@ function renderCobros() {
     </tr>${detailRow}`;
   }).join('');
   actualizarStatsCobros(); actualizarBadge('cobros', cobros.length);
+  _syncSelectAll('cobros');
 }
 
 function actualizarStatsCobros() {
@@ -1373,6 +1374,7 @@ function renderChequesAceptar() {
     </tr>${detailRow}`;
   }).join('');
   actualizarStatsChequesAceptar(); actualizarBadge('cheques-aceptar', chequesAceptar.length);
+  _syncSelectAll('chequesAceptar');
 }
 
 function actualizarStatsChequesAceptar() {
@@ -1509,51 +1511,86 @@ function _buildNroCheque(tipo, c) {
   return `${b}-${s}-${num}`;
 }
 
+function _buildBandejaItem(tipo, c) {
+  if (tipo === 'cobros') {
+    const numSucDep = _soloNumero(c.detalle && c.detalle['Sucursal']);
+    return {
+      id: _bndId(), origen: 'Recaudadora', origen_id: c.id,
+      nombre:      c.nombre_cliente || '—',
+      sucursal_dep: numSucDep && numSucDep !== '—' ? numSucDep : '-',
+      nro_cheque:  _buildNroCheque('cobros', c),
+      monto:       c.importe_pago || 0,
+      fecha_em:    '-',
+      propio:      _esPropio(c.nombre_cliente),
+      comun:       'N', orden: 'N', cruzado: 'N',
+      electronico: _esElectronico('cobros', c),
+    };
+  } else if (tipo === 'chequesAceptar') {
+    return {
+      id: _bndId(), origen: 'Cheques A Aceptar', origen_id: c.id,
+      nombre:      c.librador || '—',
+      sucursal_dep: '-',
+      nro_cheque:  _buildNroCheque('cheques', c),
+      monto:       c.importe || 0,
+      fecha_em:    c.fecha_em || '-',
+      propio:      _esPropio(c.librador),
+      comun:       'N',
+      orden:       _esOrden(c.detalle && c.detalle['Cláusula']),
+      cruzado:     'N', electronico: 'S',
+    };
+  }
+  return null;
+}
+
 function toggleBandeja(tipo, itemId, chkEl) {
   if (chkEl.checked) {
-    let item = null;
-    if (tipo === 'cobros') {
-      const c = cobros.find(x => x.id === itemId);
-      if (c) {
-        const numSucDep = _soloNumero(c.detalle && c.detalle['Sucursal']);
-        item = {
-          id: _bndId(), origen: 'Recaudadora', origen_id: c.id,
-          nombre:      c.nombre_cliente || '—',
-          sucursal_dep: numSucDep && numSucDep !== '—' ? numSucDep : '-',
-          nro_cheque:  _buildNroCheque('cobros', c),
-          monto:       c.importe_pago || 0,
-          fecha_em:    '-',
-          propio:      _esPropio(c.nombre_cliente),
-          comun:       'N',
-          orden:       'N',
-          cruzado:     'N',
-          electronico: _esElectronico('cobros', c),
-        };
-      }
-    } else if (tipo === 'chequesAceptar') {
-      const c = chequesAceptar.find(x => x.id === itemId);
-      if (c) {
-        item = {
-          id: _bndId(), origen: 'Cheques A Aceptar', origen_id: c.id,
-          nombre:      c.librador || '—',
-          sucursal_dep: '-',
-          nro_cheque:  _buildNroCheque('cheques', c),
-          monto:       c.importe || 0,
-          fecha_em:    c.fecha_em || '-',
-          propio:      _esPropio(c.librador),
-          comun:       'N',
-          orden:       _esOrden(c.detalle && c.detalle['Cláusula']),
-          cruzado:     'N',
-          electronico: 'S',
-        };
-      }
+    if (!bandeja.some(b => b.origen_id === itemId)) {
+      const datos = tipo === 'cobros' ? cobros : chequesAceptar;
+      const c = datos.find(x => x.id === itemId);
+      const item = c ? _buildBandejaItem(tipo, c) : null;
+      if (item) bandeja.push(item);
     }
-    if (item) { bandeja.push(item); actualizarBadge('bandeja', bandeja.length); renderBandeja(); }
   } else {
     bandeja = bandeja.filter(b => b.origen_id !== itemId);
-    actualizarBadge('bandeja', bandeja.length);
-    renderBandeja();
   }
+  actualizarBadge('bandeja', bandeja.length);
+  renderBandeja();
+  _syncSelectAll(tipo);
+}
+
+function toggleSelectAll(tipo, chkEl) {
+  const todos    = getFiltered(tipo);
+  const pg       = tipo === 'cobros' ? pgCobros : pgChequesAceptar;
+  const visibles = pg.slice(todos);
+  if (chkEl.checked) {
+    visibles.forEach(c => {
+      if (!bandeja.some(b => b.origen_id === c.id)) {
+        const item = _buildBandejaItem(tipo, c);
+        if (item) bandeja.push(item);
+      }
+    });
+  } else {
+    const visIds = new Set(visibles.map(c => c.id));
+    bandeja = bandeja.filter(b => !visIds.has(b.origen_id));
+  }
+  actualizarBadge('bandeja', bandeja.length);
+  renderBandeja();
+  if (tipo === 'cobros') renderCobros();
+  else renderChequesAceptar();
+}
+
+function _syncSelectAll(tipo) {
+  const chkId = tipo === 'cobros' ? 'chk-all-cobros' : 'chk-all-chequesAceptar';
+  const chk = document.getElementById(chkId);
+  if (!chk) return;
+  const todos    = getFiltered(tipo);
+  const pg       = tipo === 'cobros' ? pgCobros : pgChequesAceptar;
+  const visibles = pg.slice(todos);
+  if (!visibles.length) { chk.checked = false; chk.indeterminate = false; return; }
+  const n = visibles.filter(c => bandeja.some(b => b.origen_id === c.id)).length;
+  if (n === 0)              { chk.checked = false; chk.indeterminate = false; }
+  else if (n === visibles.length) { chk.checked = true;  chk.indeterminate = false; }
+  else                      { chk.checked = false; chk.indeterminate = true; }
 }
 
 function removerBandeja(bndId) {
