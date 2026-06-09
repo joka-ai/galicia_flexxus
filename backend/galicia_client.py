@@ -144,15 +144,30 @@ class GaliciaClient:
 
     def _leer_empresa_activa(self) -> str:
         """Lee el nombre de la empresa activa del header del portal."""
+        time.sleep(0.5)
+        # Estrategia 1: el <p color="#666666"> es la empresa (el usuario tiene color="#333333")
         try:
-            # El header muestra: <p>Nombre usuario</p><p>EMPRESA ACTIVA</p>
-            # dentro de .content-drop
-            parrafos = self._page.locator('.content-drop p').all()
-            for p in parrafos:
-                txt = p.inner_text(timeout=1500).strip()
-                # El nombre de empresa viene en mayúsculas y tiene más de 3 chars
+            p = self._page.locator('.content-drop p[color="#666666"]').first
+            txt = (p.text_content(timeout=3000) or '').strip()
+            if txt and len(txt) > 2:
+                return txt.title() if txt.isupper() else txt
+        except Exception:
+            pass
+        # Estrategia 2: segundo <p aria-label="body"> dentro del header
+        try:
+            ps = self._page.locator('.content-drop p[aria-label="body"]').all()
+            if len(ps) >= 2:
+                txt = (ps[1].text_content(timeout=2000) or '').strip()
+                if txt and len(txt) > 2:
+                    return txt.title() if txt.isupper() else txt
+        except Exception:
+            pass
+        # Estrategia 3 (fallback): primer p en mayúsculas de más de 3 chars
+        try:
+            for p in self._page.locator('.content-drop p').all():
+                txt = (p.inner_text(timeout=1000) or '').strip()
                 if txt and txt.isupper() and len(txt) > 3:
-                    return txt.title()   # "FLASH TRADE SA" → "Flash Trade Sa"
+                    return txt.title()
         except Exception:
             pass
         return ''
