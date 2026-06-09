@@ -174,33 +174,14 @@ class GaliciaClient:
             item.click()
             time.sleep(0.5)
 
-            # 1. Si aparece un modal de carga, esperar que cierre
+            # Esperar modal de carga y que cierre — eso es suficiente señal
             try:
                 modal = self._page.locator('[data-automation-id="modalComponent"]').first
                 modal.wait_for(state="visible", timeout=4000)
                 modal.wait_for(state="hidden", timeout=25000)
             except Exception:
                 pass  # No apareció modal o ya cerró
-
-            # 2. Esperar que el nombre de empresa figure en el header
-            empresa_upper = empresa.upper()
-            try:
-                self._page.wait_for_function(
-                    f"""() => {{
-                        const el = document.querySelector('.content-drop');
-                        return el && el.textContent.toUpperCase().includes('{empresa_upper}');
-                    }}""",
-                    timeout=20000,
-                )
-            except Exception:
-                pass
-
-            # 3. Esperar que la página termine de cargar
-            try:
-                self._page.wait_for_load_state("networkidle", timeout=15000)
-            except Exception:
-                pass
-            time.sleep(1.5)
+            time.sleep(0.5)
 
             self._cerrar_banners()
             self._empresa_activa = empresa
