@@ -235,6 +235,11 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
       Cheques a Aceptar
       <span class="nav-badge" id="badge-cheques-aceptar" style="display:none">0</span>
     </div>
+    <div class="nav-item" onclick="ir('transferencias-macro')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Transferencias
+      <span class="nav-badge" id="badge-transferencias-macro" style="display:none">0</span>
+    </div>
 
     <div class="nav-section">Referencia</div>
     <div class="nav-item" onclick="ir('sucursales')">
@@ -398,6 +403,88 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
       <button class="btn" onclick="cambiarEmpresaMacro()" id="btn-mac-cambiar-empresa" disabled>↔ Seleccionar empresa</button>
       <span id="mac-empresa-lbl" style="font-size:12px;color:var(--text3)"></span>
     </div>
+  </div>
+</div>
+
+  <div class="card">
+    <div class="card-title">Movimientos — Cuenta Corriente</div>
+    <div class="fg" style="margin-bottom:12px">
+      <div class="field"><label>Fecha desde</label><input id="mac-q-desde" type="date"/></div>
+      <div class="field"><label>Fecha hasta</label><input id="mac-q-hasta" type="date"/></div>
+    </div>
+    <div class="fg" style="margin-bottom:12px">
+      <div class="field"><label>Importe desde <span style="font-weight:400;color:var(--text3)">(opcional)</span></label><input id="mac-q-imp-desde" type="number" step="0.01" min="0" placeholder="0,00"/></div>
+      <div class="field"><label>Importe hasta <span style="font-weight:400;color:var(--text3)">(opcional)</span></label><input id="mac-q-imp-hasta" type="number" step="0.01" min="0" placeholder="0,00"/></div>
+    </div>
+    <div class="fg w1" style="margin-bottom:12px">
+      <div class="field"><label>Tipo de movimiento</label>
+        <select id="mac-q-tipo">
+          <option value="Ninguno">Todos</option>
+          <option value="01">Acreditaciones</option>
+          <option value="02">Comercio exterior</option>
+          <option value="03">Depósitos</option>
+          <option value="04">Extracciones</option>
+          <option value="05">Impuestos / Comisiones</option>
+          <option value="06">Inversiones</option>
+          <option value="07">Operaciones con Cheques</option>
+          <option value="08">Operaciones Tarjeta de Crédito</option>
+          <option value="09">Operaciones Tarjeta de Débito</option>
+          <option value="10">Pagos</option>
+          <option value="11">Préstamos</option>
+          <option value="12">Transferencias</option>
+          <option value="99">Otros</option>
+        </select>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:4px">
+      <button class="btn primary" onclick="consultarTransferenciasMacro()" id="btn-mac-consultar" disabled>🔍 Consultar movimientos</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSFERENCIAS MACRO ───────────────────────────────────────────────────── -->
+<div class="page" id="page-transferencias-macro">
+  <div class="page-hdr"><h2>Transferencias — Banco Macro</h2></div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="st-mac-tot">0</div><div class="stat-l">Total movimientos</div></div>
+    <div class="stat"><div class="stat-n" id="st-mac-cred">$0</div><div class="stat-l">Total créditos</div></div>
+    <div class="stat"><div class="stat-n" id="st-mac-deb">$0</div><div class="stat-l">Total débitos</div></div>
+  </div>
+
+  <div id="transferencias-macro-msg"></div>
+
+  <div class="tbl-toolbar">
+    <input id="search-trf-mac" type="text" placeholder="Buscar en movimientos…" oninput="buscarTrfMacro(this.value)"/>
+    <span class="tbl-count" id="count-trf-mac"></span>
+    <button class="btn sm" onclick="exportarTrfMacro()">⬇ Excel</button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Nro. Referencia</th>
+          <th>Causal</th>
+          <th>Concepto</th>
+          <th style="text-align:right">Importe</th>
+          <th style="text-align:right">Saldo</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-trf-mac"></tbody>
+    </table>
+  </div>
+  <div class="pagination" id="pg-trf-mac-wrap">
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3)">
+      Mostrar
+      <select id="pg-trf-mac-size" onchange="pgTrfMac.setSize(+this.value)">
+        <option value="50">50</option><option value="100">100</option><option value="0">Todos</option>
+      </select>
+    </div>
+    <button onclick="pgTrfMac.prev()" id="pg-trf-mac-prev">‹ Ant</button>
+    <span class="pg-info" id="pg-trf-mac-info"></span>
+    <button onclick="pgTrfMac.next()" id="pg-trf-mac-next">Sig ›</button>
   </div>
 </div>
 
@@ -755,7 +842,7 @@ function _setQuerying(on) {
   if (banner) banner.style.display = on ? 'flex' : 'none';
 }
 
-const NAV_MAP = { config:0, galicia:1, macro:2, recaudadora:3, 'cheques-aceptar':4, sucursales:5, carga:6, bandeja:7 };
+const NAV_MAP = { config:0, galicia:1, macro:2, recaudadora:3, 'cheques-aceptar':4, 'transferencias-macro':5, sucursales:6, carga:7, bandeja:8 };
 
 function ir(p) {
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
@@ -2202,6 +2289,146 @@ async function doLogout() {
   document.getElementById('nav-user').textContent = '—';
 }
 
+// ── Transferencias Macro ─────────────────────────────────────────────────
+let transferenciasMacro = [];
+let _trfMacQ = '';
+
+const pgTrfMac = {
+  page: 1, size: 50,
+  setSize(n) { this.size = n; this.page = 1; renderTrfMacro(); },
+  prev()     { if (this.page > 1) { this.page--; renderTrfMacro(); } },
+  next()     { this.page++; renderTrfMacro(); },
+  reset()    { this.page = 1; },
+  slice(arr) {
+    if (!this.size) return arr;
+    const start = (this.page - 1) * this.size;
+    return arr.slice(start, start + this.size);
+  },
+  render(total) {
+    if (!this.size) {
+      document.getElementById('pg-trf-mac-info').textContent = `${total} total`;
+      document.getElementById('pg-trf-mac-prev').disabled = true;
+      document.getElementById('pg-trf-mac-next').disabled = true;
+      return;
+    }
+    const pages = Math.max(1, Math.ceil(total / this.size));
+    if (this.page > pages) this.page = pages;
+    const start = (this.page - 1) * this.size + 1;
+    const end   = Math.min(this.page * this.size, total);
+    document.getElementById('pg-trf-mac-info').textContent = total ? `${start}–${end} de ${total}` : '';
+    document.getElementById('pg-trf-mac-prev').disabled = this.page <= 1;
+    document.getElementById('pg-trf-mac-next').disabled = this.page >= pages;
+  },
+};
+
+function buscarTrfMacro(q) {
+  _trfMacQ = q;
+  pgTrfMac.reset();
+  renderTrfMacro();
+}
+
+function _getTrfFiltradas() {
+  const q = _trfMacQ.toLowerCase().trim();
+  if (!q) return transferenciasMacro;
+  return transferenciasMacro.filter(r =>
+    Object.values(r).some(v => v !== null && String(v).toLowerCase().includes(q))
+  );
+}
+
+function renderTrfMacro() {
+  const filtradas = _getTrfFiltradas();
+  const visibles  = pgTrfMac.slice(filtradas);
+  const tbody = document.getElementById('tbody-trf-mac');
+  if (!tbody) return;
+  document.getElementById('count-trf-mac').textContent = `${filtradas.length} movimiento(s)`;
+  pgTrfMac.render(filtradas.length);
+
+  const totCred = transferenciasMacro.reduce((s, r) => r.importe > 0 ? s + r.importe : s, 0);
+  const totDeb  = transferenciasMacro.reduce((s, r) => r.importe < 0 ? s + r.importe : s, 0);
+  document.getElementById('st-mac-tot').textContent  = transferenciasMacro.length;
+  document.getElementById('st-mac-cred').textContent = fmtMontoShort(totCred);
+  document.getElementById('st-mac-deb').textContent  = fmtMontoShort(Math.abs(totDeb));
+  actualizarBadge('transferencias-macro', transferenciasMacro.length);
+
+  if (!visibles.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">Sin resultados</td></tr>';
+    return;
+  }
+  tbody.innerHTML = visibles.map(r => {
+    const cls = r.importe > 0 ? 'color:var(--green)' : r.importe < 0 ? 'color:var(--red)' : '';
+    return `<tr>
+      <td>${escHtml(r.fecha)}</td>
+      <td>${escHtml(r.nro_referencia)}</td>
+      <td>${escHtml(r.causal)}</td>
+      <td>${escHtml(r.concepto)}</td>
+      <td style="text-align:right;${cls}">${fmtMonto(r.importe)}</td>
+      <td style="text-align:right">${fmtMonto(r.saldo)}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function consultarTransferenciasMacro() {
+  const desde = document.getElementById('mac-q-desde').value;
+  const hasta = document.getElementById('mac-q-hasta').value;
+  if (!desde || !hasta) { showMsg('mac-msg', 'Completá las fechas Desde y Hasta.', 'warn'); return; }
+  const hoy = new Date().toISOString().slice(0,10);
+  if (hasta > hoy)   { showMsg('mac-msg', 'La fecha hasta no puede ser posterior a hoy.', 'warn'); return; }
+  if (desde > hasta) { showMsg('mac-msg', 'La fecha desde no puede ser posterior a la fecha hasta.', 'warn'); return; }
+
+  const impDesde = document.getElementById('mac-q-imp-desde').value;
+  const impHasta = document.getElementById('mac-q-imp-hasta').value;
+  const tipo     = document.getElementById('mac-q-tipo').value;
+
+  document.getElementById('btn-mac-consultar').disabled = true;
+  _setQuerying(true);
+  showMsg('mac-msg', '⏳ Consultando movimientos... (puede tardar 30-60 s)', 'info');
+  transferenciasMacro = [];
+  pgTrfMac.reset();
+  renderTrfMacro();
+
+  try {
+    const data = await apiFetch('/macro/transferencias', {
+      method: 'POST',
+      body: JSON.stringify({
+        fecha_desde:   desde,
+        fecha_hasta:   hasta,
+        importe_desde: impDesde,
+        importe_hasta: impHasta,
+        tipo_mov:      tipo,
+      }),
+    });
+    if (data.ok) {
+      transferenciasMacro = data.transferencias || [];
+      pgTrfMac.reset();
+      renderTrfMacro();
+      showMsg('mac-msg', `✓ ${data.mensaje}`, 'success');
+      if (transferenciasMacro.length) ir('transferencias-macro');
+    } else {
+      showMsg('mac-msg', '✗ ' + data.error, 'error');
+    }
+  } catch(e) {
+    showMsg('mac-msg', '✗ Error de red: ' + e.message, 'error');
+  }
+  _setQuerying(false);
+  document.getElementById('btn-mac-consultar').disabled = false;
+}
+
+function exportarTrfMacro() {
+  if (!transferenciasMacro.length) return;
+  const data = transferenciasMacro.map(r => ({
+    'Fecha':          r.fecha,
+    'Nro. Referencia': r.nro_referencia,
+    'Causal':         r.causal,
+    'Concepto':       r.concepto,
+    'Importe':        r.importe,
+    'Saldo':          r.saldo,
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
+  XLSX.writeFile(wb, 'macro_movimientos.xlsx');
+}
+
 // ── Macro login ───────────────────────────────────────────────────────────
 async function loginMacro() {
   const usuario  = document.getElementById('mac-user').value.trim();
@@ -2281,6 +2508,7 @@ async function cambiarEmpresaMacro() {
     if (data.ok) {
       showMsg('mac-msg', '✓ ' + data.mensaje, 'success');
       document.getElementById('mac-empresa-lbl').textContent = `(activa: ${data.empresa || empresa})`;
+      document.getElementById('btn-mac-consultar').disabled = false;
       try {
         const cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
         cfg.macEmpresa = data.empresa || empresa;
@@ -2308,6 +2536,7 @@ async function checkMacroStatus() {
       document.getElementById('dot-macro').className   = 'status-dot ok';
       document.getElementById('lbl-macro').textContent = 'Macro: conectado';
       _poblarEmpresasMacro(data.empresas || [], data.empresa || '');
+      document.getElementById('btn-mac-consultar').disabled = !data.empresa;
       _startMacroPoll();
     } else {
       document.getElementById('btn-mac-logout').style.display = 'none';
@@ -2318,6 +2547,7 @@ async function checkMacroStatus() {
       document.getElementById('lbl-macro').textContent = 'Macro: sin sesión';
       document.getElementById('mac-empresa').disabled  = true;
       document.getElementById('btn-mac-cambiar-empresa').disabled = true;
+      document.getElementById('btn-mac-consultar').disabled = true;
       document.getElementById('mac-empresa-lbl').textContent = '';
     }
   } catch(e) {}
@@ -2368,6 +2598,10 @@ function init() {
   const qHasta = document.getElementById('q-hasta');
   qDesde.max = hoy; qDesde.value = hace30;
   qHasta.max = hoy; qHasta.value = hoy;
+  const macDesde = document.getElementById('mac-q-desde');
+  const macHasta = document.getElementById('mac-q-hasta');
+  macDesde.max = hoy; macDesde.value = hace30;
+  macHasta.max = hoy; macHasta.value = hoy;
   initCopyHandlers();
   checkAuth();
 }

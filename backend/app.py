@@ -426,6 +426,26 @@ def macro_logout():
     return jsonify({'ok': True})
 
 
+@app.route('/api/macro/transferencias', methods=['POST'])
+def macro_transferencias():
+    c = _macro_client()
+    if not c:
+        return jsonify({'ok': False, 'error': 'Primero iniciá sesión en Macro'}), 401
+    body         = request.json or {}
+    fecha_desde  = body.get('fecha_desde', '')
+    fecha_hasta  = body.get('fecha_hasta', '')
+    importe_desde = body.get('importe_desde', '')
+    importe_hasta = body.get('importe_hasta', '')
+    tipo_mov     = body.get('tipo_mov', 'Ninguno')
+    try:
+        datos, msg = _pw_macro(c.obtener_transferencias,
+                               fecha_desde, fecha_hasta,
+                               importe_desde, importe_hasta, tipo_mov)
+        return jsonify({'ok': True, 'transferencias': datos, 'total': len(datos), 'mensaje': msg})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+
 @app.route('/api/macro/cambiar_empresa', methods=['POST'])
 def macro_cambiar_empresa():
     c = _macro_client()
