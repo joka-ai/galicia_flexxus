@@ -383,7 +383,6 @@ def macro_login():
     body     = request.json or {}
     usuario  = body.get('usuario', '').strip()
     password = body.get('password', '').strip()
-    url      = body.get('url', '').strip()
     if not usuario or not password:
         return jsonify({'ok': False, 'error': 'Falta usuario o contraseña'}), 400
 
@@ -394,7 +393,7 @@ def macro_login():
             except Exception: pass
         _macro_session['client'] = None
         client = MacroClient(headless=False)
-        ok, msg = client.login(usuario, password, url)
+        ok, msg = client.login(usuario, password)
         if ok:
             _macro_session['client'] = client
         return ok, msg

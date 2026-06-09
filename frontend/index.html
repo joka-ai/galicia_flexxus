@@ -294,9 +294,6 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
       <div class="field"><label>Usuario</label><input id="mac-user" placeholder="Usuario Banca Empresas"/></div>
       <div class="field"><label>Contraseña</label><input id="mac-pass" type="password" placeholder="••••••••"/></div>
     </div>
-    <div class="fg w1" style="margin-top:8px">
-      <div class="field"><label>URL de login</label><input id="mac-url" placeholder="https://banca.macro.com.ar/Techbank/BIEmpresasLogin"/></div>
-    </div>
   </div>
   <div class="btn-row">
     <button class="btn primary" onclick="guardarConfig()">💾 Guardar configuración</button>
@@ -804,7 +801,6 @@ function guardarConfig() {
       galUser:    document.getElementById('gal-user').value,
       galEmpresa: document.getElementById('gal-empresa').value,
       macUser:    document.getElementById('mac-user').value,
-      macUrl:     document.getElementById('mac-url').value,
     }));
   } catch(e) {}
   showMsg('cfg-msg', '✓ Configuración guardada.', 'success');
@@ -816,7 +812,6 @@ function cargarConfig() {
     if (cfg.galUser)    document.getElementById('gal-user').value    = cfg.galUser;
     if (cfg.galEmpresa) document.getElementById('gal-empresa').value = cfg.galEmpresa;
     if (cfg.macUser)    document.getElementById('mac-user').value    = cfg.macUser;
-    if (cfg.macUrl)     document.getElementById('mac-url').value     = cfg.macUrl;
   } catch(e) {}
 }
 
@@ -2211,13 +2206,12 @@ async function doLogout() {
 async function loginMacro() {
   const usuario  = document.getElementById('mac-user').value.trim();
   const password = document.getElementById('mac-pass').value.trim();
-  const url      = document.getElementById('mac-url').value.trim();
   if (!usuario || !password) { showMsg('mac-msg', 'Completá usuario y contraseña de Macro en Configuración primero.', 'warn'); return; }
   showMsg('mac-msg', '⏳ Iniciando sesión en Banco Macro... (puede tardar 30-40 s)', 'info');
   document.getElementById('btn-mac-login').disabled = true;
   _setQuerying(true);
   try {
-    const data = await apiFetch('/macro/login', { method:'POST', body:JSON.stringify({usuario, password, url}) });
+    const data = await apiFetch('/macro/login', { method:'POST', body:JSON.stringify({usuario, password}) });
     if (data.ok) {
       showMsg('mac-msg', '✓ ' + data.mensaje, 'success');
       document.getElementById('btn-mac-logout').style.display = 'inline-flex';

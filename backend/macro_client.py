@@ -10,7 +10,7 @@ try:
 except ImportError:
     PLAYWRIGHT_OK = False
 
-MACRO_DEFAULT_URL = "https://banca.macro.com.ar/Techbank/BIEmpresasLogin"
+MACRO_LOGIN_URL = "https://www.macro.com.ar/biempresas/#"
 
 
 class MacroClient:
@@ -23,15 +23,14 @@ class MacroClient:
         self._logged_in           = False
         self._empresa_activa      = ''
         self._empresas: List[str] = []
-        self._login_url           = MACRO_DEFAULT_URL
+        self._login_url           = MACRO_LOGIN_URL
         self._usuario             = ''
         self._password            = ''
 
     # ─── LOGIN ────────────────────────────────────────────────────────────────
-    def login(self, usuario: str, password: str, url: str = '') -> Tuple[bool, str]:
+    def login(self, usuario: str, password: str) -> Tuple[bool, str]:
         if not PLAYWRIGHT_OK:
             return False, "Playwright no instalado. Ejecutá: pip install playwright && playwright install chromium"
-        self._login_url = url or MACRO_DEFAULT_URL
         self._usuario   = usuario
         self._password  = password
         try:
