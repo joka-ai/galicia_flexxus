@@ -839,6 +839,10 @@ function _setQuerying(on) {
   document.body.classList.toggle('querying', on);
   const banner = document.getElementById('query-banner');
   if (banner) banner.style.display = on ? 'flex' : 'none';
+  ['chk-all-cobros', 'chk-all-chequesAceptar'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = on;
+  });
 }
 
 const NAV_MAP = { config:0, galicia:1, macro:2, recaudadora:3, 'cheques-aceptar':4, 'transferencias-macro':5, sucursales:6, carga:7, bandeja:8 };
