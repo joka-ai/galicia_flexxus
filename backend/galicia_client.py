@@ -356,12 +356,12 @@ class GaliciaClient:
         if not self._logged_in or not self._page:
             return [], "No hay sesión activa"
         try:
-            self._goto_con_retry(CHEQUES_URL)
+            self._goto_con_retry(CHEQUES_URL, timeout=30000)
             try:
-                self._page.wait_for_load_state("networkidle", timeout=20000)
+                self._page.wait_for_load_state("networkidle", timeout=15000)
             except Exception:
                 pass
-            time.sleep(1.5)
+            time.sleep(0.8)
             self._cerrar_banners()
 
             if "login" in self._page.url.lower():
@@ -373,14 +373,14 @@ class GaliciaClient:
                 aceptar_card.wait_for(state="visible", timeout=10000)
                 aceptar_card.click()
                 try:
-                    self._page.wait_for_url("**/aceptar**", timeout=15000)
+                    self._page.wait_for_url("**/aceptar**", timeout=10000)
                 except Exception:
                     pass
                 try:
-                    self._page.wait_for_load_state("networkidle", timeout=20000)
+                    self._page.wait_for_load_state("networkidle", timeout=12000)
                 except Exception:
                     pass
-                time.sleep(1.5)
+                time.sleep(0.8)
             except Exception as e:
                 return [], f"No se encontró la card Aceptar: {e}"
 

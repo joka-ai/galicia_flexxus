@@ -139,12 +139,20 @@ _macro_session: dict = {
 
 def _pw(fn, *args, **kwargs):
     """Run fn in the dedicated Galicia Playwright thread."""
-    return _pw_executor.submit(fn, *args, **kwargs).result(timeout=180)
+    import concurrent.futures as _cf
+    try:
+        return _pw_executor.submit(fn, *args, **kwargs).result(timeout=300)
+    except _cf.TimeoutError:
+        raise RuntimeError("La operación tardó demasiado. Reintentá en unos segundos.")
 
 
 def _pw_macro(fn, *args, **kwargs):
     """Run fn in the dedicated Macro Playwright thread."""
-    return _pw_macro_executor.submit(fn, *args, **kwargs).result(timeout=180)
+    import concurrent.futures as _cf
+    try:
+        return _pw_macro_executor.submit(fn, *args, **kwargs).result(timeout=300)
+    except _cf.TimeoutError:
+        raise RuntimeError("La operación tardó demasiado. Reintentá en unos segundos.")
 
 
 def _galicia_client():
