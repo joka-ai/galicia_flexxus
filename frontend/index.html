@@ -283,12 +283,6 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
       <div class="field"><label>Contraseña</label><input id="gal-pass" type="password" placeholder="••••••••"/></div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-title">🏢 Datos de empresa</div>
-    <div class="fg w1">
-      <div class="field"><label>Razón Social (propia)</label><input id="cfg-razon-social" placeholder="Ej: Flash Trade SA — se usa para marcar cheques propios"/></div>
-    </div>
-  </div>
   <div class="btn-row">
     <button class="btn primary" onclick="guardarConfig()">💾 Guardar configuración</button>
   </div>
@@ -815,9 +809,8 @@ async function apiFetch(path, opts={}) {
 function guardarConfig() {
   try {
     localStorage.setItem('galicia_cfg', JSON.stringify({
-      galUser:      document.getElementById('gal-user').value,
-      galEmpresa:   document.getElementById('gal-empresa').value,
-      razonSocial1: document.getElementById('cfg-razon-social').value,
+      galUser:    document.getElementById('gal-user').value,
+      galEmpresa: document.getElementById('gal-empresa').value,
     }));
   } catch(e) {}
   showMsg('cfg-msg', '✓ Configuración guardada.', 'success');
@@ -826,9 +819,8 @@ function guardarConfig() {
 function cargarConfig() {
   try {
     const cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
-    if (cfg.galUser)      document.getElementById('gal-user').value         = cfg.galUser;
-    if (cfg.galEmpresa)   document.getElementById('gal-empresa').value      = cfg.galEmpresa;
-    if (cfg.razonSocial1) document.getElementById('cfg-razon-social').value = cfg.razonSocial1;
+    if (cfg.galUser)    document.getElementById('gal-user').value    = cfg.galUser;
+    if (cfg.galEmpresa) document.getElementById('gal-empresa').value = cfg.galEmpresa;
   } catch(e) {}
 }
 
@@ -1451,14 +1443,18 @@ function _sucursalDesdeCheque(c) {
 let _bndSeq = 0;
 function _bndId() { return 'BNJ_' + (++_bndSeq).toString().padStart(4,'0'); }
 
-function _getRazonSocial1() {
-  try { return (JSON.parse(localStorage.getItem('galicia_cfg') || '{}').razonSocial1 || '').trim().toUpperCase(); }
-  catch(e) { return ''; }
-}
-function _esPropio(nombre) {
-  const rs1 = _getRazonSocial1();
-  if (!rs1 || !nombre) return 'N';
-  return (nombre||'').trim().toUpperCase() === rs1 ? 'S' : 'N';
+function _esPropioCheque(det) {
+  if (!det) return 'N';
+  // Normaliza tildes y mayúsculas para comparar
+  const norm = s => (s||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const keys = Object.keys(det);
+  // Busca "Razón social" (librador) y "Razón social 1" (empresa propia) en el detalle
+  const rsKey  = keys.find(k => norm(k) === 'RAZON SOCIAL');
+  const rs1Key = keys.find(k => norm(k) === 'RAZON SOCIAL 1' || norm(k) === 'RAZON SOCIAL.1');
+  if (!rsKey || !rs1Key) return 'N';
+  const rs  = norm(det[rsKey]);
+  const rs1 = norm(det[rs1Key]);
+  return (rs && rs1 && rs === rs1) ? 'S' : 'N';
 }
 function _esOrden(clausula) {
   if (!clausula) return 'N';
@@ -1521,7 +1517,7 @@ function _buildBandejaItem(tipo, c) {
       nro_cheque:  _buildNroCheque('cobros', c),
       monto:       c.importe_pago || 0,
       fecha_em:    '-',
-      propio:      _esPropio(c.nombre_cliente),
+      propio:      'N',
       comun:       'N', orden: 'N', cruzado: 'N',
       electronico: _esElectronico('cobros', c),
     };
@@ -1533,7 +1529,7 @@ function _buildBandejaItem(tipo, c) {
       nro_cheque:  _buildNroCheque('cheques', c),
       monto:       c.importe || 0,
       fecha_em:    c.fecha_em || '-',
-      propio:      _esPropio(c.librador),
+      propio:      _esPropioCheque(c.detalle),
       comun:       'N',
       orden:       _esOrden(c.detalle && c.detalle['Cláusula']),
       cruzado:     'N', electronico: 'S',
