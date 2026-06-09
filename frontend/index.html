@@ -217,7 +217,11 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     <div class="nav-section">Consultas</div>
     <div class="nav-item" onclick="ir('galicia')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      Consultar banco
+      Banco Galicia
+    </div>
+    <div class="nav-item" onclick="ir('macro')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Banco Macro
     </div>
 
     <div class="nav-section">Resultados</div>
@@ -252,7 +256,8 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     </div>
   </nav>
   <div class="sidebar-status">
-    <div><span class="status-dot off" id="dot-galicia"></span><span id="lbl-galicia" style="color:var(--text3)">Sin conexión</span></div>
+    <div><span class="status-dot off" id="dot-galicia"></span><span id="lbl-galicia" style="color:var(--text3)">Galicia: sin sesión</span></div>
+    <div style="margin-top:6px"><span class="status-dot off" id="dot-macro"></span><span id="lbl-macro" style="color:var(--text3)">Macro: sin sesión</span></div>
   </div>
   <div class="sidebar-user">
     <div class="sidebar-user-name">
@@ -281,6 +286,16 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     <div class="fg">
       <div class="field"><label>Usuario</label><input id="gal-user" placeholder="Usuario de Home Banking"/></div>
       <div class="field"><label>Contraseña</label><input id="gal-pass" type="password" placeholder="••••••••"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🏦 Banco Macro — Credenciales</div>
+    <div class="fg">
+      <div class="field"><label>Usuario</label><input id="mac-user" placeholder="Usuario Banca Empresas"/></div>
+      <div class="field"><label>Contraseña</label><input id="mac-pass" type="password" placeholder="••••••••"/></div>
+    </div>
+    <div class="fg w1" style="margin-top:8px">
+      <div class="field"><label>URL de login</label><input id="mac-url" placeholder="https://banca.macro.com.ar/Techbank/BIEmpresasLogin"/></div>
     </div>
   </div>
   <div class="btn-row">
@@ -362,6 +377,29 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
           <div class="resumen-lbl">Cheques a Aceptar</div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MACRO ─────────────────────────────────────────────────────────────────── -->
+<div class="page" id="page-macro">
+  <div class="page-hdr"><h2>Consultar Banco Macro</h2></div>
+  <div id="mac-msg"></div>
+
+  <div class="card">
+    <div class="card-title">Sesión</div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <button class="btn primary" onclick="loginMacro()" id="btn-mac-login">🔐 Iniciar sesión</button>
+      <button class="btn" onclick="logoutMacro()" id="btn-mac-logout" style="display:none">Cerrar sesión</button>
+      <span id="mac-session-lbl" style="font-size:13px;color:var(--text3)">No conectado</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <label style="font-size:12px;font-weight:500;color:var(--text2);white-space:nowrap">Empresa</label>
+      <select id="mac-empresa" style="width:auto;padding:7px 10px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:13px" disabled>
+        <option value="">— elegir empresa —</option>
+      </select>
+      <button class="btn" onclick="cambiarEmpresaMacro()" id="btn-mac-cambiar-empresa" disabled>↔ Seleccionar empresa</button>
+      <span id="mac-empresa-lbl" style="font-size:12px;color:var(--text3)"></span>
     </div>
   </div>
 </div>
@@ -711,6 +749,7 @@ let tiposConsultados = new Set();
 let bandeja = [];
 let _querying = false;
 let _galiciaPoll = null;
+let _macroPoll   = null;
 
 function _setQuerying(on) {
   _querying = on;
@@ -719,7 +758,7 @@ function _setQuerying(on) {
   if (banner) banner.style.display = on ? 'flex' : 'none';
 }
 
-const NAV_MAP = { config:0, galicia:1, recaudadora:2, 'cheques-aceptar':3, sucursales:4, carga:5, bandeja:6 };
+const NAV_MAP = { config:0, galicia:1, macro:2, recaudadora:3, 'cheques-aceptar':4, sucursales:5, carga:6, bandeja:7 };
 
 function ir(p) {
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
@@ -764,6 +803,8 @@ function guardarConfig() {
     localStorage.setItem('galicia_cfg', JSON.stringify({
       galUser:    document.getElementById('gal-user').value,
       galEmpresa: document.getElementById('gal-empresa').value,
+      macUser:    document.getElementById('mac-user').value,
+      macUrl:     document.getElementById('mac-url').value,
     }));
   } catch(e) {}
   showMsg('cfg-msg', '✓ Configuración guardada.', 'success');
@@ -774,6 +815,8 @@ function cargarConfig() {
     const cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
     if (cfg.galUser)    document.getElementById('gal-user').value    = cfg.galUser;
     if (cfg.galEmpresa) document.getElementById('gal-empresa').value = cfg.galEmpresa;
+    if (cfg.macUser)    document.getElementById('mac-user').value    = cfg.macUser;
+    if (cfg.macUrl)     document.getElementById('mac-url').value     = cfg.macUrl;
   } catch(e) {}
 }
 
@@ -847,7 +890,7 @@ async function logoutGalicia() {
   document.getElementById('gal-session-lbl').textContent = 'No conectado';
   document.getElementById('gal-session-lbl').style.color = 'var(--text3)';
   document.getElementById('dot-galicia').className  = 'status-dot off';
-  document.getElementById('lbl-galicia').textContent = 'Sin conexión';
+  document.getElementById('lbl-galicia').textContent = 'Galicia: sin sesión';
   document.getElementById('gal-empresa').disabled = true;
   document.getElementById('btn-cambiar-empresa').disabled = true;
   document.getElementById('gal-empresa-lbl').textContent = '';
@@ -2075,7 +2118,7 @@ async function checkAuth() {
       document.getElementById('nav-user').textContent = data.usuario;
       cargarSucursales();
       cargarBancosDesdeBackend();
-      await checkGaliciaStatus();
+      await Promise.all([checkGaliciaStatus(), checkMacroStatus()]);
     } else {
       document.getElementById('login-overlay').style.display = 'flex';
     }
@@ -2107,7 +2150,7 @@ async function checkGaliciaStatus() {
       document.getElementById('gal-session-lbl').textContent = 'No conectado';
       document.getElementById('gal-session-lbl').style.color = 'var(--text3)';
       document.getElementById('dot-galicia').className  = 'status-dot off';
-      document.getElementById('lbl-galicia').textContent = 'Sin conexión';
+      document.getElementById('lbl-galicia').textContent = 'Galicia: sin sesión';
       document.getElementById('gal-empresa').disabled = true;
       document.getElementById('btn-cambiar-empresa').disabled = true;
       document.getElementById('gal-empresa-lbl').textContent = '';
@@ -2164,6 +2207,128 @@ async function doLogout() {
   document.getElementById('nav-user').textContent = '—';
 }
 
+// ── Macro login ───────────────────────────────────────────────────────────
+async function loginMacro() {
+  const usuario  = document.getElementById('mac-user').value.trim();
+  const password = document.getElementById('mac-pass').value.trim();
+  const url      = document.getElementById('mac-url').value.trim();
+  if (!usuario || !password) { showMsg('mac-msg', 'Completá usuario y contraseña de Macro en Configuración primero.', 'warn'); return; }
+  showMsg('mac-msg', '⏳ Iniciando sesión en Banco Macro... (puede tardar 30-40 s)', 'info');
+  document.getElementById('btn-mac-login').disabled = true;
+  _setQuerying(true);
+  try {
+    const data = await apiFetch('/macro/login', { method:'POST', body:JSON.stringify({usuario, password, url}) });
+    if (data.ok) {
+      showMsg('mac-msg', '✓ ' + data.mensaje, 'success');
+      document.getElementById('btn-mac-logout').style.display = 'inline-flex';
+      document.getElementById('btn-mac-login').style.display  = 'none';
+      document.getElementById('mac-session-lbl').textContent  = 'Conectado como ' + usuario;
+      document.getElementById('mac-session-lbl').style.color  = 'var(--green)';
+      document.getElementById('dot-macro').className   = 'status-dot ok';
+      document.getElementById('lbl-macro').textContent = 'Macro: conectado';
+      _poblarEmpresasMacro(data.empresas || [], data.empresa || '');
+      _startMacroPoll();
+    } else {
+      showMsg('mac-msg', '✗ ' + data.error, 'error');
+      const esConexion = data.error && (
+        data.error.startsWith('Error de conexión') ||
+        data.error.toLowerCase().includes('timeout')
+      );
+      if (!esConexion) {
+        const passEl = document.getElementById('mac-pass');
+        if (passEl) { passEl.value = ''; passEl.focus(); }
+      }
+    }
+  } catch(e) { showMsg('mac-msg', '✗ Error de red: ' + e.message, 'error'); }
+  _setQuerying(false);
+  document.getElementById('btn-mac-login').disabled = false;
+}
+
+function _poblarEmpresasMacro(empresas, empresaActiva) {
+  const sel = document.getElementById('mac-empresa');
+  sel.innerHTML = '<option value="">— elegir empresa —</option>';
+  empresas.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e; opt.textContent = e;
+    sel.appendChild(opt);
+  });
+  if (empresaActiva) {
+    sel.value = empresaActiva;
+    document.getElementById('mac-empresa-lbl').textContent = `(activa: ${empresaActiva})`;
+  }
+  const tieneLista = empresas.length > 0;
+  sel.disabled = !tieneLista;
+  document.getElementById('btn-mac-cambiar-empresa').disabled = !tieneLista;
+}
+
+async function logoutMacro() {
+  await apiFetch('/macro/logout', {method:'POST'});
+  document.getElementById('btn-mac-logout').style.display = 'none';
+  document.getElementById('btn-mac-login').style.display  = 'inline-flex';
+  document.getElementById('mac-session-lbl').textContent  = 'No conectado';
+  document.getElementById('mac-session-lbl').style.color  = 'var(--text3)';
+  document.getElementById('dot-macro').className   = 'status-dot off';
+  document.getElementById('lbl-macro').textContent = 'Macro: sin sesión';
+  document.getElementById('mac-empresa').disabled  = true;
+  document.getElementById('mac-empresa').innerHTML = '<option value="">— elegir empresa —</option>';
+  document.getElementById('btn-mac-cambiar-empresa').disabled = true;
+  document.getElementById('mac-empresa-lbl').textContent = '';
+  showMsg('mac-msg', 'Sesión cerrada.', 'info');
+}
+
+async function cambiarEmpresaMacro() {
+  const empresa = document.getElementById('mac-empresa').value;
+  if (!empresa) { showMsg('mac-msg', 'Elegí una empresa de la lista.', 'warn'); return; }
+  showMsg('mac-msg', `⏳ Seleccionando ${empresa}...`, 'info');
+  document.getElementById('btn-mac-cambiar-empresa').disabled = true;
+  _setQuerying(true);
+  try {
+    const data = await apiFetch('/macro/cambiar_empresa', { method:'POST', body:JSON.stringify({empresa}) });
+    if (data.ok) {
+      showMsg('mac-msg', '✓ ' + data.mensaje, 'success');
+      document.getElementById('mac-empresa-lbl').textContent = `(activa: ${data.empresa || empresa})`;
+      try {
+        const cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
+        cfg.macEmpresa = data.empresa || empresa;
+        localStorage.setItem('galicia_cfg', JSON.stringify(cfg));
+      } catch(e) {}
+    } else {
+      showMsg('mac-msg', '✗ ' + data.error, 'error');
+    }
+  } catch(e) {
+    showMsg('mac-msg', '✗ Error de red: ' + e.message, 'error');
+  } finally {
+    _setQuerying(false);
+    document.getElementById('btn-mac-cambiar-empresa').disabled = false;
+  }
+}
+
+async function checkMacroStatus() {
+  try {
+    const data = await apiFetch('/macro/status');
+    if (data.conectado) {
+      document.getElementById('btn-mac-logout').style.display = 'inline-flex';
+      document.getElementById('btn-mac-login').style.display  = 'none';
+      document.getElementById('mac-session-lbl').textContent  = 'Sesión activa';
+      document.getElementById('mac-session-lbl').style.color  = 'var(--green)';
+      document.getElementById('dot-macro').className   = 'status-dot ok';
+      document.getElementById('lbl-macro').textContent = 'Macro: conectado';
+      _poblarEmpresasMacro(data.empresas || [], data.empresa || '');
+      _startMacroPoll();
+    } else {
+      document.getElementById('btn-mac-logout').style.display = 'none';
+      document.getElementById('btn-mac-login').style.display  = 'inline-flex';
+      document.getElementById('mac-session-lbl').textContent  = 'No conectado';
+      document.getElementById('mac-session-lbl').style.color  = 'var(--text3)';
+      document.getElementById('dot-macro').className   = 'status-dot off';
+      document.getElementById('lbl-macro').textContent = 'Macro: sin sesión';
+      document.getElementById('mac-empresa').disabled  = true;
+      document.getElementById('btn-mac-cambiar-empresa').disabled = true;
+      document.getElementById('mac-empresa-lbl').textContent = '';
+    }
+  } catch(e) {}
+}
+
 // ── Poll Galicia status (detecta cierre de ventana del browser) ───────────
 function _startGaliciaPoll() {
   if (_galiciaPoll) return;
@@ -2178,6 +2343,24 @@ function _startGaliciaPoll() {
     if (eraConectado && !ahoraConectado) {
       clearInterval(_galiciaPoll); _galiciaPoll = null;
       showMsg('gal-msg', '⚠ Se cerró la ventana del banco. La sesión fue cerrada.', 'warn');
+    }
+  }, 5000);
+}
+
+// ── Poll Macro status ──────────────────────────────────────────────────────
+function _startMacroPoll() {
+  if (_macroPoll) return;
+  _macroPoll = setInterval(async () => {
+    const btnLogout = document.getElementById('btn-mac-logout');
+    if (!btnLogout || btnLogout.style.display === 'none') {
+      clearInterval(_macroPoll); _macroPoll = null; return;
+    }
+    const eraConectado = document.getElementById('dot-macro').className.includes('ok');
+    await checkMacroStatus();
+    const ahoraConectado = document.getElementById('dot-macro').className.includes('ok');
+    if (eraConectado && !ahoraConectado) {
+      clearInterval(_macroPoll); _macroPoll = null;
+      showMsg('mac-msg', '⚠ Se cerró la ventana del banco. La sesión fue cerrada.', 'warn');
     }
   }, 5000);
 }

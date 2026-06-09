@@ -22,6 +22,7 @@ from flask import Flask, request, jsonify, send_from_directory, session
 from flask_cors import CORS
 
 from galicia_client import GaliciaClient
+from macro_client import MacroClient
 from file_processor import (
     procesar_csv_recaudadora_galicia,
     procesar_csv_cheques_galicia,
@@ -121,8 +122,9 @@ def _remaining_attempts(ip: str) -> int:
     used  = len([t for t in _failed[ip] if now - t < _WINDOW_SECS])
     return max(0, _MAX_ATTEMPTS - used)
 
-# ─── Playwright executor ───────────────────────────────────────────────────────
-_pw_executor = ThreadPoolExecutor(max_workers=1)
+# ─── Playwright executors ─────────────────────────────────────────────────────
+_pw_executor       = ThreadPoolExecutor(max_workers=1)
+_pw_macro_executor = ThreadPoolExecutor(max_workers=1)
 
 _session: dict = {
     'client':            None,
@@ -130,10 +132,19 @@ _session: dict = {
     'cheques_a_aceptar': [],
 }
 
+_macro_session: dict = {
+    'client': None,
+}
+
 
 def _pw(fn, *args, **kwargs):
-    """Run fn in the dedicated Playwright thread."""
+    """Run fn in the dedicated Galicia Playwright thread."""
     return _pw_executor.submit(fn, *args, **kwargs).result(timeout=180)
+
+
+def _pw_macro(fn, *args, **kwargs):
+    """Run fn in the dedicated Macro Playwright thread."""
+    return _pw_macro_executor.submit(fn, *args, **kwargs).result(timeout=180)
 
 
 def _galicia_client():
@@ -150,6 +161,23 @@ def _galicia_client():
             return None
     except Exception:
         # Si no podemos verificar el estado, asumir que está cerrado
+        c._logged_in = False
+        return None
+    return c
+
+
+def _macro_client():
+    c = _macro_session.get('client')
+    if not c or not c._logged_in:
+        return None
+    try:
+        if c._page and c._page.is_closed():
+            c._logged_in = False
+            return None
+        if c._browser and not c._browser.is_connected():
+            c._logged_in = False
+            return None
+    except Exception:
         c._logged_in = False
         return None
     return c
@@ -335,6 +363,93 @@ def galicia_recaudadora():
 @app.route('/api/galicia/cheques_a_aceptar', methods=['POST'])
 def galicia_cheques_a_aceptar():
     return _galicia_query('obtener_cheques_a_aceptar', 'cheques',     'cheques_a_aceptar')
+
+# ─── Banco Macro session ─────────────────────────────────────────────────────
+@app.route('/api/macro/status')
+def macro_status():
+    try:
+        c = _macro_client()
+        return jsonify({
+            'conectado': c is not None,
+            'empresa':   c._empresa_activa if c else '',
+            'empresas':  c._empresas       if c else [],
+        })
+    except Exception as e:
+        return jsonify({'conectado': False, 'empresa': '', 'empresas': [], 'error': str(e)})
+
+
+@app.route('/api/macro/login', methods=['POST'])
+def macro_login():
+    body     = request.json or {}
+    usuario  = body.get('usuario', '').strip()
+    password = body.get('password', '').strip()
+    url      = body.get('url', '').strip()
+    if not usuario or not password:
+        return jsonify({'ok': False, 'error': 'Falta usuario o contraseña'}), 400
+
+    def _do():
+        prev = _macro_session.get('client')
+        if prev:
+            try: prev.logout()
+            except Exception: pass
+        _macro_session['client'] = None
+        client = MacroClient(headless=False)
+        ok, msg = client.login(usuario, password, url)
+        if ok:
+            _macro_session['client'] = client
+        return ok, msg
+
+    try:
+        ok, msg = _pw_macro(_do)
+        if ok:
+            c = _macro_session.get('client')
+            return jsonify({
+                'ok':      True,
+                'mensaje': msg,
+                'empresas': c._empresas       if c else [],
+                'empresa':  c._empresa_activa if c else '',
+            })
+        return jsonify({'ok': False, 'error': msg}), 401
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+
+@app.route('/api/macro/logout', methods=['POST'])
+def macro_logout():
+    def _do():
+        c = _macro_session.get('client')
+        if c:
+            try: c.logout()
+            except Exception: pass
+        _macro_session['client'] = None
+    try: _pw_macro(_do)
+    except Exception: pass
+    return jsonify({'ok': True})
+
+
+@app.route('/api/macro/cambiar_empresa', methods=['POST'])
+def macro_cambiar_empresa():
+    c = _macro_client()
+    if not c:
+        return jsonify({'ok': False, 'error': 'Primero iniciá sesión en Macro'}), 401
+    empresa = (request.json or {}).get('empresa', '').strip()
+    if not empresa:
+        return jsonify({'ok': False, 'error': 'Falta el nombre de empresa'}), 400
+
+    def _do():
+        if c._empresas and not c._empresa_activa:
+            return c.seleccionar_empresa(empresa)
+        return c.cambiar_empresa(empresa)
+
+    try:
+        ok, msg = _pw_macro(_do)
+        return jsonify(
+            {'ok': ok, 'mensaje': msg, 'empresa': c._empresa_activa}
+            if ok else {'ok': False, 'error': msg}
+        )
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
 
 # ─── Manual CSV upload ────────────────────────────────────────────────────────
 @app.route('/api/upload/<tipo>', methods=['POST'])
