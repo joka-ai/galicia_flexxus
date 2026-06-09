@@ -863,10 +863,12 @@ function showMsg(id, text, tipo='info') {
   if (!el) return;
   el.innerHTML = text ? `<div class="alert ${tipo}">${text}</div>` : '';
   clearTimeout(el._msgTimer);
-  if (text && tipo !== 'error') {
-    const delay = tipo === 'warn' ? 7000 : tipo === 'success' ? 4000 : 5000;
-    el._msgTimer = setTimeout(() => { el.innerHTML = ''; }, delay);
+  if (text && tipo === 'success') {
+    el._msgTimer = setTimeout(() => { el.innerHTML = ''; }, 4000);
+  } else if (text && tipo === 'info') {
+    el._msgTimer = setTimeout(() => { el.innerHTML = ''; }, 5000);
   }
+  // 'error' y 'warn' no se borran solos — el usuario los cierra con una nueva acción
 }
 
 function fmtMonto(n) {

@@ -224,15 +224,13 @@ class MacroClient:
             fecha_hasta_input = self._page.locator('#dateFieldFechaHasta')
             fecha_desde_input.wait_for(state='visible', timeout=5000)
 
-            fecha_desde_input.click()
+            fecha_desde_input.triple_click()
             fecha_desde_input.fill(fd)
-            fecha_desde_input.press('Tab')
-            time.sleep(0.2)
+            time.sleep(0.15)
 
-            fecha_hasta_input.click()
+            fecha_hasta_input.triple_click()
             fecha_hasta_input.fill(fh)
-            fecha_hasta_input.press('Tab')
-            time.sleep(0.2)
+            time.sleep(0.15)
 
             # Importes opcionales
             if importe_desde:
