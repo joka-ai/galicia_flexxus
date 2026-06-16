@@ -1,0 +1,3463 @@
+{
+  "updated": "02/06/2026 11:55",
+  "source_file": "Sucursales-operatoria-20-05-2020.pdf",
+  "total": 432,
+  "sucursales": [
+    {
+      "numero": "417",
+      "localidad": "Merlo Centro",
+      "ciudad": "Merlo",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Av Del Libertador 416"
+    },
+    {
+      "numero": "450",
+      "localidad": "Carman",
+      "ciudad": "Martinez",
+      "provincia": "Buenos Aires",
+      "cp": "1642",
+      "domicilio": "Carman 161 Martinez"
+    },
+    {
+      "numero": "483",
+      "localidad": "La Plata Sur",
+      "ciudad": "La Plata",
+      "provincia": "Buenos Aires",
+      "cp": "1906",
+      "domicilio": "Calle 7 1221"
+    },
+    {
+      "numero": "511",
+      "localidad": "Avellaneda",
+      "ciudad": "Avellaneda",
+      "provincia": "Buenos Aires",
+      "cp": "1870",
+      "domicilio": "Av Mitre 424"
+    },
+    {
+      "numero": "519",
+      "localidad": "Quilmes",
+      "ciudad": "Quilmes",
+      "provincia": "Buenos Aires",
+      "cp": "1878",
+      "domicilio": "Lavalle 565"
+    },
+    {
+      "numero": "520",
+      "localidad": "Lomas De Zamora",
+      "ciudad": "Lomas De Zamora",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Av.Meeks 180"
+    },
+    {
+      "numero": "521",
+      "localidad": "Martinez",
+      "ciudad": "Martinez",
+      "provincia": "Buenos Aires",
+      "cp": "1640",
+      "domicilio": "Av. Santa Fe 2136"
+    },
+    {
+      "numero": "522",
+      "localidad": "San Isidro",
+      "ciudad": "San Isidro",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Chacabuco 444"
+    },
+    {
+      "numero": "524",
+      "localidad": "Lanus",
+      "ciudad": "Lanus",
+      "provincia": "Buenos Aires",
+      "cp": "1824",
+      "domicilio": "Hipolito Yrigoyen 4235"
+    },
+    {
+      "numero": "527",
+      "localidad": "General San Martin",
+      "ciudad": "San Martín",
+      "provincia": "Buenos Aires",
+      "cp": "1650",
+      "domicilio": "Moreno 3596"
+    },
+    {
+      "numero": "528",
+      "localidad": "Olivos",
+      "ciudad": "Olivos",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Av. Maipu 2383"
+    },
+    {
+      "numero": "529",
+      "localidad": "La Plata",
+      "ciudad": "La Plata",
+      "provincia": "Buenos Aires",
+      "cp": "1900",
+      "domicilio": "Av. 7 Nro. 743"
+    },
+    {
+      "numero": "530",
+      "localidad": "La Plata Centro",
+      "ciudad": "La Plata",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Calle 48 Nro 676 - Entre 8 Y 9"
+    },
+    {
+      "numero": "533",
+      "localidad": "Chascomus",
+      "ciudad": "Chascomús",
+      "provincia": "Buenos Aires",
+      "cp": "7130",
+      "domicilio": "Belgrano 87"
+    },
+    {
+      "numero": "542",
+      "localidad": "Pigüe",
+      "ciudad": "Pigüé",
+      "provincia": "Buenos Aires",
+      "cp": "8170",
+      "domicilio": "Av. Casey 202"
+    },
+    {
+      "numero": "556",
+      "localidad": "Coronel Suarez",
+      "ciudad": "Coronel Suárez",
+      "provincia": "Buenos Aires",
+      "cp": "7540",
+      "domicilio": "Lamadrid 1416"
+    },
+    {
+      "numero": "560",
+      "localidad": "Coronel Pringles",
+      "ciudad": "Coronel Pringles",
+      "provincia": "Buenos Aires",
+      "cp": "7530",
+      "domicilio": "San Martin 571"
+    },
+    {
+      "numero": "564",
+      "localidad": "Tres Arroyos",
+      "ciudad": "Tres Arroyos",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Chacabuco 201"
+    },
+    {
+      "numero": "567",
+      "localidad": "Florencio Varela",
+      "ciudad": "Florencio Varela",
+      "provincia": "Buenos Aires",
+      "cp": "1888",
+      "domicilio": "Dr. Bernardo Monteagudo 273"
+    },
+    {
+      "numero": "568",
+      "localidad": "Monte Grande",
+      "ciudad": "Monte Grande",
+      "provincia": "Buenos Aires",
+      "cp": "1842",
+      "domicilio": "Leandro N. Alem 362"
+    },
+    {
+      "numero": "569",
+      "localidad": "Trenque Lauquen",
+      "ciudad": "Trenque Lauquen",
+      "provincia": "Buenos Aires",
+      "cp": "6400",
+      "domicilio": "San Martin 299"
+    },
+    {
+      "numero": "570",
+      "localidad": "Necochea",
+      "ciudad": "Necochea",
+      "provincia": "Buenos Aires",
+      "cp": "7630",
+      "domicilio": "Calle 61 Nro 2957"
+    },
+    {
+      "numero": "575",
+      "localidad": "Moron",
+      "ciudad": "Morón",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "N.Sra.Del Buen Viaje 750"
+    },
+    {
+      "numero": "580",
+      "localidad": "Zarate",
+      "ciudad": "Zárate",
+      "provincia": "Buenos Aires",
+      "cp": "2800",
+      "domicilio": "19 De Marzo Nro 272"
+    },
+    {
+      "numero": "582",
+      "localidad": "San Miguel",
+      "ciudad": "San Miguel",
+      "provincia": "Buenos Aires",
+      "cp": "1663",
+      "domicilio": "Avda. Mitre 497"
+    },
+    {
+      "numero": "583",
+      "localidad": "Campana",
+      "ciudad": "Campana",
+      "provincia": "Buenos Aires",
+      "cp": "2804",
+      "domicilio": "Av. Ingeniero A. Roca Nº 73/75"
+    },
+    {
+      "numero": "585",
+      "localidad": "Olavarria",
+      "ciudad": "Olavarría",
+      "provincia": "Buenos Aires",
+      "cp": "7400",
+      "domicilio": "Vicente Lopez 2924"
+    },
+    {
+      "numero": "589",
+      "localidad": "Partido De La Costa",
+      "ciudad": "Santa Teresita",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Calle 39 Nro 234/258"
+    },
+    {
+      "numero": "590",
+      "localidad": "Pinamar",
+      "ciudad": "Pinamar",
+      "provincia": "Buenos Aires",
+      "cp": "7167",
+      "domicilio": "E. Shaw Y Jason"
+    },
+    {
+      "numero": "593",
+      "localidad": "Bahia Blanca",
+      "ciudad": "Bahia Blanca",
+      "provincia": "Buenos Aires",
+      "cp": "8000",
+      "domicilio": "San Martin 145"
+    },
+    {
+      "numero": "595",
+      "localidad": "Pilar Centro",
+      "ciudad": "Pilar",
+      "provincia": "Buenos Aires",
+      "cp": "1629",
+      "domicilio": "Tucuman 511"
+    },
+    {
+      "numero": "596",
+      "localidad": "Caseros",
+      "ciudad": "Caseros",
+      "provincia": "Buenos Aires",
+      "cp": "1678",
+      "domicilio": "Av Gral. J.J. Urquiza 4765"
+    },
+    {
+      "numero": "651",
+      "localidad": "Gerli",
+      "ciudad": "Gerli",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Av. Lacarra 1619"
+    },
+    {
+      "numero": "668",
+      "localidad": "San Justo",
+      "ciudad": "San Justo",
+      "provincia": "Buenos Aires",
+      "cp": "1754",
+      "domicilio": "Brigadier Juan Manuel De Rosas 3555"
+    },
+    {
+      "numero": "669",
+      "localidad": "Berazategui",
+      "ciudad": "Berazategui",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Av. 14 Pte. Juan D Peron Nro 5164"
+    },
+    {
+      "numero": "670",
+      "localidad": "Ciudad Madero.-",
+      "ciudad": "Villa Insuperable",
+      "provincia": "Buenos Aires",
+      "cp": "1752",
+      "domicilio": "Av. Crovara 1028"
+    },
+    {
+      "numero": "676",
+      "localidad": "Temperley",
+      "ciudad": "Temperley",
+      "provincia": "Buenos Aires",
+      "cp": "1834",
+      "domicilio": "Alte. Brown 3160"
+    },
+    {
+      "numero": "682",
+      "localidad": "Adrogue",
+      "ciudad": "Adrogué",
+      "provincia": "Buenos Aires",
+      "cp": "1846",
+      "domicilio": "Rotonda Plaza Espora 69"
+    },
+    {
+      "numero": "683",
+      "localidad": "Rafael Calzada",
+      "ciudad": "Rafael Calzada",
+      "provincia": "Buenos Aires",
+      "cp": "1847",
+      "domicilio": "20 De Septiembre 1780"
+    },
+    {
+      "numero": "686",
+      "localidad": "Tigre",
+      "ciudad": "Tigre",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Av Cazon 1381"
+    },
+    {
+      "numero": "687",
+      "localidad": "Mar Del Plata Puerto",
+      "ciudad": "Mar Del Plata",
+      "provincia": "Buenos Aires",
+      "cp": "7600",
+      "domicilio": "Edison 245"
+    },
+    {
+      "numero": "703",
+      "localidad": "Alberti",
+      "ciudad": "Alberti",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Av Vacarezza 51"
+    },
+    {
+      "numero": "710",
+      "localidad": "Arrecifes",
+      "ciudad": "Arrecifes",
+      "provincia": "Buenos Aires",
+      "cp": "2740",
+      "domicilio": "Ricardo Gutierrez 499"
+    },
+    {
+      "numero": "713",
+      "localidad": "Correo Bahía Blanca",
+      "ciudad": "Bahia Blanca",
+      "provincia": "Buenos Aires",
+      "cp": "8000",
+      "domicilio": "Moreno 47"
+    },
+    {
+      "numero": "715",
+      "localidad": "Bolivar",
+      "ciudad": "Bolívar",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "San Martin 470"
+    },
+    {
+      "numero": "725",
+      "localidad": "Capitan Sarmiento",
+      "ciudad": "Capitán Sarmiento",
+      "provincia": "Buenos Aires",
+      "cp": "2752",
+      "domicilio": "Av Bme Mitre 27"
+    },
+    {
+      "numero": "727",
+      "localidad": "Carmen De Areco",
+      "ciudad": "Carmen De Areco",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Bme Mitre 652"
+    },
+    {
+      "numero": "733",
+      "localidad": "Chacabuco",
+      "ciudad": "Chacabuco",
+      "provincia": "Buenos Aires",
+      "cp": "6740",
+      "domicilio": "San Martin 52"
+    },
+    {
+      "numero": "734",
+      "localidad": "Chivilcoy",
+      "ciudad": "Chivilcoy",
+      "provincia": "Buenos Aires",
+      "cp": "6620",
+      "domicilio": "Pellegrini 215"
+    },
+    {
+      "numero": "735",
+      "localidad": "Colon",
+      "ciudad": "Colón",
+      "provincia": "Buenos Aires",
+      "cp": "2720",
+      "domicilio": "Calle 47 Nro 1027"
+    },
+    {
+      "numero": "759",
+      "localidad": "Lujan",
+      "ciudad": "Luján",
+      "provincia": "Buenos Aires",
+      "cp": "6700",
+      "domicilio": "San Martin 451"
+    },
+    {
+      "numero": "762",
+      "localidad": "Av. Luro - Mar Del Plata",
+      "ciudad": "Mar Del Plata",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Av Luro 2601"
+    },
+    {
+      "numero": "767",
+      "localidad": "Mercedes",
+      "ciudad": "Mercedes",
+      "provincia": "Buenos Aires",
+      "cp": "6600",
+      "domicilio": "Calle 27 Nro 380"
+    },
+    {
+      "numero": "772",
+      "localidad": "Nueve De Julio",
+      "ciudad": "Nueve De Julio",
+      "provincia": "Buenos Aires",
+      "cp": "6500",
+      "domicilio": "Bme Mitre 1162"
+    },
+    {
+      "numero": "779",
+      "localidad": "Pergamino Centenario",
+      "ciudad": "Pergamino",
+      "provincia": "Buenos Aires",
+      "cp": "2700",
+      "domicilio": "Juan B Justo 2020"
+    },
+    {
+      "numero": "780",
+      "localidad": "Pergamino Centro",
+      "ciudad": "Pergamino",
+      "provincia": "Buenos Aires",
+      "cp": "2700",
+      "domicilio": "San Nicolas 366"
+    },
+    {
+      "numero": "786",
+      "localidad": "Punta Alta",
+      "ciudad": "Punta Alta",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Humberto Primo 366"
+    },
+    {
+      "numero": "799",
+      "localidad": "Junin",
+      "ciudad": "Junín",
+      "provincia": "Buenos Aires",
+      "cp": "6000",
+      "domicilio": "Avenida Arias 1"
+    },
+    {
+      "numero": "834",
+      "localidad": "San Pedro",
+      "ciudad": "San Pedro",
+      "provincia": "Buenos Aires",
+      "cp": "2930",
+      "domicilio": "Av. Mitre 840"
+    },
+    {
+      "numero": "845",
+      "localidad": "San Andres De Giles",
+      "ciudad": "San Andrés De Giles",
+      "provincia": "Buenos Aires",
+      "cp": "6720",
+      "domicilio": "Rivadavia 462"
+    },
+    {
+      "numero": "847",
+      "localidad": "Salto",
+      "ciudad": "Salto",
+      "provincia": "Buenos Aires",
+      "cp": "2741",
+      "domicilio": "Mitre 642"
+    },
+    {
+      "numero": "849",
+      "localidad": "San Antonio De Areco",
+      "ciudad": "San Antonio De Areco",
+      "provincia": "Buenos Aires",
+      "cp": "",
+      "domicilio": "Alsina 167"
+    },
+    {
+      "numero": "852",
+      "localidad": "San Nicolas Centro",
+      "ciudad": "San Nicolás",
+      "provincia": "Buenos Aires",
+      "cp": "2900",
+      "domicilio": "Mitre 229"
+    },
+    {
+      "numero": "859",
+      "localidad": "Tandil",
+      "ciudad": "Tandil",
+      "provincia": "Buenos Aires",
+      "cp": "7000",
+      "domicilio": "General Pinto 496"
+    },
+    {
+      "numero": "875",
+      "localidad": "Carhue",
+      "ciudad": "Carhué",
+      "provincia": "Buenos Aires",
+      "cp": "6430",
+      "domicilio": "San Martin 1002"
+    },
+    {
+      "numero": "878",
+      "localidad": "Salliquelo",
+      "ciudad": "Salliqueló",
+      "provincia": "Buenos Aires",
+      "cp": "6339",
+      "domicilio": "25 De Mayo 270"
+    },
+    {
+      "numero": "667",
+      "localidad": "Puerto Madero",
+      "ciudad": "Capital Federal",
+      "provincia": "Capital Federal",
+      "cp": "",
+      "domicilio": "Rosario Vera Peñalosa 497"
+    },
+    {
+      "numero": "134",
+      "localidad": "Catamarca",
+      "ciudad": "Catamarca",
+      "provincia": "Catamarca",
+      "cp": "",
+      "domicilio": "Rivadavia 572"
+    },
+    {
+      "numero": "15",
+      "localidad": "Resistencia",
+      "ciudad": "Resistencia",
+      "provincia": "Chaco",
+      "cp": "3500",
+      "domicilio": "Juan B. Justo 164"
+    },
+    {
+      "numero": "802",
+      "localidad": "Resistencia Plaza",
+      "ciudad": "Resistencia",
+      "provincia": "Chaco",
+      "cp": "3500",
+      "domicilio": "Av. Juan B. Alberdi 151"
+    },
+    {
+      "numero": "545",
+      "localidad": "Trelew",
+      "ciudad": "Trelew",
+      "provincia": "Chubut",
+      "cp": "9100",
+      "domicilio": "9 De Julio 320"
+    },
+    {
+      "numero": "546",
+      "localidad": "Comodoro Rivadavia",
+      "ciudad": "Comodoro Rivadavia",
+      "provincia": "Chubut",
+      "cp": "9000",
+      "domicilio": "San Martin 854"
+    },
+    {
+      "numero": "549",
+      "localidad": "Barrio Industrial",
+      "ciudad": "Comodoro Rivadavia",
+      "provincia": "Chubut",
+      "cp": "",
+      "domicilio": "Av. Yrigoyen 2649"
+    },
+    {
+      "numero": "550",
+      "localidad": "Puerto Madryn",
+      "ciudad": "Puerto Madryn",
+      "provincia": "Chubut",
+      "cp": "9120",
+      "domicilio": "Roque Saenz Peña 280"
+    },
+    {
+      "numero": "555",
+      "localidad": "Esquel",
+      "ciudad": "Esquel",
+      "provincia": "Chubut",
+      "cp": "",
+      "domicilio": "25 De Mayo 769"
+    },
+    {
+      "numero": "565",
+      "localidad": "Rawson",
+      "ciudad": "Rawson",
+      "provincia": "Chubut",
+      "cp": "9103",
+      "domicilio": "Belgrano 475"
+    },
+    {
+      "numero": "302",
+      "localidad": "Microcentro",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1041",
+      "domicilio": "Sarmiento 442"
+    },
+    {
+      "numero": "326",
+      "localidad": "Barrio Monserrat",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "",
+      "domicilio": "Av Belgrano 1668"
+    },
+    {
+      "numero": "328",
+      "localidad": "Colegiales",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1426",
+      "domicilio": "Cabildo 850"
+    },
+    {
+      "numero": "329",
+      "localidad": "Balvanera",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "",
+      "domicilio": "Av Rivadavia 3202"
+    },
+    {
+      "numero": "330",
+      "localidad": "Flores Este",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1203",
+      "domicilio": "Av Rivadavia 6241"
+    },
+    {
+      "numero": "502",
+      "localidad": "Almagro",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1195",
+      "domicilio": "Avda. Corrientes 422"
+    },
+    {
+      "numero": "503",
+      "localidad": "Botanico",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1425",
+      "domicilio": "Avda. Las Heras 3701"
+    },
+    {
+      "numero": "505",
+      "localidad": "Av. De Los Incas",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1427",
+      "domicilio": "Av. De Los Incas 4138"
+    },
+    {
+      "numero": "507",
+      "localidad": "Caballito",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "",
+      "domicilio": "Avda. Rivadavia 5273"
+    },
+    {
+      "numero": "508",
+      "localidad": "Devoto",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1419",
+      "domicilio": "Av. Fco Beiro 3599"
+    },
+    {
+      "numero": "509",
+      "localidad": "Barrio Norte",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1123",
+      "domicilio": "Avda. Santa Fe 2150"
+    },
+    {
+      "numero": "513",
+      "localidad": "Boedo",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1256",
+      "domicilio": "Av. Juan De Garay 3599"
+    },
+    {
+      "numero": "514",
+      "localidad": "Barracas",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1288",
+      "domicilio": "Suarez 1756"
+    },
+    {
+      "numero": "516",
+      "localidad": "Palermo",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "",
+      "domicilio": "Av. Scalabrini Ortiz 1729"
+    },
+    {
+      "numero": "517",
+      "localidad": "Plaza Lavalle",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1055",
+      "domicilio": "Av. Cordoba 1315"
+    },
+    {
+      "numero": "518",
+      "localidad": "Barrio Belgrano",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1428",
+      "domicilio": "Juramento 2558"
+    },
+    {
+      "numero": "523",
+      "localidad": "Chacarita",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1427",
+      "domicilio": "Av. Federico Lacroze 3825"
+    },
+    {
+      "numero": "536",
+      "localidad": "Avda. Cordoba",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1120",
+      "domicilio": "Av. Cordoba"
+    },
+    {
+      "numero": "539",
+      "localidad": "Catalinas",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "",
+      "domicilio": "Av. Leandro N. Alem 1110"
+    },
+    {
+      "numero": "581",
+      "localidad": "Mataderos",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1440",
+      "domicilio": "Av. Juan B. Alberdi 5902"
+    },
+    {
+      "numero": "584",
+      "localidad": "Congreso",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1022",
+      "domicilio": "Avda. Callao 264"
+    },
+    {
+      "numero": "663",
+      "localidad": "Av. Santa Fe",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1059",
+      "domicilio": "Av. Santa Fe 1288"
+    },
+    {
+      "numero": "664",
+      "localidad": "Villa Del Parque",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "1417",
+      "domicilio": "Nazarre 3276"
+    },
+    {
+      "numero": "674",
+      "localidad": "Liniers",
+      "ciudad": "Capital Federal",
+      "provincia": "Ciudad De Buenos Aires",
+      "cp": "",
+      "domicilio": "Av. Rivadavia 11178"
+    },
+    {
+      "numero": "300",
+      "localidad": "Alvear",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Alvear 65"
+    },
+    {
+      "numero": "301",
+      "localidad": "Cordoba",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5000",
+      "domicilio": "25 De Mayo 160"
+    },
+    {
+      "numero": "305",
+      "localidad": "Los Granaderos",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5008",
+      "domicilio": "Bv Los Granaderos 1687"
+    },
+    {
+      "numero": "306",
+      "localidad": "Juan B Justo",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5001",
+      "domicilio": "Juan B Justo 3808"
+    },
+    {
+      "numero": "307",
+      "localidad": "Centro Republica",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5000",
+      "domicilio": "Tucuman 175"
+    },
+    {
+      "numero": "308",
+      "localidad": "Rio Tercero",
+      "ciudad": "Rio Tercero",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Juan B. Alberdi 133"
+    },
+    {
+      "numero": "309",
+      "localidad": "Nueva Cordoba",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5000",
+      "domicilio": "Estrada 175"
+    },
+    {
+      "numero": "311",
+      "localidad": "Carlos Paz",
+      "ciudad": "Carlos Paz",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Lisandro De La Torre 44"
+    },
+    {
+      "numero": "312",
+      "localidad": "Villa Maria",
+      "ciudad": "Villa Maria",
+      "provincia": "Córdoba",
+      "cp": "5900",
+      "domicilio": "San Martin 181"
+    },
+    {
+      "numero": "313",
+      "localidad": "Cerro De Las Rosas",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5009",
+      "domicilio": "Av Rafael Nu¥Ez 3884"
+    },
+    {
+      "numero": "315",
+      "localidad": "Rio Cuarto",
+      "ciudad": "Rio Cuarto",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Colon 65"
+    },
+    {
+      "numero": "316",
+      "localidad": "Laboulaye",
+      "ciudad": "Laboulaye",
+      "provincia": "Córdoba",
+      "cp": "6120",
+      "domicilio": "Independencia 199"
+    },
+    {
+      "numero": "317",
+      "localidad": "Los Boulevares",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Av. Los Alemanes 3200 - Local 1"
+    },
+    {
+      "numero": "318",
+      "localidad": "La Falda",
+      "ciudad": "La Falda",
+      "provincia": "Córdoba",
+      "cp": "5172",
+      "domicilio": "Av Eden 476"
+    },
+    {
+      "numero": "319",
+      "localidad": "General Paz",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5000",
+      "domicilio": "24 De Septiembre 1661"
+    },
+    {
+      "numero": "320",
+      "localidad": "Shopping Villa Cabrera",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5003",
+      "domicilio": "Virgen De La Merced 2300"
+    },
+    {
+      "numero": "321",
+      "localidad": "Marcos Juarez",
+      "ciudad": "Marcos Juarez",
+      "provincia": "Córdoba",
+      "cp": "2580",
+      "domicilio": "Belgrano 759"
+    },
+    {
+      "numero": "322",
+      "localidad": "Recta Martinolli",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Recta Martinolli 5808"
+    },
+    {
+      "numero": "323",
+      "localidad": "Quebrada De Las Rosas",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5003",
+      "domicilio": "Av Colon 3500"
+    },
+    {
+      "numero": "324",
+      "localidad": "Alem",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5001",
+      "domicilio": "Av Leandro N Alem 767"
+    },
+    {
+      "numero": "325",
+      "localidad": "Sabatini",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5014",
+      "domicilio": "Av Sabattini 2375"
+    },
+    {
+      "numero": "327",
+      "localidad": "Beverina",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5009",
+      "domicilio": "Av Rafael Nuñez 3895"
+    },
+    {
+      "numero": "331",
+      "localidad": "Richieri",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Av Richieri 3296"
+    },
+    {
+      "numero": "348",
+      "localidad": "Bell Ville",
+      "ciudad": "Bell Ville",
+      "provincia": "Córdoba",
+      "cp": "2550",
+      "domicilio": "Roque Saenz Pe¥A 19"
+    },
+    {
+      "numero": "349",
+      "localidad": "Sobremonte",
+      "ciudad": "Rio Cuarto",
+      "provincia": "Córdoba",
+      "cp": "5800",
+      "domicilio": "Sabattini 2178"
+    },
+    {
+      "numero": "350",
+      "localidad": "Fuerza Aerea",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5010",
+      "domicilio": "Av Fuerza Aerea 2492"
+    },
+    {
+      "numero": "351",
+      "localidad": "Villa Allende",
+      "ciudad": "Villa Allende",
+      "provincia": "Córdoba",
+      "cp": "5105",
+      "domicilio": "Av Saenz Pe¥A 414"
+    },
+    {
+      "numero": "377",
+      "localidad": "Morteros",
+      "ciudad": "Morteros",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Av Libertador 560 / 68"
+    },
+    {
+      "numero": "381",
+      "localidad": "Patio Olmos",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5000",
+      "domicilio": "Bv San Juan Esq V. Sarfield S/N"
+    },
+    {
+      "numero": "382",
+      "localidad": "Rio Primero",
+      "ciudad": "Río Primero",
+      "provincia": "Córdoba",
+      "cp": "5127",
+      "domicilio": "Av. Gral. San Martin 199"
+    },
+    {
+      "numero": "384",
+      "localidad": "Marull",
+      "ciudad": "Marull",
+      "provincia": "Córdoba",
+      "cp": "5139",
+      "domicilio": "Independencia Y 9 De Julio S/N"
+    },
+    {
+      "numero": "387",
+      "localidad": "Hospital Privado",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5016",
+      "domicilio": "Friuli Esq. Nac. Unidas S/N"
+    },
+    {
+      "numero": "388",
+      "localidad": "La Cripta",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Av. Colon 47"
+    },
+    {
+      "numero": "392",
+      "localidad": "Transito",
+      "ciudad": "Tránsito",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Carlos Pellegrini Y Espa¥A S/N"
+    },
+    {
+      "numero": "393",
+      "localidad": "Urquiza",
+      "ciudad": "San Francisco",
+      "provincia": "Córdoba",
+      "cp": "2400",
+      "domicilio": "Urquiza 517"
+    },
+    {
+      "numero": "394",
+      "localidad": "Nuevocentro Shopping",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5000",
+      "domicilio": "Duarte Quiros 1400 Local 1125"
+    },
+    {
+      "numero": "397",
+      "localidad": "Av Colon",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5000",
+      "domicilio": "Av. Colon 2125"
+    },
+    {
+      "numero": "399",
+      "localidad": "Alta Gracia",
+      "ciudad": "Alta Gracia",
+      "provincia": "Córdoba",
+      "cp": "5186",
+      "domicilio": "Av. Belgrano 258"
+    },
+    {
+      "numero": "400",
+      "localidad": "Oncativo",
+      "ciudad": "Oncativo",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Italia 156"
+    },
+    {
+      "numero": "401",
+      "localidad": "Jesus Maria",
+      "ciudad": "Jesús María",
+      "provincia": "Córdoba",
+      "cp": "5220",
+      "domicilio": "San Martin 544"
+    },
+    {
+      "numero": "445",
+      "localidad": "La Merced",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Alvear 76"
+    },
+    {
+      "numero": "705",
+      "localidad": "Villa Dolores",
+      "ciudad": "Villa Dolores",
+      "provincia": "Córdoba",
+      "cp": "5870",
+      "domicilio": "Pte Peron 131"
+    },
+    {
+      "numero": "718",
+      "localidad": "Camilo Aldao",
+      "ciudad": "Camilo Aldao",
+      "provincia": "Córdoba",
+      "cp": "2585",
+      "domicilio": "Italia 1000"
+    },
+    {
+      "numero": "728",
+      "localidad": "Carnerillo",
+      "ciudad": "Carnerillo",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "P De Aguirre 201"
+    },
+    {
+      "numero": "738",
+      "localidad": "Cordoba Centro",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "5000",
+      "domicilio": "Rosario De Santa Fe 247"
+    },
+    {
+      "numero": "739",
+      "localidad": "Cordoba Juan B Justo",
+      "ciudad": "Córdoba",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Juan B Justo 3086"
+    },
+    {
+      "numero": "740",
+      "localidad": "Cruz Alta",
+      "ciudad": "Cruz Alta",
+      "provincia": "Córdoba",
+      "cp": "2189",
+      "domicilio": "San Martin 945"
+    },
+    {
+      "numero": "741",
+      "localidad": "Dalmacio Velez",
+      "ciudad": "Dalmacio Velez",
+      "provincia": "Córdoba",
+      "cp": "5919",
+      "domicilio": "San Martin 401"
+    },
+    {
+      "numero": "748",
+      "localidad": "General Cabrera",
+      "ciudad": "General Cabrera",
+      "provincia": "Córdoba",
+      "cp": "5809",
+      "domicilio": "Santa Fe 884"
+    },
+    {
+      "numero": "749",
+      "localidad": "General Deheza",
+      "ciudad": "General Deheza",
+      "provincia": "Córdoba",
+      "cp": "5923",
+      "domicilio": "Santa Fe 70"
+    },
+    {
+      "numero": "752",
+      "localidad": "Hernando",
+      "ciudad": "Hernando",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "25 De Mayo 215"
+    },
+    {
+      "numero": "758",
+      "localidad": "Los Surgentes",
+      "ciudad": "Los Surgentes",
+      "provincia": "Córdoba",
+      "cp": "2581",
+      "domicilio": "Bv Liniers 161"
+    },
+    {
+      "numero": "768",
+      "localidad": "Monte Maiz",
+      "ciudad": "Monte Maíz",
+      "provincia": "Córdoba",
+      "cp": "2659",
+      "domicilio": "Jujuy 1383"
+    },
+    {
+      "numero": "774",
+      "localidad": "Oliva",
+      "ciudad": "Oliva",
+      "provincia": "Córdoba",
+      "cp": "5980",
+      "domicilio": "Colon 28"
+    },
+    {
+      "numero": "821",
+      "localidad": "Empresas Rio Cuarto",
+      "ciudad": "Río Cuarto",
+      "provincia": "Córdoba",
+      "cp": "5800",
+      "domicilio": "Constitucion 879"
+    },
+    {
+      "numero": "835",
+      "localidad": "Villa Del Rosario",
+      "ciudad": "Villa Del Rosario",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "San Martín 663"
+    },
+    {
+      "numero": "836",
+      "localidad": "Del Lago - Villa C. Paz",
+      "ciudad": "Villa Carlos Paz",
+      "provincia": "Córdoba",
+      "cp": "5152",
+      "domicilio": "9 De Julio 496"
+    },
+    {
+      "numero": "838",
+      "localidad": "Mercomax",
+      "ciudad": "Río Cuarto",
+      "provincia": "Córdoba",
+      "cp": "5800",
+      "domicilio": "Pte. Peron (O) Y Rn 8. Enlace A005"
+    },
+    {
+      "numero": "844",
+      "localidad": "Despenaderos",
+      "ciudad": "Despeñaderos",
+      "provincia": "Córdoba",
+      "cp": "5121",
+      "domicilio": "San Martin 127"
+    },
+    {
+      "numero": "853",
+      "localidad": "Rio Segundo",
+      "ciudad": "Rio Segundo",
+      "provincia": "Córdoba",
+      "cp": "5960",
+      "domicilio": "Bv Sarmiento 1217"
+    },
+    {
+      "numero": "864",
+      "localidad": "Villa General Belgrano",
+      "ciudad": "Villa General Belgrano",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Julio A Roca 176"
+    },
+    {
+      "numero": "867",
+      "localidad": "Paseo De La Villa",
+      "ciudad": "Villa María",
+      "provincia": "Córdoba",
+      "cp": "5900",
+      "domicilio": "H Irigoyen 27"
+    },
+    {
+      "numero": "868",
+      "localidad": "Wenceslao Escalante",
+      "ciudad": "Wenceslao Escalante",
+      "provincia": "Córdoba",
+      "cp": "2655",
+      "domicilio": "San Martin 951"
+    },
+    {
+      "numero": "872",
+      "localidad": "Arroyito Córdoba",
+      "ciudad": "Arroyito",
+      "provincia": "Córdoba",
+      "cp": "2434",
+      "domicilio": "Av Fulvio S Pagani 1203"
+    },
+    {
+      "numero": "873",
+      "localidad": "Brinkmann",
+      "ciudad": "Brinkmann",
+      "provincia": "Córdoba",
+      "cp": "2419",
+      "domicilio": "Bv San Martin 1057"
+    },
+    {
+      "numero": "879",
+      "localidad": "Devoto Córdoba",
+      "ciudad": "Devoto",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "San Martin 280"
+    },
+    {
+      "numero": "882",
+      "localidad": "Freyre",
+      "ciudad": "Freyre",
+      "provincia": "Córdoba",
+      "cp": "",
+      "domicilio": "Bv Belgrano 129"
+    },
+    {
+      "numero": "887",
+      "localidad": "Las Varillas",
+      "ciudad": "Las Varillas",
+      "provincia": "Córdoba",
+      "cp": "5940",
+      "domicilio": "Avellaneda 99"
+    },
+    {
+      "numero": "890",
+      "localidad": "Portena",
+      "ciudad": "Porteña",
+      "provincia": "Córdoba",
+      "cp": "2415",
+      "domicilio": "Bv 25 De Mayo 567"
+    },
+    {
+      "numero": "893",
+      "localidad": "San Francisco",
+      "ciudad": "San Francisco",
+      "provincia": "Córdoba",
+      "cp": "2400",
+      "domicilio": "Lisandro De La Torre 78"
+    },
+    {
+      "numero": "25",
+      "localidad": "Ituzaingo",
+      "ciudad": "Ituzaingó",
+      "provincia": "Corrientes",
+      "cp": "3302",
+      "domicilio": "Buenos Aires N° 874"
+    },
+    {
+      "numero": "33",
+      "localidad": "Gdor. Virasoro",
+      "ciudad": "Gob. Virasoro",
+      "provincia": "Corrientes",
+      "cp": "",
+      "domicilio": "Av. Lavalle N° 712"
+    },
+    {
+      "numero": "42",
+      "localidad": "Corrientes",
+      "ciudad": "Corrientes",
+      "provincia": "Corrientes",
+      "cp": "3400",
+      "domicilio": "San Juan 732"
+    },
+    {
+      "numero": "801",
+      "localidad": "Pedro Ferre",
+      "ciudad": "Corrientes",
+      "provincia": "Corrientes",
+      "cp": "",
+      "domicilio": "Av. Pedro Ferre & Av. Chacabuco"
+    },
+    {
+      "numero": "358",
+      "localidad": "Concordia",
+      "ciudad": "Concordia",
+      "provincia": "Entre Ríos",
+      "cp": "3200",
+      "domicilio": "Mitre 52"
+    },
+    {
+      "numero": "361",
+      "localidad": "Villa Elisa",
+      "ciudad": "Villa Elisa",
+      "provincia": "Entre Ríos",
+      "cp": "3265",
+      "domicilio": "Justo José De Urquiza 2010"
+    },
+    {
+      "numero": "363",
+      "localidad": "Crespo",
+      "ciudad": "Crespo",
+      "provincia": "Entre Ríos",
+      "cp": "",
+      "domicilio": "Moreno 1445"
+    },
+    {
+      "numero": "365",
+      "localidad": "Cinco Esquinas",
+      "ciudad": "Paraná",
+      "provincia": "Entre Ríos",
+      "cp": "3100",
+      "domicilio": "Av. Almafuerte Y Ramirez S/N"
+    },
+    {
+      "numero": "370",
+      "localidad": "Chajari",
+      "ciudad": "Chajarí",
+      "provincia": "Entre Ríos",
+      "cp": "",
+      "domicilio": "Urquiza Y Entre Rios S/N"
+    },
+    {
+      "numero": "380",
+      "localidad": "Concepcion Del Uruguay",
+      "ciudad": "Concepción Del Uruguay",
+      "provincia": "Entre Ríos",
+      "cp": "3260",
+      "domicilio": "Leandro N Alem 12"
+    },
+    {
+      "numero": "385",
+      "localidad": "Villaguay",
+      "ciudad": "Villaguay",
+      "provincia": "Entre Ríos",
+      "cp": "3240",
+      "domicilio": "Urquiza 499"
+    },
+    {
+      "numero": "386",
+      "localidad": "San Salvador",
+      "ciudad": "San Salvador",
+      "provincia": "Entre Ríos",
+      "cp": "3218",
+      "domicilio": "Hipolito Irigoyen 470"
+    },
+    {
+      "numero": "654",
+      "localidad": "Parana",
+      "ciudad": "Paraná",
+      "provincia": "Entre Ríos",
+      "cp": "3100",
+      "domicilio": "Pellegrini 49"
+    },
+    {
+      "numero": "777",
+      "localidad": "Monte Caseros",
+      "ciudad": "Paraná",
+      "provincia": "Entre Ríos",
+      "cp": "",
+      "domicilio": "Monte Caseros 173"
+    },
+    {
+      "numero": "131",
+      "localidad": "San Martin",
+      "ciudad": "San Salvador De Jujuy",
+      "provincia": "Jujuy",
+      "cp": "4600",
+      "domicilio": "San Martín 785"
+    },
+    {
+      "numero": "200",
+      "localidad": "Jujuy",
+      "ciudad": "San Salvador De Jujuy",
+      "provincia": "Jujuy",
+      "cp": "4600",
+      "domicilio": "Alvear 999"
+    },
+    {
+      "numero": "202",
+      "localidad": "L. Gral. San Martin",
+      "ciudad": "Libertador Gral San Martin",
+      "provincia": "Jujuy",
+      "cp": "4512",
+      "domicilio": "Sixto Ovejero 255"
+    },
+    {
+      "numero": "203",
+      "localidad": "Perico",
+      "ciudad": "Perico",
+      "provincia": "Jujuy",
+      "cp": "4608",
+      "domicilio": "San Martin 158"
+    },
+    {
+      "numero": "204",
+      "localidad": "San Pedro De Jujuy",
+      "ciudad": "San Pedro",
+      "provincia": "Jujuy",
+      "cp": "",
+      "domicilio": "Alberdi Esquina Sarmiento"
+    },
+    {
+      "numero": "205",
+      "localidad": "La Quiaca",
+      "ciudad": "La Quiaca",
+      "provincia": "Jujuy",
+      "cp": "4650",
+      "domicilio": "República Arabe Siria 435"
+    },
+    {
+      "numero": "206",
+      "localidad": "Palpala",
+      "ciudad": "Palpalá",
+      "provincia": "Jujuy",
+      "cp": "4612",
+      "domicilio": "Mirabal Esquina San Martín"
+    },
+    {
+      "numero": "207",
+      "localidad": "Humahuaca",
+      "ciudad": "Humahuaca",
+      "provincia": "Jujuy",
+      "cp": "4630",
+      "domicilio": "Jujuy 327"
+    },
+    {
+      "numero": "208",
+      "localidad": "Abra Pampa",
+      "ciudad": "Abra Pampa",
+      "provincia": "Jujuy",
+      "cp": "4640",
+      "domicilio": "Gobernador Fascio 125"
+    },
+    {
+      "numero": "209",
+      "localidad": "Monterrico",
+      "ciudad": "Monterrico",
+      "provincia": "Jujuy",
+      "cp": "",
+      "domicilio": "9 De Julio Nro. 492"
+    },
+    {
+      "numero": "210",
+      "localidad": "San Pedrito",
+      "ciudad": "San Salvador De Jujuy",
+      "provincia": "Jujuy",
+      "cp": "4600",
+      "domicilio": "Av. Alte Brown 600"
+    },
+    {
+      "numero": "211",
+      "localidad": "Tribunales",
+      "ciudad": "San Salvador De Jujuy",
+      "provincia": "Jujuy",
+      "cp": "4600",
+      "domicilio": "San Martín Esquina Bustamante"
+    },
+    {
+      "numero": "213",
+      "localidad": "El Exodo",
+      "ciudad": "San Salvador De Jujuy",
+      "provincia": "Jujuy",
+      "cp": "4600",
+      "domicilio": "Av. El Exodo 215"
+    },
+    {
+      "numero": "214",
+      "localidad": "El Carmen",
+      "ciudad": "El Carmen",
+      "provincia": "Jujuy",
+      "cp": "4603",
+      "domicilio": "Sarmiento 198"
+    },
+    {
+      "numero": "215",
+      "localidad": "Tilcara",
+      "ciudad": "Tilcara",
+      "provincia": "Jujuy",
+      "cp": "",
+      "domicilio": "Lavalle 542"
+    },
+    {
+      "numero": "226",
+      "localidad": "Cent. Bca. Empr. Jujuy",
+      "ciudad": "Jujuy",
+      "provincia": "Jujuy",
+      "cp": "",
+      "domicilio": "Gral.Guemes 948 1Er Piso"
+    },
+    {
+      "numero": "228",
+      "localidad": "San Salv. Jujuy",
+      "ciudad": "Jujuy",
+      "provincia": "Jujuy",
+      "cp": "4600",
+      "domicilio": "Guemes 948"
+    },
+    {
+      "numero": "554",
+      "localidad": "Santa Rosa",
+      "ciudad": "Santa Rosa",
+      "provincia": "La Pampa",
+      "cp": "6300",
+      "domicilio": "Quintana 163"
+    },
+    {
+      "numero": "559",
+      "localidad": "General Pico",
+      "ciudad": "General Pico",
+      "provincia": "La Pampa",
+      "cp": "6360",
+      "domicilio": "Calle 22 N. 756"
+    },
+    {
+      "numero": "123",
+      "localidad": "Chilecito",
+      "ciudad": "Chilecito",
+      "provincia": "La Rioja",
+      "cp": "5360",
+      "domicilio": "Castro Barro 50"
+    },
+    {
+      "numero": "148",
+      "localidad": "La Rioja",
+      "ciudad": "La Rioja",
+      "provincia": "La Rioja",
+      "cp": "",
+      "domicilio": "San Martin 69"
+    },
+    {
+      "numero": "396",
+      "localidad": "Carril Rodriguez Pe¥A",
+      "ciudad": "Godoy Cruz",
+      "provincia": "Mendoza",
+      "cp": "5501",
+      "domicilio": "Carril Rodriguez Pe¥A 2085"
+    },
+    {
+      "numero": "403",
+      "localidad": "Las Heras",
+      "ciudad": "Las Heras",
+      "provincia": "Mendoza",
+      "cp": "",
+      "domicilio": "San Martin Norte 317"
+    },
+    {
+      "numero": "404",
+      "localidad": "Guaymallen",
+      "ciudad": "Guaymallen",
+      "provincia": "Mendoza",
+      "cp": "5521",
+      "domicilio": "Pedro Vargas 3572"
+    },
+    {
+      "numero": "405",
+      "localidad": "Godoy Cruz",
+      "ciudad": "Godoy Cruz",
+      "provincia": "Mendoza",
+      "cp": "5501",
+      "domicilio": "Perito Moreno 102"
+    },
+    {
+      "numero": "406",
+      "localidad": "Maipu Mendoza",
+      "ciudad": "Maipú",
+      "provincia": "Mendoza",
+      "cp": "",
+      "domicilio": "San Martin Y Padre Vazquez S/N"
+    },
+    {
+      "numero": "407",
+      "localidad": "San Rafael",
+      "ciudad": "San Rafael",
+      "provincia": "Mendoza",
+      "cp": "5600",
+      "domicilio": "Chile 173"
+    },
+    {
+      "numero": "408",
+      "localidad": "Parque",
+      "ciudad": "Mendoza",
+      "provincia": "Mendoza",
+      "cp": "",
+      "domicilio": "Juan B. Justo 611"
+    },
+    {
+      "numero": "411",
+      "localidad": "Mendoza Centro",
+      "ciudad": "Mendoza",
+      "provincia": "Mendoza",
+      "cp": "5501",
+      "domicilio": "9 De Julio 1401"
+    },
+    {
+      "numero": "412",
+      "localidad": "San Martin Mendoza",
+      "ciudad": "Lib. San Martín",
+      "provincia": "Mendoza",
+      "cp": "5570",
+      "domicilio": "Boulogne Surmer 172"
+    },
+    {
+      "numero": "414",
+      "localidad": "Lujan De Cuyo",
+      "ciudad": "Luján De Cuyo",
+      "provincia": "Mendoza",
+      "cp": "5507",
+      "domicilio": "San Martin 637"
+    },
+    {
+      "numero": "415",
+      "localidad": "Palmares",
+      "ciudad": "Godoy Cruz",
+      "provincia": "Mendoza",
+      "cp": "5501",
+      "domicilio": "San Martin 10"
+    },
+    {
+      "numero": "416",
+      "localidad": "Malargue",
+      "ciudad": "Malargüe",
+      "provincia": "Mendoza",
+      "cp": "",
+      "domicilio": "San Martin 335"
+    },
+    {
+      "numero": "573",
+      "localidad": "Mendoza",
+      "ciudad": "Mendoza",
+      "provincia": "Mendoza",
+      "cp": "5500",
+      "domicilio": "9 De Julio 1244"
+    },
+    {
+      "numero": "766",
+      "localidad": "Mendoza Microcentro",
+      "ciudad": "Mendoza",
+      "provincia": "Mendoza",
+      "cp": "5500",
+      "domicilio": "San Martin 899"
+    },
+    {
+      "numero": "10",
+      "localidad": "Jardin America",
+      "ciudad": "Jardín America",
+      "provincia": "Misiones",
+      "cp": "3328",
+      "domicilio": "Moreno 698"
+    },
+    {
+      "numero": "11",
+      "localidad": "San Javier",
+      "ciudad": "San Javier",
+      "provincia": "Misiones",
+      "cp": "3357",
+      "domicilio": "E. Lassaga N° 531"
+    },
+    {
+      "numero": "12",
+      "localidad": "Puerto Rico",
+      "ciudad": "Puerto Rico",
+      "provincia": "Misiones",
+      "cp": "3334",
+      "domicilio": "San Martín N° 2010"
+    },
+    {
+      "numero": "13",
+      "localidad": "San Pedro",
+      "ciudad": "San Pedro",
+      "provincia": "Misiones",
+      "cp": "",
+      "domicilio": "25 De Mayo 118"
+    },
+    {
+      "numero": "14",
+      "localidad": "Belgrano",
+      "ciudad": "Posadas",
+      "provincia": "Misiones",
+      "cp": "",
+      "domicilio": "Buenos Aires N° 1358"
+    },
+    {
+      "numero": "16",
+      "localidad": "C. De La Sierra",
+      "ciudad": "C. De La Sierra",
+      "provincia": "Misiones",
+      "cp": "3371",
+      "domicilio": "A. Barrufaldi Y Cte. Andresito"
+    },
+    {
+      "numero": "17",
+      "localidad": "Bdo. De Yrigoyen",
+      "ciudad": "B. De Irigoyen",
+      "provincia": "Misiones",
+      "cp": "3366",
+      "domicilio": "Av. Guacurarí S/N"
+    },
+    {
+      "numero": "18",
+      "localidad": "Alba Posse",
+      "ciudad": "Alba Posse",
+      "provincia": "Misiones",
+      "cp": "3363",
+      "domicilio": "Belgrano Y Sarmiento"
+    },
+    {
+      "numero": "19",
+      "localidad": "Campo Viera",
+      "ciudad": "Campo Viera",
+      "provincia": "Misiones",
+      "cp": "3362",
+      "domicilio": "Av. Del Té 232"
+    },
+    {
+      "numero": "20",
+      "localidad": "Cerro Azul",
+      "ciudad": "Cerro Azul",
+      "provincia": "Misiones",
+      "cp": "",
+      "domicilio": "O Higgins Y Chacabuco"
+    },
+    {
+      "numero": "21",
+      "localidad": "Sur Posadas",
+      "ciudad": "Posadas",
+      "provincia": "Misiones",
+      "cp": "3300",
+      "domicilio": "Av. Uruguay N° 4578"
+    },
+    {
+      "numero": "22",
+      "localidad": "Campo Grande",
+      "ciudad": "Campo Grande",
+      "provincia": "Misiones",
+      "cp": "",
+      "domicilio": "Belgrano Y Juan B. Alberdi"
+    },
+    {
+      "numero": "23",
+      "localidad": "San Vicente",
+      "ciudad": "San Vicente",
+      "provincia": "Misiones",
+      "cp": "3364",
+      "domicilio": "Congreso 48"
+    },
+    {
+      "numero": "24",
+      "localidad": "Capiovi",
+      "ciudad": "Capiovi",
+      "provincia": "Misiones",
+      "cp": "3332",
+      "domicilio": "J. Manuel Estrada 132"
+    },
+    {
+      "numero": "27",
+      "localidad": "Almirante Brown",
+      "ciudad": "Alte. Brown",
+      "provincia": "Misiones",
+      "cp": "",
+      "domicilio": "Los Pioneros Y Estados Unidos"
+    },
+    {
+      "numero": "28",
+      "localidad": "Dos De Mayo",
+      "ciudad": "Dos De Mayo",
+      "provincia": "Misiones",
+      "cp": "3364",
+      "domicilio": "Pedro Nuñez Y San Pablo"
+    },
+    {
+      "numero": "29",
+      "localidad": "Villa Cabello",
+      "ciudad": "Posadas",
+      "provincia": "Misiones",
+      "cp": "",
+      "domicilio": "Av. Tambor De Tacuarí N° 7352"
+    },
+    {
+      "numero": "30",
+      "localidad": "25 De Mayo",
+      "ciudad": "25 De Mayo",
+      "provincia": "Misiones",
+      "cp": "3366",
+      "domicilio": "Primeros Colonizadores 55"
+    },
+    {
+      "numero": "31",
+      "localidad": "San Ignacio",
+      "ciudad": "San Ignacio",
+      "provincia": "Misiones",
+      "cp": "3322",
+      "domicilio": "San Martín 798"
+    },
+    {
+      "numero": "37",
+      "localidad": "Mercado Central",
+      "ciudad": "Posadas",
+      "provincia": "Misiones",
+      "cp": "3300",
+      "domicilio": "Ruta 12 Km 5,5 B°M.Lanus"
+    },
+    {
+      "numero": "40",
+      "localidad": "Puerto Piray",
+      "ciudad": "Puerto Piray",
+      "provincia": "Misiones",
+      "cp": "3381",
+      "domicilio": "Avda Mitre 841 Y San Lorenzo"
+    },
+    {
+      "numero": "43",
+      "localidad": "El Soberbio",
+      "ciudad": "El Soberbio",
+      "provincia": "Misiones",
+      "cp": "",
+      "domicilio": "Avda San Martín N° 562"
+    },
+    {
+      "numero": "54",
+      "localidad": "Itaembe Mini",
+      "ciudad": "Posadas",
+      "provincia": "Misiones",
+      "cp": "3300",
+      "domicilio": "Av 147 81/87"
+    },
+    {
+      "numero": "75",
+      "localidad": "San Antonio",
+      "ciudad": "San Antonio",
+      "provincia": "Misiones",
+      "cp": "3366",
+      "domicilio": "Av. Comandante Andresito 121"
+    },
+    {
+      "numero": "77",
+      "localidad": "Candelaria",
+      "ciudad": "Candelaria",
+      "provincia": "Misiones",
+      "cp": "3308",
+      "domicilio": "Av. Beato R. Gonzalez 605"
+    },
+    {
+      "numero": "254",
+      "localidad": "Apóstoles - Ntalternativo",
+      "ciudad": "Apostoles",
+      "provincia": "Misiones",
+      "cp": "3350",
+      "domicilio": "Belgrano 900"
+    },
+    {
+      "numero": "773",
+      "localidad": "Inmigrantes",
+      "ciudad": "Oberá",
+      "provincia": "Misiones",
+      "cp": "",
+      "domicilio": "Av Sarmiento 899"
+    },
+    {
+      "numero": "782",
+      "localidad": "Plaza Posadas",
+      "ciudad": "Posadas",
+      "provincia": "Misiones",
+      "cp": "3300",
+      "domicilio": "San Martin 1790"
+    },
+    {
+      "numero": "547",
+      "localidad": "Cutral Co",
+      "ciudad": "Cutral Có",
+      "provincia": "Neuquén",
+      "cp": "8322",
+      "domicilio": "Carlos Rodriguez 23"
+    },
+    {
+      "numero": "561",
+      "localidad": "Zapala",
+      "ciudad": "Zapala",
+      "provincia": "Neuquén",
+      "cp": "8340",
+      "domicilio": "C. M. Etchelutz 108"
+    },
+    {
+      "numero": "665",
+      "localidad": "Neuquen",
+      "ciudad": "Neuquén",
+      "provincia": "Neuquén",
+      "cp": "8300",
+      "domicilio": "Av. Argentina 135"
+    },
+    {
+      "numero": "666",
+      "localidad": "Neuquen Confluencia",
+      "ciudad": "Neuquén",
+      "provincia": "Neuquén",
+      "cp": "",
+      "domicilio": "Perticone 275 Esquina"
+    },
+    {
+      "numero": "685",
+      "localidad": "San Martin De Los Andes",
+      "ciudad": "San Martín De Los Andes",
+      "provincia": "Neuquén",
+      "cp": "8370",
+      "domicilio": "Av San Martin 836"
+    },
+    {
+      "numero": "541",
+      "localidad": "General Roca",
+      "ciudad": "General Roca",
+      "provincia": "Río Negro",
+      "cp": "8332",
+      "domicilio": "España 1456"
+    },
+    {
+      "numero": "543",
+      "localidad": "Choele Choel",
+      "ciudad": "Choele Choel",
+      "provincia": "Río Negro",
+      "cp": "8360",
+      "domicilio": "Alsina 902"
+    },
+    {
+      "numero": "544",
+      "localidad": "Villa Regina",
+      "ciudad": "Villa Regina",
+      "provincia": "Río Negro",
+      "cp": "8336",
+      "domicilio": "Rivadavia 111"
+    },
+    {
+      "numero": "548",
+      "localidad": "Viedma",
+      "ciudad": "Viedma",
+      "provincia": "Río Negro",
+      "cp": "",
+      "domicilio": "San Martin 2"
+    },
+    {
+      "numero": "558",
+      "localidad": "Cipolletti",
+      "ciudad": "Cipolletti",
+      "provincia": "Río Negro",
+      "cp": "",
+      "domicilio": "San Martin 498"
+    },
+    {
+      "numero": "662",
+      "localidad": "Bariloche",
+      "ciudad": "San Carlos De Bariloche",
+      "provincia": "Río Negro",
+      "cp": "8400",
+      "domicilio": "Bme. Mitre 433"
+    },
+    {
+      "numero": "100",
+      "localidad": "Salta",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "4400",
+      "domicilio": "España 550"
+    },
+    {
+      "numero": "101",
+      "localidad": "Güemes",
+      "ciudad": "Gal. Guemes",
+      "provincia": "Salta",
+      "cp": "4430",
+      "domicilio": "Alberdi N° 413"
+    },
+    {
+      "numero": "102",
+      "localidad": "Embarcacion",
+      "ciudad": "Embarcación",
+      "provincia": "Salta",
+      "cp": "4550",
+      "domicilio": "24 De Septiembre 398"
+    },
+    {
+      "numero": "103",
+      "localidad": "Oran",
+      "ciudad": "Oran",
+      "provincia": "Salta",
+      "cp": "",
+      "domicilio": "25 De Mayo 284"
+    },
+    {
+      "numero": "104",
+      "localidad": "R. De La Frontera",
+      "ciudad": "R. De La Frontera",
+      "provincia": "Salta",
+      "cp": "4190",
+      "domicilio": "Melchora F. De Cornejo 308"
+    },
+    {
+      "numero": "105",
+      "localidad": "Tartagal",
+      "ciudad": "Tartagal",
+      "provincia": "Salta",
+      "cp": "",
+      "domicilio": "San Martin Y Abel Cornejo"
+    },
+    {
+      "numero": "106",
+      "localidad": "J.V. Gonzalez",
+      "ciudad": "J. V. Gonzalez",
+      "provincia": "Salta",
+      "cp": "4448",
+      "domicilio": "Güemes 100"
+    },
+    {
+      "numero": "107",
+      "localidad": "Metan",
+      "ciudad": "San J. De Metán",
+      "provincia": "Salta",
+      "cp": "4440",
+      "domicilio": "25 De Mayo 198"
+    },
+    {
+      "numero": "108",
+      "localidad": "Pocitos",
+      "ciudad": "Salvador Mazza",
+      "provincia": "Salta",
+      "cp": "",
+      "domicilio": "Belgrano 498"
+    },
+    {
+      "numero": "109",
+      "localidad": "España",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "4400",
+      "domicilio": "España 421"
+    },
+    {
+      "numero": "110",
+      "localidad": "Malvinas Argentinas",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "",
+      "domicilio": "Los Chalchaleros 4705"
+    },
+    {
+      "numero": "113",
+      "localidad": "Cafayate",
+      "ciudad": "Cafayate",
+      "provincia": "Salta",
+      "cp": "4427",
+      "domicilio": "Bartolomé Mitre 86"
+    },
+    {
+      "numero": "114",
+      "localidad": "Norte",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "4400",
+      "domicilio": "Mitre N° 991"
+    },
+    {
+      "numero": "115",
+      "localidad": "Cachi",
+      "ciudad": "Cachi",
+      "provincia": "Salta",
+      "cp": "4417",
+      "domicilio": "Rvdo. J. Tavella S/N°"
+    },
+    {
+      "numero": "116",
+      "localidad": "Pichanal",
+      "ciudad": "Pichanal",
+      "provincia": "Salta",
+      "cp": "4534",
+      "domicilio": "Av. Tucuman Esq. Av. Pucara"
+    },
+    {
+      "numero": "117",
+      "localidad": "Col. Santa Rosa",
+      "ciudad": "C. Santa Rosa",
+      "provincia": "Salta",
+      "cp": "",
+      "domicilio": "San Martín N° 523"
+    },
+    {
+      "numero": "120",
+      "localidad": "Batalla De Salta",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "4400",
+      "domicilio": "Gral Guemes 651"
+    },
+    {
+      "numero": "121",
+      "localidad": "Cerrillos",
+      "ciudad": "Cerrillos",
+      "provincia": "Salta",
+      "cp": "4403",
+      "domicilio": "Gral Guemes 110"
+    },
+    {
+      "numero": "124",
+      "localidad": "Las Lajitas",
+      "ciudad": "Las Lajitas",
+      "provincia": "Salta",
+      "cp": "4449",
+      "domicilio": "San Martín 315"
+    },
+    {
+      "numero": "125",
+      "localidad": "Rosario De Lerma",
+      "ciudad": "R. De Lerma",
+      "provincia": "Salta",
+      "cp": "4405",
+      "domicilio": "Sarmiento 81"
+    },
+    {
+      "numero": "127",
+      "localidad": "Plaza Empresas",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "",
+      "domicilio": "España 550"
+    },
+    {
+      "numero": "128",
+      "localidad": "Aguaray",
+      "ciudad": "Agüaray",
+      "provincia": "Salta",
+      "cp": "4566",
+      "domicilio": "Aguaray Juan Bautista Alberdi 105"
+    },
+    {
+      "numero": "129",
+      "localidad": "San Antonio De Los Cobres",
+      "ciudad": "San Antonio De Los Cobres",
+      "provincia": "Salta",
+      "cp": "4411",
+      "domicilio": "Av. Gral. Manuel Belgrano 400"
+    },
+    {
+      "numero": "130",
+      "localidad": "Pellegrini",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "4400",
+      "domicilio": "Carlos Pellegrini 502"
+    },
+    {
+      "numero": "133",
+      "localidad": "Alto Noa Shopping",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "4400",
+      "domicilio": "Av. Virrey Toledo 702"
+    },
+    {
+      "numero": "136",
+      "localidad": "Limache",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "",
+      "domicilio": "Av. M. Tavella Y Ex C De Malvinas"
+    },
+    {
+      "numero": "137",
+      "localidad": "B° Ciudad Del Milagro",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "4400",
+      "domicilio": "Batalla De Salta 352"
+    },
+    {
+      "numero": "139",
+      "localidad": "Gral Mosconi",
+      "ciudad": "Mosconi",
+      "provincia": "Salta",
+      "cp": "4562",
+      "domicilio": "Ciro Etchesortu 52"
+    },
+    {
+      "numero": "149",
+      "localidad": "Terminal",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "4400",
+      "domicilio": "Av.H.Irigoyen N° 339-Local 27 C"
+    },
+    {
+      "numero": "150",
+      "localidad": "El Carril",
+      "ciudad": "El Carril",
+      "provincia": "Salta",
+      "cp": "4421",
+      "domicilio": "Estacion Zuviria S/N"
+    },
+    {
+      "numero": "151",
+      "localidad": "Ciudad Judicial",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "",
+      "domicilio": "Avda Houssay S/N - Local 20"
+    },
+    {
+      "numero": "152",
+      "localidad": "Ciudad Municipal",
+      "ciudad": "Salta",
+      "provincia": "Salta",
+      "cp": "",
+      "domicilio": "Av. Paraguay Esquina Belgica"
+    },
+    {
+      "numero": "170",
+      "localidad": "Plaza Belgrano",
+      "ciudad": "Capital",
+      "provincia": "Salta",
+      "cp": "4400",
+      "domicilio": "Av Belgrano 683"
+    },
+    {
+      "numero": "171",
+      "localidad": "San Ramon",
+      "ciudad": "Oran",
+      "provincia": "Salta",
+      "cp": "4530",
+      "domicilio": "Alvarado Esq 20 De Febrero"
+    },
+    {
+      "numero": "172",
+      "localidad": "Los Tartagos",
+      "ciudad": "Tartagal",
+      "provincia": "Salta",
+      "cp": "4560",
+      "domicilio": "San Martin 301"
+    },
+    {
+      "numero": "173",
+      "localidad": "Grand Bourg",
+      "ciudad": "B° Grand Bourg",
+      "provincia": "Salta",
+      "cp": "4410",
+      "domicilio": "Federico Lacroze 4075"
+    },
+    {
+      "numero": "410",
+      "localidad": "San Juan",
+      "ciudad": "San Juan",
+      "provincia": "San Juan",
+      "cp": "",
+      "domicilio": "Gral Acha ( Sur ) 41"
+    },
+    {
+      "numero": "418",
+      "localidad": "Villa Mercedes",
+      "ciudad": "Villa Mercedes",
+      "provincia": "San Luis",
+      "cp": "5730",
+      "domicilio": "Pedernera 472"
+    },
+    {
+      "numero": "409",
+      "localidad": "San Luis",
+      "ciudad": "San Luis",
+      "provincia": "San Luís",
+      "cp": "",
+      "domicilio": "Rivadavia 676"
+    },
+    {
+      "numero": "552",
+      "localidad": "Rio Gallegos",
+      "ciudad": "Rio Gallegos",
+      "provincia": "Santa Cruz",
+      "cp": "9400",
+      "domicilio": "Alcorta 32"
+    },
+    {
+      "numero": "557",
+      "localidad": "Caleta Olivia",
+      "ciudad": "Caleta Olivia",
+      "provincia": "Santa Cruz",
+      "cp": "9011",
+      "domicilio": "L. De La Torre 96"
+    },
+    {
+      "numero": "304",
+      "localidad": "Santa Fe Centro",
+      "ciudad": "Santa Fe",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "San Jeronimo 2601"
+    },
+    {
+      "numero": "310",
+      "localidad": "Recoleta Santa Fe",
+      "ciudad": "Santa Fe",
+      "provincia": "Santa Fe",
+      "cp": "3000",
+      "domicilio": "25 De Mayo 3472"
+    },
+    {
+      "numero": "332",
+      "localidad": "Monserrat",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "San Lorenzo 1346"
+    },
+    {
+      "numero": "334",
+      "localidad": "Sur",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "San Martin 3302"
+    },
+    {
+      "numero": "335",
+      "localidad": "Avenida Alberdi",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Av Alberdi 673"
+    },
+    {
+      "numero": "336",
+      "localidad": "Oeste",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Mendoza 5426"
+    },
+    {
+      "numero": "337",
+      "localidad": "Parque Independencia",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "27 De Febrero 2820"
+    },
+    {
+      "numero": "339",
+      "localidad": "Boulevard Rondeau",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Bv Rondeau 1295"
+    },
+    {
+      "numero": "340",
+      "localidad": "Echesortu",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Mendoza 4080"
+    },
+    {
+      "numero": "341",
+      "localidad": "Oroño",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Bv Oro¥O 203"
+    },
+    {
+      "numero": "343",
+      "localidad": "Villa Gobernador G.",
+      "ciudad": "Gob. Galvez",
+      "provincia": "Santa Fe",
+      "cp": "2124",
+      "domicilio": "San Martin 2203"
+    },
+    {
+      "numero": "345",
+      "localidad": "Venado Tuerto",
+      "ciudad": "Venado Tuerto",
+      "provincia": "Santa Fe",
+      "cp": "2600",
+      "domicilio": "San Martin 358"
+    },
+    {
+      "numero": "346",
+      "localidad": "Capitan Bermudez",
+      "ciudad": "Cap. Bermudez",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Av San Lorenzo 689"
+    },
+    {
+      "numero": "353",
+      "localidad": "Peatonal San Martín",
+      "ciudad": "Santa Fe",
+      "provincia": "Santa Fe",
+      "cp": "3000",
+      "domicilio": "San Martin 2459"
+    },
+    {
+      "numero": "355",
+      "localidad": "San Carlos Centro",
+      "ciudad": "San Carlos Centro",
+      "provincia": "Santa Fe",
+      "cp": "3013",
+      "domicilio": "J. M. Lheritier 455"
+    },
+    {
+      "numero": "356",
+      "localidad": "San Jeronimo Norte",
+      "ciudad": "San Jerónimo Norte",
+      "provincia": "Santa Fe",
+      "cp": "3011",
+      "domicilio": "Belgrano 502"
+    },
+    {
+      "numero": "357",
+      "localidad": "Monte Vera",
+      "ciudad": "Santa Fe",
+      "provincia": "Santa Fe",
+      "cp": "3000",
+      "domicilio": "Aristobulo Del Valle 6930"
+    },
+    {
+      "numero": "359",
+      "localidad": "Llambi Campbell",
+      "ciudad": "Llambi Campbell",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Alte. Brown Y San Martin S/N"
+    },
+    {
+      "numero": "360",
+      "localidad": "Gob. Crespo",
+      "ciudad": "Gdor. Crespo",
+      "provincia": "Santa Fe",
+      "cp": "3044",
+      "domicilio": "9 De Julio 398"
+    },
+    {
+      "numero": "362",
+      "localidad": "San Justo",
+      "ciudad": "San Justo",
+      "provincia": "Santa Fe",
+      "cp": "3040",
+      "domicilio": "Gdor. Ireondo Y Figueredo S/N"
+    },
+    {
+      "numero": "364",
+      "localidad": "Reconquista",
+      "ciudad": "Reconquista",
+      "provincia": "Santa Fe",
+      "cp": "3560",
+      "domicilio": "Gral. Obligado 967"
+    },
+    {
+      "numero": "366",
+      "localidad": "Esperanza",
+      "ciudad": "Esperanza",
+      "provincia": "Santa Fe",
+      "cp": "3080",
+      "domicilio": "San Martin Y Berutti S/N"
+    },
+    {
+      "numero": "367",
+      "localidad": "Blas Parera",
+      "ciudad": "Santa Fe",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Blas Parera 7005"
+    },
+    {
+      "numero": "368",
+      "localidad": "Profesionales",
+      "ciudad": "Santa Fe",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Mendoza 3446"
+    },
+    {
+      "numero": "369",
+      "localidad": "San Lorenzo",
+      "ciudad": "San Lorenzo",
+      "provincia": "Santa Fe",
+      "cp": "2200",
+      "domicilio": "Av. San Martin 974"
+    },
+    {
+      "numero": "371",
+      "localidad": "Catedral",
+      "ciudad": "Santa Fe",
+      "provincia": "Santa Fe",
+      "cp": "3000",
+      "domicilio": "San Martin 1643"
+    },
+    {
+      "numero": "372",
+      "localidad": "Rafaela",
+      "ciudad": "Rafaela",
+      "provincia": "Santa Fe",
+      "cp": "2300",
+      "domicilio": "San Lorenzo 2122"
+    },
+    {
+      "numero": "373",
+      "localidad": "Barrio Candiotti",
+      "ciudad": "Santa Fe",
+      "provincia": "Santa Fe",
+      "cp": "3000",
+      "domicilio": "Necochea 3501"
+    },
+    {
+      "numero": "374",
+      "localidad": "Lopez Y Planes",
+      "ciudad": "Santa Fe",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Bv. Pellegrini 3365"
+    },
+    {
+      "numero": "376",
+      "localidad": "Sunchales",
+      "ciudad": "Sunchales",
+      "provincia": "Santa Fe",
+      "cp": "2322",
+      "domicilio": "Av Independencia 206"
+    },
+    {
+      "numero": "379",
+      "localidad": "Galvez",
+      "ciudad": "Galvez",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Sarmiento 535"
+    },
+    {
+      "numero": "383",
+      "localidad": "Felicia",
+      "ciudad": "Felicia",
+      "provincia": "Santa Fe",
+      "cp": "3087",
+      "domicilio": "Bv. M Moreno Y Bv. Rivadavia S/N"
+    },
+    {
+      "numero": "672",
+      "localidad": "Rosario",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Santa Fe 1216"
+    },
+    {
+      "numero": "701",
+      "localidad": "Centro Pagos Rosario",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "San Lorenzo 1328"
+    },
+    {
+      "numero": "702",
+      "localidad": "Acebal",
+      "ciudad": "Acebal",
+      "provincia": "Santa Fe",
+      "cp": "2109",
+      "domicilio": "Julio A Roca 592"
+    },
+    {
+      "numero": "704",
+      "localidad": "Alcorta",
+      "ciudad": "Alcorta",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "España 602"
+    },
+    {
+      "numero": "706",
+      "localidad": "Alvarez",
+      "ciudad": "Alvarez",
+      "provincia": "Santa Fe",
+      "cp": "2107",
+      "domicilio": "N Alvarez 672"
+    },
+    {
+      "numero": "708",
+      "localidad": "Arequito",
+      "ciudad": "Arequito",
+      "provincia": "Santa Fe",
+      "cp": "2183",
+      "domicilio": "Bgdier Lopez 1540"
+    },
+    {
+      "numero": "709",
+      "localidad": "Armstrong",
+      "ciudad": "Armstrong",
+      "provincia": "Santa Fe",
+      "cp": "2508",
+      "domicilio": "Nazareno Cruccianelli 299"
+    },
+    {
+      "numero": "711",
+      "localidad": "Arroyo Seco",
+      "ciudad": "Arroyo Seco",
+      "provincia": "Santa Fe",
+      "cp": "2128",
+      "domicilio": "San Martin 720"
+    },
+    {
+      "numero": "712",
+      "localidad": "Arteaga",
+      "ciudad": "Arteaga",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "San Martin 363"
+    },
+    {
+      "numero": "719",
+      "localidad": "Canada De Gomez",
+      "ciudad": "Cañada De Gómez",
+      "provincia": "Santa Fe",
+      "cp": "2500",
+      "domicilio": "H Irigoyen 151"
+    },
+    {
+      "numero": "720",
+      "localidad": "Rosario Santiago",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Cordoba 2402"
+    },
+    {
+      "numero": "722",
+      "localidad": "Rosario Belgrano",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Mendoza 6003"
+    },
+    {
+      "numero": "726",
+      "localidad": "Carcarana",
+      "ciudad": "Carcarañá",
+      "provincia": "Santa Fe",
+      "cp": "2138",
+      "domicilio": "Av Belgrano 1251"
+    },
+    {
+      "numero": "729",
+      "localidad": "Carreras",
+      "ciudad": "Carreras",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Av Sarmiento 632"
+    },
+    {
+      "numero": "731",
+      "localidad": "Casilda",
+      "ciudad": "Casilda",
+      "provincia": "Santa Fe",
+      "cp": "2170",
+      "domicilio": "L De La Torre 2102"
+    },
+    {
+      "numero": "732",
+      "localidad": "Chabas",
+      "ciudad": "Chabas",
+      "provincia": "Santa Fe",
+      "cp": "2173",
+      "domicilio": "San Martin 1578"
+    },
+    {
+      "numero": "736",
+      "localidad": "Coronel Arnold",
+      "ciudad": "Coronel Arnold",
+      "provincia": "Santa Fe",
+      "cp": "2123",
+      "domicilio": "Belgrano 601"
+    },
+    {
+      "numero": "737",
+      "localidad": "Correa",
+      "ciudad": "Correa",
+      "provincia": "Santa Fe",
+      "cp": "2506",
+      "domicilio": "San Martin 998"
+    },
+    {
+      "numero": "744",
+      "localidad": "Firmat",
+      "ciudad": "Firmat",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Buenos Aires 898"
+    },
+    {
+      "numero": "745",
+      "localidad": "Fray Luis Beltran",
+      "ciudad": "Fray Luis Beltrán",
+      "provincia": "Santa Fe",
+      "cp": "2156",
+      "domicilio": "Av San Martin 1101"
+    },
+    {
+      "numero": "746",
+      "localidad": "Fuentes",
+      "ciudad": "Fuentes",
+      "provincia": "Santa Fe",
+      "cp": "2123",
+      "domicilio": "Av Independencia 178"
+    },
+    {
+      "numero": "747",
+      "localidad": "Funes",
+      "ciudad": "Funes",
+      "provincia": "Santa Fe",
+      "cp": "2132",
+      "domicilio": "Pellegrini 1782"
+    },
+    {
+      "numero": "750",
+      "localidad": "Godoy",
+      "ciudad": "Godoy",
+      "provincia": "Santa Fe",
+      "cp": "2921",
+      "domicilio": "Italia 259"
+    },
+    {
+      "numero": "753",
+      "localidad": "Juan B Molina",
+      "ciudad": "Juan B. Molina",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Cortada Ameghino 326"
+    },
+    {
+      "numero": "755",
+      "localidad": "Las Parejas",
+      "ciudad": "Las Parejas",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Avda 18 1095"
+    },
+    {
+      "numero": "756",
+      "localidad": "Las Rosas",
+      "ciudad": "Las Rosas",
+      "provincia": "Santa Fe",
+      "cp": "2520",
+      "domicilio": "San Martin 199 Esq Bs Aires"
+    },
+    {
+      "numero": "757",
+      "localidad": "Los Molinos",
+      "ciudad": "Los Molinos",
+      "provincia": "Santa Fe",
+      "cp": "2181",
+      "domicilio": "Bgdier Lopez 608"
+    },
+    {
+      "numero": "760",
+      "localidad": "Maciel",
+      "ciudad": "Maciel",
+      "provincia": "Santa Fe",
+      "cp": "2208",
+      "domicilio": "Bv Sarmiento 963"
+    },
+    {
+      "numero": "761",
+      "localidad": "Rosario Mitre",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Mitre 702"
+    },
+    {
+      "numero": "763",
+      "localidad": "Maria Susana",
+      "ciudad": "María Susana",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Rivadavia 657"
+    },
+    {
+      "numero": "765",
+      "localidad": "Maximo Paz",
+      "ciudad": "Máximo Paz",
+      "provincia": "Santa Fe",
+      "cp": "2115",
+      "domicilio": "Maipu 738"
+    },
+    {
+      "numero": "769",
+      "localidad": "Montes De Oca",
+      "ciudad": "Montes De Oca",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Cordoba 598"
+    },
+    {
+      "numero": "771",
+      "localidad": "Rosario Paseo Del Siglo",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Cordoba 1827"
+    },
+    {
+      "numero": "775",
+      "localidad": "Oliveros",
+      "ciudad": "Oliveros",
+      "provincia": "Santa Fe",
+      "cp": "2206",
+      "domicilio": "Buenos Aires 175"
+    },
+    {
+      "numero": "778",
+      "localidad": "Pavon Arriba",
+      "ciudad": "Pavón Arriba",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Bv San Martin 1046"
+    },
+    {
+      "numero": "781",
+      "localidad": "Peyrano",
+      "ciudad": "Peyrano",
+      "provincia": "Santa Fe",
+      "cp": "2113",
+      "domicilio": "Cordoba 794"
+    },
+    {
+      "numero": "783",
+      "localidad": "Pto Gral San Martin",
+      "ciudad": "Puerto San Martín",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Cordoba 463"
+    },
+    {
+      "numero": "785",
+      "localidad": "Pujato",
+      "ciudad": "Pujato",
+      "provincia": "Santa Fe",
+      "cp": "2123",
+      "domicilio": "Simon De Iriondo 788"
+    },
+    {
+      "numero": "787",
+      "localidad": "Reconquista Plaza",
+      "ciudad": "Reconquista",
+      "provincia": "Santa Fe",
+      "cp": "3560",
+      "domicilio": "Mitre 571/77"
+    },
+    {
+      "numero": "790",
+      "localidad": "Roldan",
+      "ciudad": "Roldán",
+      "provincia": "Santa Fe",
+      "cp": "2134",
+      "domicilio": "Rivadavia 103"
+    },
+    {
+      "numero": "791",
+      "localidad": "Rosario Alberdi",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Superi 644"
+    },
+    {
+      "numero": "792",
+      "localidad": "Rosario Bella Vista",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "San Nicolas 2099"
+    },
+    {
+      "numero": "793",
+      "localidad": "Rosario Bolsa De Comercio",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Paraguay 755"
+    },
+    {
+      "numero": "794",
+      "localidad": "Rosario Entre Rios",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Cordoba 1299"
+    },
+    {
+      "numero": "795",
+      "localidad": "Rosario Fisherton",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Eva Peron 7963"
+    },
+    {
+      "numero": "797",
+      "localidad": "Rosario Corrientes",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Av Pellegrini 1407"
+    },
+    {
+      "numero": "798",
+      "localidad": "Rosario Ovidio Lagos",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Ovidio Lagos 3501"
+    },
+    {
+      "numero": "826",
+      "localidad": "Puerto Norte",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Av. Brigadier Estanislao Lopez 3035"
+    },
+    {
+      "numero": "837",
+      "localidad": "Bicentenario",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Av Ovidio Lagos 5560"
+    },
+    {
+      "numero": "843",
+      "localidad": "Rosario Tiro Suizo",
+      "ciudad": "Rosario",
+      "provincia": "Santa Fe",
+      "cp": "2000",
+      "domicilio": "Av San Martin 5498"
+    },
+    {
+      "numero": "846",
+      "localidad": "San Jose De La Esquina",
+      "ciudad": "San José De La Esquina",
+      "provincia": "Santa Fe",
+      "cp": "2185",
+      "domicilio": "Rivadavia 397"
+    },
+    {
+      "numero": "848",
+      "localidad": "Salto Grande",
+      "ciudad": "Salto Grande",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Av San Martin 739"
+    },
+    {
+      "numero": "850",
+      "localidad": "San Jeronimo Sud",
+      "ciudad": "San Jerónimo Sur",
+      "provincia": "Santa Fe",
+      "cp": "2136",
+      "domicilio": "Napoles 256"
+    },
+    {
+      "numero": "856",
+      "localidad": "Santa Teresa",
+      "ciudad": "Santa Teresa",
+      "provincia": "Santa Fe",
+      "cp": "2111",
+      "domicilio": "Av Sarmiento 552"
+    },
+    {
+      "numero": "857",
+      "localidad": "Ciudad De Santo Tomé",
+      "ciudad": "Santo Tomé",
+      "provincia": "Santa Fe",
+      "cp": "3016",
+      "domicilio": "25 De Mayo 1802 Esq Gelabert"
+    },
+    {
+      "numero": "858",
+      "localidad": "Serodino",
+      "ciudad": "Serodino",
+      "provincia": "Santa Fe",
+      "cp": "2216",
+      "domicilio": "Las Heras 777"
+    },
+    {
+      "numero": "860",
+      "localidad": "Timbues",
+      "ciudad": "Timbues",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Gral Roca 538"
+    },
+    {
+      "numero": "862",
+      "localidad": "Totoras",
+      "ciudad": "Totoras",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "C Pellegrini 1071"
+    },
+    {
+      "numero": "863",
+      "localidad": "Uranga",
+      "ciudad": "Uranga",
+      "provincia": "Santa Fe",
+      "cp": "2105",
+      "domicilio": "San Martin 598"
+    },
+    {
+      "numero": "865",
+      "localidad": "Villa Constitucion",
+      "ciudad": "Villa Constitución",
+      "provincia": "Santa Fe",
+      "cp": "2919",
+      "domicilio": "Cordoba Y San Martin"
+    },
+    {
+      "numero": "866",
+      "localidad": "Villa Eloisa",
+      "ciudad": "Villa Eloisa",
+      "provincia": "Santa Fe",
+      "cp": "2503",
+      "domicilio": "20 De Junio 1157"
+    },
+    {
+      "numero": "869",
+      "localidad": "Wheelwright",
+      "ciudad": "Wheelwright",
+      "provincia": "Santa Fe",
+      "cp": "2722",
+      "domicilio": "San Martin 338"
+    },
+    {
+      "numero": "870",
+      "localidad": "Zavalla",
+      "ciudad": "Zavalla",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Dorrego 2141"
+    },
+    {
+      "numero": "874",
+      "localidad": "Canada Rosquin",
+      "ciudad": "Cañada Rosquín",
+      "provincia": "Santa Fe",
+      "cp": "2454",
+      "domicilio": "Rivadavia 449"
+    },
+    {
+      "numero": "876",
+      "localidad": "Carlos Pellegrini",
+      "ciudad": "Carlos Pellegrini",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Alte Brown 929"
+    },
+    {
+      "numero": "877",
+      "localidad": "Clucellas",
+      "ciudad": "Clucellas",
+      "provincia": "Santa Fe",
+      "cp": "2407",
+      "domicilio": "Av Santa Fe 187"
+    },
+    {
+      "numero": "883",
+      "localidad": "Humboldt",
+      "ciudad": "Humboldt",
+      "provincia": "Santa Fe",
+      "cp": "3081",
+      "domicilio": "Av Beck Y Herzog 1541"
+    },
+    {
+      "numero": "885",
+      "localidad": "Landeta",
+      "ciudad": "Landeta",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "Belgrano 198"
+    },
+    {
+      "numero": "889",
+      "localidad": "Pilar",
+      "ciudad": "Pilar",
+      "provincia": "Santa Fe",
+      "cp": "3085",
+      "domicilio": "San Martin 1355"
+    },
+    {
+      "numero": "891",
+      "localidad": "Rafaela Plaza",
+      "ciudad": "Rafaela",
+      "provincia": "Santa Fe",
+      "cp": "",
+      "domicilio": "25 De Mayo 75"
+    },
+    {
+      "numero": "894",
+      "localidad": "San Jorge",
+      "ciudad": "San Jorge",
+      "provincia": "Santa Fe",
+      "cp": "2451",
+      "domicilio": "Sarmiento 1196"
+    },
+    {
+      "numero": "897",
+      "localidad": "Zenon Pereyra",
+      "ciudad": "Zenón Pereyra",
+      "provincia": "Santa Fe",
+      "cp": "2409",
+      "domicilio": "Bv San Martin 703"
+    },
+    {
+      "numero": "661",
+      "localidad": "La Banda",
+      "ciudad": "La Banda",
+      "provincia": "Santiago Del Estero",
+      "cp": "4300",
+      "domicilio": "Av. Belgrano Nro 153"
+    },
+    {
+      "numero": "679",
+      "localidad": "Santiago",
+      "ciudad": "Sgo. Del Estero",
+      "provincia": "Santiago Del Estero",
+      "cp": "4200",
+      "domicilio": "Av Belgrano Sud 471"
+    },
+    {
+      "numero": "553",
+      "localidad": "Rio Grande",
+      "ciudad": "Río Grande",
+      "provincia": "Tierra Del Fuego",
+      "cp": "",
+      "domicilio": "Rosales 241"
+    },
+    {
+      "numero": "562",
+      "localidad": "Ushuaia",
+      "ciudad": "Ushuaia",
+      "provincia": "Tierra Del Fuego",
+      "cp": "9410",
+      "domicilio": "Avda. Maipu 761"
+    },
+    {
+      "numero": "140",
+      "localidad": "Maipu",
+      "ciudad": "S.M.Tucumán",
+      "provincia": "Tucumán",
+      "cp": "4000",
+      "domicilio": "Maipu 22"
+    },
+    {
+      "numero": "143",
+      "localidad": "Ciudadela",
+      "ciudad": "S.M.Tucumán",
+      "provincia": "Tucumán",
+      "cp": "4000",
+      "domicilio": "Av. Colon 399"
+    },
+    {
+      "numero": "156",
+      "localidad": "Monteros",
+      "ciudad": "Monteros",
+      "provincia": "Tucumán",
+      "cp": "4142",
+      "domicilio": "Colon 12"
+    },
+    {
+      "numero": "157",
+      "localidad": "Concepcion",
+      "ciudad": "Concepción",
+      "provincia": "Tucumán",
+      "cp": "",
+      "domicilio": "Avellaneda 11"
+    },
+    {
+      "numero": "158",
+      "localidad": "Plazoleta Mitre",
+      "ciudad": "San Miguel De Tucumán",
+      "provincia": "Tucumán",
+      "cp": "4000",
+      "domicilio": "Av. Sarmiento 1390"
+    },
+    {
+      "numero": "159",
+      "localidad": "Shopping Central Abasto",
+      "ciudad": "San Miguel De Tucumán",
+      "provincia": "Tucumán",
+      "cp": "4000",
+      "domicilio": "Las Piedras 1550 Local 16"
+    },
+    {
+      "numero": "600",
+      "localidad": "Casa Central",
+      "ciudad": "San Miguel De Tucumán",
+      "provincia": "Tucumán",
+      "cp": "4000",
+      "domicilio": "San Martin 721"
+    },
+    {
+      "numero": "601",
+      "localidad": "Aguilares",
+      "ciudad": "Aguilares",
+      "provincia": "Tucumán",
+      "cp": "4152",
+      "domicilio": "Av. Mitre Y Diego De Villaroel"
+    },
+    {
+      "numero": "602",
+      "localidad": "General Lamadrid",
+      "ciudad": "Tucumán",
+      "provincia": "Tucumán",
+      "cp": "",
+      "domicilio": "Lamadrid 562 Pb"
+    },
+    {
+      "numero": "604",
+      "localidad": "Bella Vista",
+      "ciudad": "Bella Vista",
+      "provincia": "Tucumán",
+      "cp": "4168",
+      "domicilio": "Ing. Marconi 338"
+    },
+    {
+      "numero": "608",
+      "localidad": "Concepcion Plaza",
+      "ciudad": "Concepción",
+      "provincia": "Tucumán",
+      "cp": "4146",
+      "domicilio": "Nasif Stefano 41"
+    },
+    {
+      "numero": "609",
+      "localidad": "Yerba Buena",
+      "ciudad": "Yerba Buena",
+      "provincia": "Tucumán",
+      "cp": "4107",
+      "domicilio": "Av. Aconquija 1782/4"
+    },
+    {
+      "numero": "610",
+      "localidad": "Famailla",
+      "ciudad": "Famaillá",
+      "provincia": "Tucumán",
+      "cp": "4132",
+      "domicilio": "Mitre Y San Martin"
+    },
+    {
+      "numero": "612",
+      "localidad": "Juan B. Alberdi",
+      "ciudad": "Juan B. Alberdi",
+      "provincia": "Tucumán",
+      "cp": "",
+      "domicilio": "Campero Esq. Rivadavia"
+    },
+    {
+      "numero": "613",
+      "localidad": "La Cocha",
+      "ciudad": "La Cocha",
+      "provincia": "Tucumán",
+      "cp": "",
+      "domicilio": "San Martin Y Moreno"
+    },
+    {
+      "numero": "614",
+      "localidad": "La Ramada",
+      "ciudad": "La Ramada",
+      "provincia": "Tucumán",
+      "cp": "4119",
+      "domicilio": "9 De Julio S/N Entre P. Figueroa Y"
+    },
+    {
+      "numero": "616",
+      "localidad": "Los Ralos",
+      "ciudad": "Los Ralos",
+      "provincia": "Tucumán",
+      "cp": "4182",
+      "domicilio": "Liniers 1"
+    },
+    {
+      "numero": "617",
+      "localidad": "Lules",
+      "ciudad": "Lules",
+      "provincia": "Tucumán",
+      "cp": "4128",
+      "domicilio": "9 De Julio 97"
+    },
+    {
+      "numero": "618",
+      "localidad": "Monteros Plaza",
+      "ciudad": "Tucumán",
+      "provincia": "Tucumán",
+      "cp": "4142",
+      "domicilio": "Av. Colon 2 Esq. Rivadavia"
+    },
+    {
+      "numero": "619",
+      "localidad": "Simoca",
+      "ciudad": "Simoca",
+      "provincia": "Tucumán",
+      "cp": "",
+      "domicilio": "Av. Belgrano 494"
+    },
+    {
+      "numero": "620",
+      "localidad": "Tafi Viejo",
+      "ciudad": "Tafí Viejo",
+      "provincia": "Tucumán",
+      "cp": "4103",
+      "domicilio": "Av. Alem 231"
+    },
+    {
+      "numero": "621",
+      "localidad": "Trancas",
+      "ciudad": "Trancas",
+      "provincia": "Tucumán",
+      "cp": "",
+      "domicilio": "Av. Hipolito Yrigoyen 571"
+    },
+    {
+      "numero": "622",
+      "localidad": "Tribunales Tucuman",
+      "ciudad": "Tucumán",
+      "provincia": "Tucumán",
+      "cp": "4000",
+      "domicilio": "9 De Julio 477"
+    },
+    {
+      "numero": "625",
+      "localidad": "Tafi Del Valle",
+      "ciudad": "Tafí Del Valle",
+      "provincia": "Tucumán",
+      "cp": "4137",
+      "domicilio": "Av. Gob. Critto S/N"
+    },
+    {
+      "numero": "976",
+      "localidad": "Anexo Centro Tucuman",
+      "ciudad": "Tucumán",
+      "provincia": "Tucumán",
+      "cp": "",
+      "domicilio": "Maipú 50 / 70"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+# Entorno virtual
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Datos sensibles
+users.json
+
+# Archivos temporales / logs
+logs/
+uploads/
+*.tmp
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code worktrees (temporales, no deben subirse al repo)
+.claude/worktrees/
