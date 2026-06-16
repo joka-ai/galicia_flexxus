@@ -7,9 +7,6 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Datos sensibles
-users.json
-
 # Archivos temporales / logs
 logs/
 uploads/
