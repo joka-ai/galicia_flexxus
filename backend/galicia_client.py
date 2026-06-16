@@ -205,7 +205,7 @@ class GaliciaClient:
             return False, f"Error al cambiar empresa: {e}"
 
     # ─────────────────────────────────────────────────────────────────────────
-    # RECAUDADORA / COBRANZA INTEGRADA
+    # RECAUDADORA / COBRANZA INFORMADA
     # ─────────────────────────────────────────────────────────────────────────
     def obtener_recaudadora(self, fecha_desde: str, fecha_hasta: str) -> Tuple[List[Dict], str]:
         if not self._logged_in or not self._page:
