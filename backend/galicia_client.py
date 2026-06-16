@@ -20,7 +20,7 @@ from file_processor import (
 )
 
 LOGIN_URL       = "https://empresas.bancogalicia.com.ar/login"
-COBROS_URL      = "https://empresas.bancogalicia.com.ar/cobros/CobranzasInformadas"
+COBROS_URL      = "https://empresas.bancogalicia.com.ar/cobros/cobranza-informadas"
 CHEQUES_URL     = "https://empresas.bancogalicia.com.ar/cheques/recibidos"
 
 
