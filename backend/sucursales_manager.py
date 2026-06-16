@@ -139,13 +139,14 @@ def parsear_pdf_macro(path: str) -> Tuple[List[dict], str]:
 
 def parsear_pdf_galicia(path: str) -> Tuple[List[dict], str]:
     """
-    Try to parse Galicia sucursales PDF.
-    Returns ([], message) if image-based.
+    Parse Galicia sucursales PDF.
+    Formato de tabla: PROVINCIA/REGIÓN | N° | NOMBRE | DIRECCIÓN | LOCALIDAD | C.P.
+    Usa posiciones x de palabras (pdfplumber extract_words) para identificar columnas.
     """
     try:
         import pdfplumber
     except ImportError:
-        return [], "pdfplumber no instalado."
+        return [], "pdfplumber no instalado. Ejecutá: pip install pdfplumber"
 
     sucursales: List[dict] = []
     seen: set = set()
@@ -153,31 +154,92 @@ def parsear_pdf_galicia(path: str) -> Tuple[List[dict], str]:
     try:
         with pdfplumber.open(path) as pdf:
             for page in pdf.pages:
-                text = page.extract_text()
-                if not text:
+                words = page.extract_words(keep_blank_chars=False)
+                if not words:
                     continue
-                for line in text.split('\n'):
-                    parts = line.strip().split()
-                    if not parts or not re.match(r'^\d{1,4}$', parts[0]):
+
+                pw = page.width or 595  # ancho de página (A4 = 595 pt)
+
+                # Umbrales de columnas (proporciones sobre el ancho de página)
+                # N°: empieza en ~27% del ancho
+                # LOCALIDAD: empieza en ~73%
+                # C.P.: empieza en ~88%
+                x_num_min = pw * 0.24
+                x_num_max = pw * 0.36
+                x_loc     = pw * 0.72
+                x_cp      = pw * 0.87
+
+                # Agrupar palabras por fila (top redondeado a 4 pt)
+                rows: Dict[int, list] = {}
+                for w in words:
+                    y = round(w['top'] / 4) * 4
+                    rows.setdefault(y, []).append(w)
+
+                for y_key in sorted(rows.keys()):
+                    row_words = sorted(rows[y_key], key=lambda w: w['x0'])
+
+                    # Buscar el N° — número de 1-4 dígitos en la columna N°
+                    num_word = None
+                    for w in row_words:
+                        if re.match(r'^\d{1,4}$', w['text']) and x_num_min <= w['x0'] <= x_num_max:
+                            num_word = w
+                            break
+                    if not num_word:
                         continue
-                    num = parts[0]
+                    num = num_word['text']
                     if num in seen:
                         continue
+
+                    # Palabras después del N°
+                    rest = [w for w in row_words if w['x0'] > x_num_max]
+                    if not rest:
+                        continue
+
+                    # C.P. — último token si es número de 4-5 dígitos en columna CP
+                    cp = ''
+                    if rest and re.match(r'^\d{4,5}$', rest[-1]['text']) and rest[-1]['x0'] >= x_cp:
+                        cp = rest[-1]['text']
+                        rest = rest[:-1]
+
+                    # LOCALIDAD — palabras en columna LOCALIDAD
+                    loc_words   = [w['text'] for w in rest if w['x0'] >= x_loc]
+                    other_words = [w['text'] for w in rest if w['x0'] < x_loc]
+
+                    localidad = ' '.join(loc_words).title().strip()
+
+                    # Fallback: si no se detectó LOCALIDAD por columna,
+                    # buscar palabras en mayúsculas al final de la fila
+                    if not localidad and other_words:
+                        loc_start = len(other_words)
+                        for i in range(len(other_words) - 1, -1, -1):
+                            tok = other_words[i]
+                            if re.match(r'^[A-ZÁÉÍÓÚÑÜ\-\.]+$', tok) and len(tok) > 1:
+                                loc_start = i
+                            else:
+                                break
+                        if loc_start < len(other_words):
+                            localidad   = ' '.join(other_words[loc_start:]).title().strip()
+                            other_words = other_words[:loc_start]
+
+                    if not localidad:
+                        continue
+
                     seen.add(num)
                     sucursales.append({
                         'numero':    num,
-                        'localidad': ' '.join(parts[1:4]).title(),
-                        'ciudad':    ' '.join(parts[1:3]).title(),
+                        'nombre':    '',
+                        'localidad': localidad,
+                        'ciudad':    localidad,
                         'provincia': '',
-                        'cp':        '',
-                        'domicilio': ' '.join(parts[4:]).title() if len(parts) > 4 else '',
+                        'cp':        cp,
+                        'domicilio': ' '.join(other_words).strip(),
                     })
 
         if sucursales:
             return sucursales, f"{len(sucursales)} sucursales extraídas del PDF Galicia"
         return [], (
-            "El PDF de Galicia parece ser de imagen y no se puede extraer automáticamente. "
-            "Podés subir un CSV con encabezado: numero,localidad,ciudad,provincia,cp,domicilio"
+            "No se encontraron sucursales en el PDF. "
+            "Verificá que sea el formato correcto: PROVINCIA/REGIÓN | N° | NOMBRE | DIRECCIÓN | LOCALIDAD | C.P."
         )
     except Exception as e:
         return [], f"Error al parsear PDF Galicia: {e}"

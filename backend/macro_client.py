@@ -29,6 +29,7 @@ class MacroClient:
         self._login_url           = MACRO_LOGIN_URL
         self._usuario             = ''
         self._password            = ''
+        self._movements_frame     = None  # página principal o iframe con los movimientos
 
     # ─── LOGIN ────────────────────────────────────────────────────────────────
     def login(self, usuario: str, password: str) -> Tuple[bool, str]:
@@ -153,48 +154,23 @@ class MacroClient:
         if not self._logged_in:
             return False, "No hay sesión activa"
         try:
-            spans = self._page.locator('span[caption="name"]').all()
-            if spans:
-                return self.seleccionar_empresa(empresa)
-
-            self._page.goto(self._login_url, wait_until='domcontentloaded', timeout=20000)
-            time.sleep(0.5)
-
-            try:
-                self._page.wait_for_function(
-                    """() => document.querySelector('[id$="_actionButtonVerify"]') !== null""",
-                    timeout=6000,
-                )
+            # Si ya estamos en la pantalla de selección de empresa, seleccionar directo
+            if self._page.locator('span[caption="name"]').first.is_visible(timeout=1000):
                 self._empresas = self._leer_empresas()
                 return self.seleccionar_empresa(empresa)
-            except Exception:
-                pass
 
-            try:
-                user_input = self._page.locator('#textField1')
-                if user_input.is_visible(timeout=2000):
-                    user_input.click()
-                    user_input.fill(self._usuario)
-                    self._page.locator('#processCustomerLogin').click()
-                    self._page.locator('#login_textField1').wait_for(state='visible', timeout=12000)
-                    time.sleep(0.3)
-                    pass_input = self._page.locator('#login_textField1')
-                    pass_input.click()
-                    pass_input.fill(self._password)
-                    self._page.locator('#processSystem_UserLogin').click()
-                    try:
-                        self._page.wait_for_function(
-                            """() => document.querySelector('[id$="_actionButtonVerify"]') !== null""",
-                            timeout=20000,
-                        )
-                    except Exception:
-                        pass
-                    self._empresas = self._leer_empresas()
-                    return self.seleccionar_empresa(empresa)
-            except Exception as e:
-                return False, f"Error al cambiar empresa: {e}"
+            # Desde la app principal: click Salir → vuelve a pantalla de selección de empresa
+            salir_main = self._page.locator('#logoutHeaderWidget a.widget_logout_btn')
+            salir_main.wait_for(state='visible', timeout=5000)
+            salir_main.click()
 
-            return False, "No se pudo volver a la selección de empresas"
+            # Esperar pantalla de selección de empresa
+            self._page.wait_for_function(
+                """() => document.querySelector('[id$="_actionButtonVerify"]') !== null""",
+                timeout=15000,
+            )
+            self._empresas = self._leer_empresas()
+            return self.seleccionar_empresa(empresa)
         except Exception as e:
             return False, f"Error al cambiar empresa: {e}"
 
@@ -206,53 +182,57 @@ class MacroClient:
             return [], "No hay sesión activa"
         try:
             self._navegar_inicio()
+            f = self._movements_frame  # página principal o iframe
 
-            # Abrir panel de filtros de movimientos si está cerrado
-            btn_buscar = self._page.locator(
-                '#searchMoves_arrowButton[value="Buscar movimientos"]'
-            )
-            btn_buscar.wait_for(state='visible', timeout=10000)
-            if btn_buscar.get_attribute('aria-expanded') == 'false':
-                btn_buscar.click()
+            # El panel de filtros en movimientos ya está abierto al cargar la página.
+            # Si por algún motivo el campo Fecha Desde no es visible, abrir el panel.
+            fecha_desde_input = f.locator('#dateFieldFechaDesde')
+            fecha_hasta_input = f.locator('#dateFieldFechaHasta')
+            if not fecha_desde_input.is_visible(timeout=5000):
+                toggle = f.locator('#searchMoves_arrowButton')
+                toggle.wait_for(state='visible', timeout=20000)
+                toggle.dispatch_event('click')
                 time.sleep(0.8)
+            fecha_desde_input.wait_for(state='visible', timeout=10000)
 
             # Fechas en formato DD/MM/YYYY
             fd = self._a_ddmmyyyy(fecha_desde)
             fh = self._a_ddmmyyyy(fecha_hasta)
 
-            fecha_desde_input = self._page.locator('#dateFieldFechaDesde')
-            fecha_hasta_input = self._page.locator('#dateFieldFechaHasta')
-            fecha_desde_input.wait_for(state='visible', timeout=5000)
-
-            fecha_desde_input.triple_click()
+            fecha_desde_input.click(click_count=3)
             fecha_desde_input.fill(fd)
-            time.sleep(0.15)
+            time.sleep(0.2)
 
-            fecha_hasta_input.triple_click()
+            fecha_hasta_input.click(click_count=3)
             fecha_hasta_input.fill(fh)
-            time.sleep(0.15)
+            time.sleep(0.2)
 
             # Importes opcionales
             if importe_desde:
-                self._page.locator('#importeDesde').fill(importe_desde)
+                f.locator('#importeDesde').fill(importe_desde)
             if importe_hasta:
-                self._page.locator('#importeHasta').fill(importe_hasta)
+                f.locator('#importeHasta').fill(importe_hasta)
 
             # Tipo de movimiento
             if tipo_mov and tipo_mov != 'Ninguno':
-                self._page.locator('#movementType').select_option(tipo_mov)
+                f.locator('#movementType').select_option(tipo_mov)
 
-            # Click Buscar (id="Boton2" en el panel de movimientos)
-            self._page.locator('#Boton2').click()
+            # Click Buscar
+            buscar_btn = f.locator('#buttonCloseSearchContainer button').first
+            buscar_btn.wait_for(state='visible', timeout=5000)
+            buscar_btn.dispatch_event('click')
+            time.sleep(0.8)
             try:
-                self._page.wait_for_load_state('networkidle', timeout=20000)
+                self._page.wait_for_load_state('networkidle', timeout=25000)
             except Exception:
                 pass
             time.sleep(1)
 
             # Descargar XLS
+            xls_btn = f.locator('#actionButtonDescargaXlsCuentas')
+            xls_btn.wait_for(state='visible', timeout=10000)
             with self._page.expect_download(timeout=30000) as dl_info:
-                self._page.locator('#actionButtonDescargaXlsCuentas').click()
+                xls_btn.dispatch_event('click')
             dl = dl_info.value
             tmp = os.path.join(tempfile.gettempdir(), 'macro_movimientos.xls')
             dl.save_as(tmp)
@@ -263,50 +243,53 @@ class MacroClient:
             return [], f"Error al obtener transferencias: {e}"
 
     def _navegar_inicio(self):
-        """Navega al Inicio, selecciona Cuenta Corriente Bancaria y queda en su detalle."""
-        # 1. Ir a home
-        try:
-            home = self._page.locator('[id="home"]').first
-            if home.is_visible(timeout=1000):
-                home.click()
-            else:
-                self._page.evaluate(
-                    "if(typeof submitSubmenuByAjax==='function')"
-                    " submitSubmenuByAjax('TransitorioVerifiedOperatorSecurityInicialApoyo','home')"
-                )
-        except Exception:
-            pass
-        try:
-            self._page.wait_for_load_state('networkidle', timeout=10000)
-        except Exception:
-            pass
-        time.sleep(1)
-
-        # 2. Hacer click en la fila "CUENTA CORRIENTE BANCARIA" de la tabla de cuentas
-        try:
-            cta = self._page.locator(
-                '#collectionTableCuentas td:has-text("CUENTA CORRIENTE BANCARIA")'
-            ).first
-            cta.wait_for(state='visible', timeout=10000)
-            cta.click()
-        except Exception as e:
-            raise RuntimeError(f"No se encontró Cuenta Corriente Bancaria en la tabla: {e}")
-
-        # 3. Esperar a que cargue el detalle de la cuenta (panel de movimientos)
-        try:
-            self._page.wait_for_load_state('networkidle', timeout=15000)
-        except Exception:
-            pass
-        time.sleep(1)
-
-        # 4. Confirmar que estamos en el detalle correcto
+        """
+        Siempre empieza en la tabla de cuentas (Inicio).
+        1. Espera la fila CUENTA CORRIENTE BANCARIA
+        2. Hace click en esa fila → carga el detalle de cuenta (tab component)
+        3. Hace click en "Últimos movimientos" (#logMov)
+        4. Espera el panel de búsqueda
+        """
+        # 1. Esperar que aparezca la fila CCBA en la tabla de cuentas
         try:
             self._page.wait_for_selector(
-                '#searchMoves_arrowButton[value="Buscar movimientos"]',
-                timeout=10000,
+                'table td:has-text("CUENTA CORRIENTE BANCARIA")',
+                timeout=25000
             )
         except Exception:
             pass
+        time.sleep(0.3)
+
+        # 2. Click en el TD de la fila CCBA (dispara su onclick nativo)
+        clicked = self._page.evaluate("""
+            () => {
+                const rows = document.querySelectorAll('table tr, [role="row"]');
+                for (const row of rows) {
+                    if (!(row.textContent || '').includes('CUENTA CORRIENTE BANCARIA')) continue;
+                    const td = row.querySelector('td[onclick]') || row.querySelector('td');
+                    if (td) { td.click(); return true; }
+                }
+                return false;
+            }
+        """)
+        if not clicked:
+            raise RuntimeError("No se encontró la fila CUENTA CORRIENTE BANCARIA")
+
+        # 3. Esperar #logMov — único en la página de detalle CCBA (no existe en Inicio)
+        try:
+            self._page.wait_for_selector(
+                '#logMov',
+                timeout=20000
+            )
+        except Exception as e:
+            diag = self._page.evaluate("""() => ({
+                url: location.href,
+                inputs: [...document.querySelectorAll('input[id]')].map(e=>e.id).slice(0,20),
+                btns: [...document.querySelectorAll('button')].map(e=>e.textContent.trim()).filter(Boolean).slice(0,20)
+            })""")
+            raise RuntimeError(f"No cargó Últimos movimientos: {e} | Estado: {diag}")
+
+        self._movements_frame = self._page
 
     def _a_ddmmyyyy(self, date_str: str) -> str:
         if not date_str:

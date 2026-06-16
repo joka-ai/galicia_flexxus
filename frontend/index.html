@@ -453,10 +453,17 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
 
   <div id="transferencias-macro-msg"></div>
 
-  <div class="tbl-toolbar">
-    <input id="search-trf-mac" type="text" placeholder="Buscar en movimientos…" oninput="buscarTrfMacro(this.value)"/>
+  <div class="tbl-toolbar" style="flex-wrap:wrap;gap:6px">
+    <input id="search-trf-mac" type="text" placeholder="Buscar en movimientos…" oninput="buscarTrfMacro(this.value)" style="min-width:180px"/>
+    <label style="font-size:12px;color:var(--text3);white-space:nowrap">Fecha desde</label>
+    <input id="flt-trf-fecha-desde" type="date" oninput="filtrarTrfMacro()" onchange="filtrarTrfMacro()" style="font-size:12px"/>
+    <label style="font-size:12px;color:var(--text3);white-space:nowrap">hasta</label>
+    <input id="flt-trf-fecha-hasta" type="date" oninput="filtrarTrfMacro()" onchange="filtrarTrfMacro()" style="font-size:12px"/>
+    <label style="font-size:12px;color:var(--text3);white-space:nowrap">$ Desde</label>
+    <input id="flt-trf-imp-desde" type="number" placeholder="mín" oninput="filtrarTrfMacro()" onchange="filtrarTrfMacro()" style="width:90px;font-size:12px"/>
+    <label style="font-size:12px;color:var(--text3);white-space:nowrap">hasta</label>
+    <input id="flt-trf-imp-hasta" type="number" placeholder="máx" oninput="filtrarTrfMacro()" onchange="filtrarTrfMacro()" style="width:90px;font-size:12px"/>
     <span class="tbl-count" id="count-trf-mac"></span>
-    <button class="btn sm" onclick="exportarTrfMacro()">⬇ Excel</button>
   </div>
 
   <div class="tbl-wrap">
@@ -567,7 +574,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
           <th>Suc. Dep.</th>
           <th>Nro cheque</th>
           <th style="text-align:right">Monto</th>
-          <th>Fecha em.</th>
+          <th>Fecha a pagar</th>
           <th>Propio</th>
           <th>Común</th>
           <th>Orden</th>
@@ -862,13 +869,6 @@ function showMsg(id, text, tipo='info') {
   const el = document.getElementById(id);
   if (!el) return;
   el.innerHTML = text ? `<div class="alert ${tipo}">${text}</div>` : '';
-  clearTimeout(el._msgTimer);
-  if (text && tipo === 'success') {
-    el._msgTimer = setTimeout(() => { el.innerHTML = ''; }, 4000);
-  } else if (text && tipo === 'info') {
-    el._msgTimer = setTimeout(() => { el.innerHTML = ''; }, 5000);
-  }
-  // 'error' y 'warn' no se borran solos — el usuario los cierra con una nueva acción
 }
 
 function fmtMonto(n) {
@@ -908,8 +908,11 @@ function cargarConfig() {
   } catch(e) {}
 }
 
+let _galEmpresaActiva = '';
+
 function _setEmpresaUI(empresa) {
   if (!empresa) return;
+  _galEmpresaActiva = empresa;
   document.getElementById('gal-empresa').value        = empresa;
   document.getElementById('gal-empresa-lbl').textContent = `(activa: ${empresa})`;
   try {
@@ -975,6 +978,10 @@ async function logoutGalicia() {
 
 async function cambiarEmpresaGalicia() {
   const empresa = document.getElementById('gal-empresa').value;
+  if (empresa === _galEmpresaActiva) {
+    showMsg('gal-msg', `Ya estás en ${empresa}.`, 'info');
+    return;
+  }
   showMsg('gal-msg', `⏳ Cambiando a ${empresa}...`, 'info');
   document.getElementById('btn-cambiar-empresa').disabled = true;
   _setQuerying(true);
@@ -1376,7 +1383,7 @@ function renderCobros() {
       <td style="font-size:12px;color:var(--text3)">${_d(c.nro_cliente)}</td>
       <td>${formaBadge}</td>
       <td style="text-align:right;font-weight:600">${fmtMonto(c.importe_pago)}</td>
-      <td style="font-family:monospace;font-size:12px">${_d(c.nro_cheque)}</td>
+      <td style="font-family:monospace;font-size:12px">${_d(/^\d+$/.test((c.nro_cheque||'').trim()) ? c.nro_cheque : '')}</td>
       <td>${infoBadge}</td>
       <td>${anulBadge}</td>
       ${chevronTd}
@@ -1520,10 +1527,15 @@ function _bndId() { return 'BNJ_' + (++_bndSeq).toString().padStart(4,'0'); }
 
 function _esPropioCheque(det) {
   if (!det) return 'N';
-  // Normaliza tildes y mayúsculas para comparar
   const norm = s => (s||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  // Para cheques a aceptar: Cláusula determina si es propio
+  const clausula = (det['Cláusula'] || '').toLowerCase().trim();
+  if (clausula) {
+    if (clausula.includes('endoso recibido')) return 'N';
+    if (clausula.includes('endosado'))        return 'S';
+  }
+  // Fallback (otros casos de cheques y recaudadora): comparar Razón social con Razón social 1
   const keys = Object.keys(det);
-  // Busca "Razón social" (librador) y "Razón social 1" (empresa propia) en el detalle
   const rsKey  = keys.find(k => norm(k) === 'RAZON SOCIAL');
   const rs1Key = keys.find(k => norm(k) === 'RAZON SOCIAL 1' || norm(k) === 'RAZON SOCIAL.1');
   if (!rsKey || !rs1Key) return 'N';
@@ -1552,7 +1564,10 @@ function _buildNroCheque(tipo, c) {
   if (tipo === 'cobros') {
     const banco = (c.detalle && c.detalle['Cód. banco']) || '';
     const suc   = (c.detalle && c.detalle['Sucursal'])   || '';
-    const num   = (c.nro_cheque || '').trim();
+    const raw   = (c.nro_cheque || '').trim();
+    // El número de cheque real es solo dígitos.
+    // Galicia pone "00--105--" cuando no hay cheque (banco/suc sin número).
+    const num   = /^\d+$/.test(raw) ? raw : '';
     if (!num) return '-';
     if (!banco && !suc) return num;
     const b = String(banco).trim().padStart(3,'0');
@@ -1589,20 +1604,21 @@ function _buildBandejaItem(tipo, c) {
       sucursal_dep: numSucDep && numSucDep !== '—' ? numSucDep : '-',
       nro_cheque:  _buildNroCheque('cobros', c),
       monto:       c.importe_pago || 0,
-      fecha_em:    '-',
-      propio:      'N',
+      fecha_em:    c.fecha_pago || '-',
+      propio:      _esPropioCheque(c.detalle),
       comun:       'N', orden: 'N', cruzado: 'N',
       electronico: _esElectronico('cobros', c),
     };
   } else if (tipo === 'chequesAceptar') {
+    const sucChq = _sucursalDesdeCheque(c);
     return {
       id: _bndId(), origen: 'Cheques A Aceptar', origen_id: c.id,
       nombre:      c.librador || '-',
       cuit:        c.cuit     || '-',
-      sucursal_dep: '-',
+      sucursal_dep: sucChq !== '—' ? sucChq : '-',
       nro_cheque:  _buildNroCheque('cheques', c),
       monto:       c.importe || 0,
-      fecha_em:    c.fecha_em || '-',
+      fecha_em:    c.fecha_pago || '-',
       propio:      _esPropioCheque(c.detalle),
       comun:       'N',
       orden:       _esOrden(c.detalle && c.detalle['Cláusula']),
@@ -1725,7 +1741,7 @@ function exportarBandeja() {
     'Suc. Depósito': b.sucursal_dep,
     'Nro Cheque':    b.nro_cheque,
     'Monto':         b.monto,
-    'Fecha Emisión': b.fecha_em,
+    'Fecha a Pagar': b.fecha_em,
     'Propio':        b.propio,
     'Común':         b.comun,
     'Orden':         b.orden,
@@ -1740,7 +1756,7 @@ function exportarBandeja() {
     XLSX.utils.book_append_sheet(wb, ws, 'Bandeja');
     XLSX.writeFile(wb, `bandeja_${new Date().toISOString().slice(0,10)}.xlsx`);
   } catch(e) {
-    const headers = ['Nombre','Suc. Depósito','Nro Cheque','Monto','Fecha Emisión','Propio','Común','Orden','Cruzado','Electrónico'];
+    const headers = ['Nombre','Suc. Depósito','Nro Cheque','Monto','Fecha a Pagar','Propio','Común','Orden','Cruzado','Electrónico'];
     const csv = [headers.join(',')].concat(
       data.map(r => Object.values(r).map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','))
     ).join('\n');
@@ -1812,6 +1828,7 @@ function renderDetalleGrid(det, bancoNombre) {
   return Object.entries(det).map(([lbl, val]) => {
     let displayVal = escHtml(String(val));
     const lblL = lbl.toLowerCase();
+    let extraField = '';
     if (lblL === 'sucursal' || lblL === 'sucursal de pago') {
       const loc = lookupSucursal('galicia', String(val).trim());
       if (loc) displayVal += `<span class="suc-tag">LOCALIDAD: ${escHtml(loc)}</span>`;
@@ -1820,7 +1837,15 @@ function renderDetalleGrid(det, bancoNombre) {
       const nom = lookupBancoCodigo(String(val).trim());
       if (nom) displayVal += `<span class="suc-tag">${escHtml(nom)}</span>`;
     }
-    return `<div class="detail-field"><span class="detail-label">${escHtml(lbl)}</span><span class="detail-value">${displayVal}</span></div>`;
+    if (lblL === 'cmc7') {
+      const raw = String(val).replace(/\s/g, '');
+      const suc = raw.length >= 6 ? raw.slice(3, 6) : '';
+      if (suc) {
+        const loc = lookupSucursal('galicia', suc);
+        if (loc) extraField = `<div class="detail-field"><span class="detail-label">Localidad</span><span class="detail-value">${escHtml(loc)}</span></div>`;
+      }
+    }
+    return `<div class="detail-field"><span class="detail-label">${escHtml(lbl)}</span><span class="detail-value">${displayVal}</span></div>${extraField}`;
   }).join('');
 }
 
@@ -2289,6 +2314,16 @@ async function doLogout() {
 let transferenciasMacro = [];
 let _trfMacQ = '';
 
+function _parseFechaTrf(s) {
+  if (!s) return '';
+  // ISO: 2025-06-15 o 2025-06-15 00:00:00
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  // DD/MM/YYYY
+  const p = s.split('/');
+  if (p.length !== 3) return s;
+  return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+}
+
 const pgTrfMac = {
   page: 1, size: 50,
   setSize(n) { this.size = n; this.page = 1; renderTrfMacro(); },
@@ -2323,12 +2358,30 @@ function buscarTrfMacro(q) {
   renderTrfMacro();
 }
 
+function filtrarTrfMacro() {
+  pgTrfMac.reset();
+  renderTrfMacro();
+}
+
 function _getTrfFiltradas() {
-  const q = _trfMacQ.toLowerCase().trim();
-  if (!q) return transferenciasMacro;
-  return transferenciasMacro.filter(r =>
-    Object.values(r).some(v => v !== null && String(v).toLowerCase().includes(q))
-  );
+  const q      = _trfMacQ.toLowerCase().trim();
+  const fDesde = (document.getElementById('flt-trf-fecha-desde') || {}).value || '';
+  const fHasta = (document.getElementById('flt-trf-fecha-hasta') || {}).value || '';
+  const iDesde = parseFloat((document.getElementById('flt-trf-imp-desde') || {}).value || '') ;
+  const iHasta = parseFloat((document.getElementById('flt-trf-imp-hasta') || {}).value || '');
+  const hayFiltro = q || fDesde || fHasta || !isNaN(iDesde) || !isNaN(iHasta);
+  if (!hayFiltro) return transferenciasMacro;
+  return transferenciasMacro.filter(r => {
+    if (q && !Object.values(r).some(v => v !== null && String(v).toLowerCase().includes(q))) return false;
+    if (fDesde || fHasta) {
+      const f = _parseFechaTrf(r.fecha);
+      if (fDesde && f < fDesde) return false;
+      if (fHasta && f > fHasta) return false;
+    }
+    if (!isNaN(iDesde) && Math.abs(r.importe) < iDesde) return false;
+    if (!isNaN(iHasta) && Math.abs(r.importe) > iHasta) return false;
+    return true;
+  });
 }
 
 function renderTrfMacro() {
@@ -2409,21 +2462,6 @@ async function consultarTransferenciasMacro() {
   document.getElementById('btn-mac-consultar').disabled = false;
 }
 
-function exportarTrfMacro() {
-  if (!transferenciasMacro.length) return;
-  const data = transferenciasMacro.map(r => ({
-    'Fecha':          r.fecha,
-    'Nro. Referencia': r.nro_referencia,
-    'Causal':         r.causal,
-    'Concepto':       r.concepto,
-    'Importe':        r.importe,
-    'Saldo':          r.saldo,
-  }));
-  const ws = XLSX.utils.json_to_sheet(data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
-  XLSX.writeFile(wb, 'macro_movimientos.xlsx');
-}
 
 // ── Macro login ───────────────────────────────────────────────────────────
 async function loginMacro() {
@@ -2461,6 +2499,8 @@ async function loginMacro() {
   document.getElementById('btn-mac-login').disabled = false;
 }
 
+let _macEmpresaActiva = '';
+
 function _poblarEmpresasMacro(empresas, empresaActiva) {
   const sel = document.getElementById('mac-empresa');
   sel.innerHTML = '<option value="">— elegir empresa —</option>';
@@ -2470,6 +2510,7 @@ function _poblarEmpresasMacro(empresas, empresaActiva) {
     sel.appendChild(opt);
   });
   if (empresaActiva) {
+    _macEmpresaActiva = empresaActiva;
     sel.value = empresaActiva;
     document.getElementById('mac-empresa-lbl').textContent = `(activa: ${empresaActiva})`;
   }
@@ -2498,6 +2539,10 @@ async function logoutMacro() {
 async function cambiarEmpresaMacro() {
   const empresa = document.getElementById('mac-empresa').value;
   if (!empresa) { showMsg('mac-msg', 'Elegí una empresa de la lista.', 'warn'); return; }
+  if (empresa === _macEmpresaActiva) {
+    showMsg('mac-msg', `Ya estás en ${empresa}.`, 'info');
+    return;
+  }
   showMsg('mac-msg', `⏳ Seleccionando ${empresa}...`, 'info');
   document.getElementById('btn-mac-cambiar-empresa').disabled = true;
   _setQuerying(true);
@@ -2505,7 +2550,8 @@ async function cambiarEmpresaMacro() {
     const data = await apiFetch('/macro/cambiar_empresa', { method:'POST', body:JSON.stringify({empresa}) });
     if (data.ok) {
       showMsg('mac-msg', '✓ ' + data.mensaje, 'success');
-      document.getElementById('mac-empresa-lbl').textContent = `(activa: ${data.empresa || empresa})`;
+      _macEmpresaActiva = data.empresa || empresa;
+      document.getElementById('mac-empresa-lbl').textContent = `(activa: ${_macEmpresaActiva})`;
       document.getElementById('btn-mac-consultar').disabled = false;
       try {
         const cfg = JSON.parse(localStorage.getItem('galicia_cfg') || '{}');
