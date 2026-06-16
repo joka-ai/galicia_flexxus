@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  galicia-app:
+    build: .
+    container_name: galicia-flexxus
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      - ./users.json:/app/users.json
+    environment:
+      - HEADLESS=true
+      - SERVER_MODE=true
+      - PORT=5000
+    restart: unless-stopped
