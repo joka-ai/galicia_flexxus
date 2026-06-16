@@ -7,6 +7,9 @@ __pycache__/
 *.pyo
 *.pyd
 
+# Datos sensibles
+users.json
+
 # Archivos temporales / logs
 logs/
 uploads/
@@ -20,3 +23,6 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Claude Code worktrees (temporales, no deben subirse al repo)
+.claude/worktrees/
