@@ -2,14 +2,6 @@
 chcp 65001 >nul
 title Galicia - Consultas Home Banking
 
-:: Pedir permisos de administrador si no los tiene
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Solicitando permisos de administrador...
-    powershell -Command "Start-Process cmd -ArgumentList '/c cd /d ""%~dp0"" && ""%~f0""' -Verb RunAs"
-    exit /b
-)
-
 cd /d "%~dp0"
 
 echo.
