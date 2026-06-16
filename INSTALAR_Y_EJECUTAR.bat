@@ -2,6 +2,14 @@
 chcp 65001 >nul
 title Galicia - Consultas Home Banking
 
+:: Verificar si corre como administrador, si no, pedir elevacion
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo  Solicitando permisos de administrador...
+    powershell -Command "Start-Process '%~f0' -Verb RunAs -WorkingDirectory '%~dp0'"
+    exit /b
+)
+
 echo.
 echo  ============================================
 echo    Galicia - Consultas Home Banking
