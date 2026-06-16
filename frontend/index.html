@@ -225,7 +225,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     </div>
 
     <div class="nav-section">Resultados</div>
-    <div class="nav-item" onclick="ir('recaudadora')">
+    <div class="nav-item" onclick="ir('recaudadora')" style="display:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
       Recaudadora
       <span class="nav-badge" id="badge-cobros" style="display:none">0</span>
@@ -337,8 +337,8 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
 
     <div class="card-title">¿Qué querés consultar?</div>
     <div class="tipo-grid">
-      <label class="tipo-card selected" id="tc-recaudadora" onclick="toggleTipo('recaudadora')">
-        <input type="checkbox" id="chk-tipo-recaudadora" checked onchange="syncTipoCard('recaudadora')"/>
+      <label class="tipo-card selected" id="tc-recaudadora" onclick="toggleTipo('recaudadora')" style="display:none">
+        <input type="checkbox" id="chk-tipo-recaudadora" onchange="syncTipoCard('recaudadora')"/>
         <div class="tipo-card-body">
           <div class="tipo-card-title">Recaudadora</div>
           <div class="tipo-card-sub">Cobranza Integrada</div>
@@ -495,7 +495,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
 </div>
 
 <!-- RECAUDADORA ───────────────────────────────────────────────────────────── -->
-<div class="page" id="page-recaudadora">
+<div class="page" id="page-recaudadora" style="display:none">
   <div class="page-hdr">
     <h2>Recaudadora — Cobranza Integrada</h2>
   </div>
@@ -594,7 +594,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
   <div class="page-hdr"><h2>Subir CSV manualmente</h2></div>
 
   <!-- Recaudadora -->
-  <div class="card">
+  <div class="card" style="display:none">
     <div class="card-title">Recaudadora — CobranzasInformadas</div>
     <div class="upload-area" id="ua-recaudadora">
       <label class="upload-label" for="file-recaudadora">
@@ -1046,7 +1046,8 @@ async function consultarTodo() {
   }
 
   const promesas = [];
-  if (doRec)  promesas.push(consultarRecaudadora(desde, hasta));
+  // recaudadora deshabilitada
+  // if (doRec)  promesas.push(consultarRecaudadora(desde, hasta));
   if (doChqA) promesas.push(consultarChequesAceptar(desde, hasta));
   await Promise.all(promesas);
 
