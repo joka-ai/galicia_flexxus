@@ -2283,10 +2283,7 @@ async function doLogin() {
     });
     const data = await res.json();
     if (data.ok) {
-      document.getElementById('login-overlay').style.display = 'none';
-      document.getElementById('nav-user').textContent = data.usuario;
-      cargarSucursales();
-      cargarBancosDesdeBackend();
+      window.location.reload();
     } else {
       errEl.textContent = data.error || 'Usuario o contraseña incorrectos.';
       errEl.style.display = 'block';
