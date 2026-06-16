@@ -307,7 +307,7 @@ def galicia_login():
             try: prev.logout()
             except Exception: pass
         _session['client'] = None
-        client = GaliciaClient(headless=os.environ.get('HEADLESS', 'false').lower() == 'true')
+        client = GaliciaClient(headless=False)
         ok, msg = client.login(usuario, password)
         if ok:
             _session['client'] = client
@@ -400,7 +400,7 @@ def macro_login():
             try: prev.logout()
             except Exception: pass
         _macro_session['client'] = None
-        client = MacroClient(headless=os.environ.get('HEADLESS', 'false').lower() == 'true')
+        client = MacroClient(headless=False)
         ok, msg = client.login(usuario, password)
         if ok:
             _macro_session['client'] = client
@@ -577,9 +577,7 @@ def _puerto_libre(inicio=5000, fin=5020) -> int:
 
 if __name__ == '__main__':
     sucursales_manager.init()
-    _server_mode = os.environ.get('SERVER_MODE', 'false').lower() == 'true'
-    HOST = '0.0.0.0' if _server_mode else '127.0.0.1'
-    PORT = int(os.environ.get('PORT', '0')) or _puerto_libre()
+    PORT = _puerto_libre()
     URL  = f'http://localhost:{PORT}'
 
     _log.info('=' * 60)
@@ -594,6 +592,5 @@ if __name__ == '__main__':
     print(f"\n{'='*50}\n  Galicia | Consultas — {URL}\n{'='*50}\n")
     print(f"  Debug log: {os.path.abspath(_LOG_FILE)}\n")
 
-    if not _server_mode:
-        threading.Timer(1.5, lambda: webbrowser.open(URL)).start()
-    app.run(debug=False, host=HOST, port=PORT, threaded=True)
+    threading.Timer(1.5, lambda: webbrowser.open(URL)).start()
+    app.run(debug=False, host='127.0.0.1', port=PORT, threaded=True)

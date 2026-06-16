@@ -1,31 +1,35 @@
 @echo off
 chcp 65001 >nul
-title Galicia - Flexxus ECHEQs
+title Galicia - Consultas Home Banking
 
 echo.
 echo  ============================================
-echo    Galicia - Flexxus  ECHEQs
+echo    Galicia - Consultas Home Banking
 echo  ============================================
 echo.
 
 cd /d "%~dp0"
 
-:: Verificar Python
+:: ── 1. Verificar Python ───────────────────────────────────────────────────────
 echo  [1/5] Verificando Python...
 py --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo  [ERROR] No se encontro Python.
-    echo  Descargalo de https://www.python.org/downloads/
+    echo.
+    echo  [ERROR] Python no esta instalado.
+    echo.
+    echo  Descargandolo de python.org...
+    echo  IMPORTANTE: durante la instalacion tilda
+    echo  "Add Python to PATH" antes de continuar.
+    echo.
     start https://www.python.org/downloads/
     pause
     exit /b 1
 )
-py --version
-echo  [OK] Python encontrado
+for /f "tokens=*" %%v in ('py --version') do echo  [OK] %%v
 echo.
 
-:: Crear entorno virtual
-echo  [2/5] Preparando entorno...
+:: ── 2. Entorno virtual ───────────────────────────────────────────────────────
+echo  [2/5] Preparando entorno virtual...
 if not exist "venv\" (
     py -m venv venv
     echo  [OK] Entorno creado
@@ -34,29 +38,42 @@ if not exist "venv\" (
 )
 echo.
 
-:: Activar entorno
 call venv\Scripts\activate.bat
 
-:: Instalar librerias
+:: ── 3. Instalar librerias ────────────────────────────────────────────────────
 echo  [3/5] Instalando librerias (solo la primera vez, puede tardar 2-3 min)...
 python -m pip install --upgrade pip --quiet
-python -m pip install flask flask-cors requests pandas openpyxl xlrd playwright bcrypt pdfplumber --quiet
+python -m pip install -r requirements.txt --quiet
+if %errorlevel% neq 0 (
+    echo  [ERROR] Fallo la instalacion de librerias.
+    echo  Revisa tu conexion a internet e intentalo de nuevo.
+    pause
+    exit /b 1
+)
 echo  [OK] Librerias listas
 echo.
 
-:: Chromium para Playwright
-echo  [4/5] Verificando Chromium...
+:: ── 4. Chromium para Playwright ──────────────────────────────────────────────
+echo  [4/5] Instalando Chromium (solo la primera vez)...
 python -m playwright install chromium >nul 2>&1
-echo  [OK] Chromium listo
+if %errorlevel% neq 0 (
+    echo  [ADVERTENCIA] No se pudo instalar Chromium automaticamente.
+    echo  Ejecuta manualmente: python -m playwright install chromium
+) else (
+    echo  [OK] Chromium listo
+)
 echo.
 
-:: Lanzar servidor (Python abre el browser automaticamente en el puerto disponible)
-echo  [5/5] Iniciando servidor...
+:: ── 5. Lanzar la app ─────────────────────────────────────────────────────────
+echo  [5/5] Iniciando la aplicacion...
 echo.
 echo  ============================================
-echo   El browser se abre solo. Puerto automatico.
-echo   NO CIERRES ESTA VENTANA mientras lo uses!
-echo   Si algo falla, manda el archivo logs\debug.log
+echo   Usuario por defecto : ADMIN
+echo   Contrasena por defecto : admin123
+echo.
+echo   El browser se abre automaticamente.
+echo   NO CIERRES ESTA VENTANA mientras uses la app.
+echo   Para cerrar la app, presiona Ctrl+C aqui.
 echo  ============================================
 echo.
 
@@ -64,5 +81,10 @@ cd backend
 python app.py
 
 echo.
-echo  Servidor cerrado. Presiona cualquier tecla.
+echo  ============================================
+echo   La aplicacion se cerro.
+echo   Si algo fallo, manda el archivo:
+echo   logs\debug.log
+echo  ============================================
+echo.
 pause
