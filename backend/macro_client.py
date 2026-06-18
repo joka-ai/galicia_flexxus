@@ -58,13 +58,13 @@ class MacroClient:
 
             # Paso 1: usuario
             user_input = self._page.locator('#textField1')
-            user_input.wait_for(state='visible', timeout=15000)
+            user_input.wait_for(state='visible', timeout=40000)
             user_input.click()
             user_input.fill(usuario)
             self._page.locator('#processCustomerLogin').click()
 
             # Paso 2: clave
-            self._page.locator('#login_textField1').wait_for(state='visible', timeout=15000)
+            self._page.locator('#login_textField1').wait_for(state='visible', timeout=40000)
             time.sleep(0.3)
             pass_input = self._page.locator('#login_textField1')
             pass_input.click()
@@ -73,15 +73,18 @@ class MacroClient:
 
             # Esperar selección de empresa o error
             try:
-                self._page.wait_for_function(
-                    """() => {
-                        const btn = document.querySelector('[id$="_actionButtonVerify"]');
-                        const err = document.querySelector('#errorPanelCollectionContainer');
-                        const errVisible = err && err.children.length > 0 && err.offsetParent !== null;
-                        return btn !== null || errVisible;
-                    }""",
-                    timeout=25000,
-                )
+                for _ in range(25):
+                    listo = self._page.evaluate("""
+                        () => {
+                            const btn = document.querySelector('[id$="_actionButtonVerify"]');
+                            const err = document.querySelector('#errorPanelCollectionContainer');
+                            const errVisible = err && err.children.length > 0 && err.offsetParent !== null;
+                            return btn !== null || errVisible;
+                        }
+                    """)
+                    if listo:
+                        break
+                    import time as _t; _t.sleep(1)
             except Exception:
                 pass
 
@@ -165,10 +168,16 @@ class MacroClient:
             salir_main.click()
 
             # Esperar pantalla de selección de empresa
-            self._page.wait_for_function(
-                """() => document.querySelector('[id$="_actionButtonVerify"]') !== null""",
-                timeout=15000,
-            )
+            for _ in range(20):
+                try:
+                    found = self._page.evaluate(
+                        """() => document.querySelector('[id$="_actionButtonVerify"]') !== null"""
+                    )
+                    if found:
+                        break
+                except Exception:
+                    break
+                time.sleep(1)
             self._empresas = self._leer_empresas()
             return self.seleccionar_empresa(empresa)
         except Exception as e:
@@ -192,20 +201,16 @@ class MacroClient:
                 toggle = f.locator('#searchMoves_arrowButton')
                 toggle.wait_for(state='visible', timeout=20000)
                 toggle.dispatch_event('click')
-                time.sleep(0.8)
             fecha_desde_input.wait_for(state='visible', timeout=10000)
 
-            # Fechas en formato DD/MM/YYYY
             fd = self._a_ddmmyyyy(fecha_desde)
             fh = self._a_ddmmyyyy(fecha_hasta)
 
             fecha_desde_input.click(click_count=3)
             fecha_desde_input.fill(fd)
-            time.sleep(0.2)
 
             fecha_hasta_input.click(click_count=3)
             fecha_hasta_input.fill(fh)
-            time.sleep(0.2)
 
             # Importes opcionales
             if importe_desde:
@@ -217,16 +222,13 @@ class MacroClient:
             if tipo_mov and tipo_mov != 'Ninguno':
                 f.locator('#movementType').select_option(tipo_mov)
 
-            # Click Buscar
             buscar_btn = f.locator('#buttonCloseSearchContainer button').first
             buscar_btn.wait_for(state='visible', timeout=5000)
             buscar_btn.dispatch_event('click')
-            time.sleep(0.8)
             try:
                 self._page.wait_for_load_state('networkidle', timeout=25000)
             except Exception:
                 pass
-            time.sleep(1)
 
             # Descargar XLS
             xls_btn = f.locator('#actionButtonDescargaXlsCuentas')
@@ -244,13 +246,19 @@ class MacroClient:
 
     def _navegar_inicio(self):
         """
-        Siempre empieza en la tabla de cuentas (Inicio).
-        1. Espera la fila CUENTA CORRIENTE BANCARIA
-        2. Hace click en esa fila → carga el detalle de cuenta (tab component)
-        3. Hace click en "Últimos movimientos" (#logMov)
-        4. Espera el panel de búsqueda
+        Navega a la página de movimientos de CCBA.
+        Si ya estamos ahí (segunda consulta), no hace nada.
         """
-        # 1. Esperar que aparezca la fila CCBA en la tabla de cuentas
+        # Si ya estamos en la página de movimientos, no navegar
+        try:
+            fecha_input = self._page.locator('#dateFieldFechaDesde')
+            if fecha_input.is_visible(timeout=2000):
+                self._movements_frame = self._page
+                return
+        except Exception:
+            pass
+
+        # Primera vez: navegar desde la tabla de cuentas
         try:
             self._page.wait_for_selector(
                 'table td:has-text("CUENTA CORRIENTE BANCARIA")',
@@ -258,9 +266,7 @@ class MacroClient:
             )
         except Exception:
             pass
-        time.sleep(0.3)
 
-        # 2. Click en el TD de la fila CCBA (dispara su onclick nativo)
         clicked = self._page.evaluate("""
             () => {
                 const rows = document.querySelectorAll('table tr, [role="row"]');
@@ -275,12 +281,8 @@ class MacroClient:
         if not clicked:
             raise RuntimeError("No se encontró la fila CUENTA CORRIENTE BANCARIA")
 
-        # 3. Esperar #logMov — único en la página de detalle CCBA (no existe en Inicio)
         try:
-            self._page.wait_for_selector(
-                '#logMov',
-                timeout=20000
-            )
+            self._page.wait_for_selector('#logMov', timeout=20000)
         except Exception as e:
             diag = self._page.evaluate("""() => ({
                 url: location.href,

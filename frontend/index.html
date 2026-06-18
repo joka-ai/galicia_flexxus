@@ -225,7 +225,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
     </div>
 
     <div class="nav-section">Resultados</div>
-    <div class="nav-item" onclick="ir('recaudadora')" style="display:none">
+    <div class="nav-item" onclick="ir('recaudadora')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
       Recaudadora
       <span class="nav-badge" id="badge-cobros" style="display:none">0</span>
@@ -337,8 +337,8 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
 
     <div class="card-title">¿Qué querés consultar?</div>
     <div class="tipo-grid">
-      <label class="tipo-card selected" id="tc-recaudadora" onclick="toggleTipo('recaudadora')" style="display:none">
-        <input type="checkbox" id="chk-tipo-recaudadora" onchange="syncTipoCard('recaudadora')"/>
+      <label class="tipo-card selected" id="tc-recaudadora" onclick="toggleTipo('recaudadora')">
+        <input type="checkbox" id="chk-tipo-recaudadora" checked onchange="syncTipoCard('recaudadora')"/>
         <div class="tipo-card-body">
           <div class="tipo-card-title">Recaudadora</div>
           <div class="tipo-card-sub">Cobranza Integrada</div>
@@ -496,7 +496,7 @@ tr.detail-row>td{background:var(--surface2)!important;padding:12px 16px 14px 48p
 </div>
 
 <!-- RECAUDADORA ───────────────────────────────────────────────────────────── -->
-<div class="page" id="page-recaudadora" style="display:none">
+<div class="page" id="page-recaudadora">
   <div class="page-hdr">
     <h2>Recaudadora — Cobranza Integrada</h2>
   </div>
@@ -1025,8 +1025,10 @@ async function consultarTodo() {
   if (!doRec && !doChqA) { showMsg('gal-msg', 'Seleccioná al menos un tipo de consulta.', 'warn'); return; }
   if (!desde || !hasta) { showMsg('gal-msg', 'Completá las fechas Desde y Hasta.', 'warn'); return; }
   const hoy = new Date().toISOString().slice(0,10);
-  if (hasta > hoy)   { showMsg('gal-msg', 'La fecha hasta no puede ser posterior a hoy.', 'warn'); return; }
-  if (desde > hasta) { showMsg('gal-msg', 'La fecha desde no puede ser posterior a la fecha hasta.', 'warn'); return; }
+  const hace7g = new Date(Date.now()-7*864e5).toISOString().slice(0,10);
+  if (hasta > hoy)    { showMsg('gal-msg', 'La fecha hasta no puede ser posterior a hoy.', 'warn'); return; }
+  if (desde < hace7g) { showMsg('gal-msg', 'La fecha desde no puede ser anterior a una semana atrás.', 'warn'); return; }
+  if (desde > hasta)  { showMsg('gal-msg', 'La fecha desde no puede ser posterior a la fecha hasta.', 'warn'); return; }
 
   document.getElementById('btn-consultar').disabled = true;
   _setQuerying(true);
@@ -1047,8 +1049,7 @@ async function consultarTodo() {
   }
 
   const promesas = [];
-  // recaudadora deshabilitada
-  // if (doRec)  promesas.push(consultarRecaudadora(desde, hasta));
+  if (doRec)  promesas.push(consultarRecaudadora(desde, hasta));
   if (doChqA) promesas.push(consultarChequesAceptar(desde, hasta));
   await Promise.all(promesas);
 
@@ -1065,8 +1066,9 @@ async function consultarRecaudadora(desde, hasta) {
       cobros = data.cobros;
       pgCobros.reset();
       renderCobros();
-      if (!cobros.length) showMsg('recaudadora-msg', data.mensaje || 'No se encontraron cobros para el período seleccionado.', 'warn');
-      else showMsg('recaudadora-msg', '');
+      actualizarBadge('cobros', cobros.length);
+      if (cobros.length) ir('recaudadora');
+      else showMsg('recaudadora-msg', data.mensaje || 'No se encontraron cobros para el período seleccionado.', 'warn');
     } else {
       showMsg('recaudadora-msg', '✗ ' + (data.error || 'Error al consultar recaudadora.'), 'error');
     }
@@ -1481,8 +1483,7 @@ function toggleDetail(id, tdEl) {
 
 // ── Badges ────────────────────────────────────────────────────────────────
 function actualizarBadge(tipo, n) {
-  const ids = {cobros:'badge-cobros', 'cheques-aceptar':'badge-cheques-aceptar', bandeja:'badge-bandeja'};
-  const el = document.getElementById(ids[tipo]); if (!el) return;
+  const el = document.getElementById('badge-' + tipo); if (!el) return;
   if (n > 0) { el.style.display = 'block'; el.textContent = n; }
   else el.style.display = 'none';
 }
@@ -2465,8 +2466,10 @@ async function consultarTransferenciasMacro() {
   const hasta = document.getElementById('mac-q-hasta').value;
   if (!desde || !hasta) { showMsg('mac-msg', 'Completá las fechas Desde y Hasta.', 'warn'); return; }
   const hoy = new Date().toISOString().slice(0,10);
-  if (hasta > hoy)   { showMsg('mac-msg', 'La fecha hasta no puede ser posterior a hoy.', 'warn'); return; }
-  if (desde > hasta) { showMsg('mac-msg', 'La fecha desde no puede ser posterior a la fecha hasta.', 'warn'); return; }
+  const hace7 = new Date(Date.now()-7*864e5).toISOString().slice(0,10);
+  if (hasta > hoy)    { showMsg('mac-msg', 'La fecha hasta no puede ser posterior a hoy.', 'warn'); return; }
+  if (desde < hace7)  { showMsg('mac-msg', 'La fecha desde no puede ser anterior a una semana atrás.', 'warn'); return; }
+  if (desde > hasta)  { showMsg('mac-msg', 'La fecha desde no puede ser posterior a la fecha hasta.', 'warn'); return; }
 
   const impDesde = document.getElementById('mac-q-imp-desde').value;
   const impHasta = document.getElementById('mac-q-imp-hasta').value;
@@ -2641,55 +2644,23 @@ async function checkMacroStatus() {
   } catch(e) {}
 }
 
-// ── Poll Galicia status (detecta cierre de ventana del browser) ───────────
-function _startGaliciaPoll() {
-  if (_galiciaPoll) return;
-  _galiciaPoll = setInterval(async () => {
-    const btnLogout = document.getElementById('btn-gal-logout');
-    if (!btnLogout || btnLogout.style.display === 'none') {
-      clearInterval(_galiciaPoll); _galiciaPoll = null; return;
-    }
-    const eraConectado = document.getElementById('dot-galicia').className.includes('ok');
-    await checkGaliciaStatus();
-    const ahoraConectado = document.getElementById('dot-galicia').className.includes('ok');
-    if (eraConectado && !ahoraConectado) {
-      clearInterval(_galiciaPoll); _galiciaPoll = null;
-      showMsg('gal-msg', '⚠ Se cerró la ventana del banco. La sesión fue cerrada.', 'warn');
-    }
-  }, 5000);
-}
-
-// ── Poll Macro status ──────────────────────────────────────────────────────
-function _startMacroPoll() {
-  if (_macroPoll) return;
-  _macroPoll = setInterval(async () => {
-    const btnLogout = document.getElementById('btn-mac-logout');
-    if (!btnLogout || btnLogout.style.display === 'none') {
-      clearInterval(_macroPoll); _macroPoll = null; return;
-    }
-    const eraConectado = document.getElementById('dot-macro').className.includes('ok');
-    await checkMacroStatus();
-    const ahoraConectado = document.getElementById('dot-macro').className.includes('ok');
-    if (eraConectado && !ahoraConectado) {
-      clearInterval(_macroPoll); _macroPoll = null;
-      showMsg('mac-msg', '⚠ Se cerró la ventana del banco. La sesión fue cerrada.', 'warn');
-    }
-  }, 5000);
-}
+function _startGaliciaPoll() {}
+function _startMacroPoll() {}
 
 // ── Init ──────────────────────────────────────────────────────────────────
 function init() {
   cargarConfig();
   const hoy    = new Date().toISOString().slice(0,10);
-  const hace30 = new Date(Date.now()-30*864e5).toISOString().slice(0,10);
+  const hace7g = new Date(Date.now()-7*864e5).toISOString().slice(0,10);
   const qDesde = document.getElementById('q-desde');
   const qHasta = document.getElementById('q-hasta');
-  qDesde.max = hoy; qDesde.value = hace30;
-  qHasta.max = hoy; qHasta.value = hoy;
+  qDesde.min = hace7g; qDesde.max = hoy; qDesde.value = hace7g;
+  qHasta.min = hace7g; qHasta.max = hoy; qHasta.value = hoy;
+  const hace7  = new Date(Date.now()-7*864e5).toISOString().slice(0,10);
   const macDesde = document.getElementById('mac-q-desde');
   const macHasta = document.getElementById('mac-q-hasta');
-  macDesde.max = hoy; macDesde.value = hace30;
-  macHasta.max = hoy; macHasta.value = hoy;
+  macDesde.min = hace7; macDesde.max = hoy; macDesde.value = hace7;
+  macHasta.min = hace7; macHasta.max = hoy; macHasta.value = hoy;
   initCopyHandlers();
   checkAuth();
 }
