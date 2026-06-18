@@ -54,16 +54,16 @@ class GaliciaClient:
             self._page.on('close', self._on_close)
             self._browser.on('disconnected', self._on_close)
 
-            self._page.goto(LOGIN_URL, wait_until='domcontentloaded', timeout=20000)
+            self._page.goto(LOGIN_URL, wait_until='domcontentloaded', timeout=60000)
 
-            self._page.locator("#userInput").wait_for(state="visible", timeout=8000)
+            self._page.locator("#userInput").wait_for(state="visible", timeout=60000)
             self._page.locator("#userInput").fill(usuario)
             self._page.locator("#userPassword").fill(password)
             self._page.locator("button[aria-label='Ingresar']:not([disabled])").wait_for(timeout=5000)
             self._page.locator("button[aria-label='Ingresar']").click()
 
             try:
-                self._page.wait_for_url("**/inicio**", timeout=20000)
+                self._page.wait_for_url("**/inicio**", timeout=60000)
             except Exception:
                 err = self._page.evaluate("""() => {
                     const m = document.querySelector('[data-automation-id="modalComponent"]');
@@ -101,9 +101,11 @@ class GaliciaClient:
         if not self._logged_in or not self._page:
             return False, "No hay sesión activa"
         try:
-            self._page.locator('.content-drop').first.click()
+            self._dismiss_modal()
+            self._dismiss_modal()
+            self._page.locator('.content-drop').first.click(force=True)
             self._page.locator(f'li[title="{empresa}"]').first.wait_for(state="visible", timeout=8000)
-            self._page.locator(f'li[title="{empresa}"]').first.click()
+            self._page.locator(f'li[title="{empresa}"]').first.click(force=True)
 
             for _ in range(150):
                 nueva = self._leer_empresa()
@@ -132,11 +134,11 @@ class GaliciaClient:
 
             card1 = self._page.locator('[data-component="Card"]:has(h3:has-text("Cobranza Integrada"))').first
             card1.wait_for(state="visible", timeout=8000)
-            card1.click()
+            card1.click(force=True)
 
             card2 = self._page.locator('.brk-card:has(h3:has-text("Consultar cobros recibidos"))').first
             card2.wait_for(state="visible", timeout=8000)
-            card2.click()
+            card2.click(force=True)
 
             self._page.locator('input[placeholder="Desde"], table').first.wait_for(state="visible", timeout=10000)
 
@@ -210,7 +212,7 @@ class GaliciaClient:
 
             card = self._page.locator('[data-component="Card"]:has(h3:has-text("Aceptar"))').first
             card.wait_for(state="visible", timeout=8000)
-            card.click()
+            card.click(force=True)
 
             self._page.locator('button[aria-label="Filter2"]').first.wait_for(state="visible", timeout=8000)
 
@@ -282,7 +284,7 @@ class GaliciaClient:
     # INTERNALS
     # ═════════════════════════════════════════════════════════════════════════
     def _navegar(self, url: str):
-        self._page.goto(url, wait_until='domcontentloaded', timeout=30000)
+        self._page.goto(url, wait_until='domcontentloaded', timeout=60000)
 
     def _sesion_expirada(self) -> bool:
         if "login" in self._page.url.lower():

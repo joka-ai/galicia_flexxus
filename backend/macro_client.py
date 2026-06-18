@@ -54,11 +54,11 @@ class MacroClient:
             self._page.on('close', self._on_close)
             self._browser.on('disconnected', self._on_close)
 
-            self._page.goto(self._login_url, wait_until='domcontentloaded', timeout=30000)
+            self._page.goto(self._login_url, wait_until='domcontentloaded', timeout=60000)
 
             # Paso 1: usuario
             user_input = self._page.locator('#textField1')
-            user_input.wait_for(state='visible', timeout=40000)
+            user_input.wait_for(state='visible', timeout=60000)
             user_input.click()
             user_input.fill(usuario)
             self._page.locator('#processCustomerLogin').click()
